@@ -1,4 +1,17 @@
+/*
+RADIO MUSIC 
 
+Audio out: Onboard DAC, teensy3.1 pin A14/DAC
+
+SD Card Connections: 
+SCLK 14
+MISO 12
+MOSI 7 
+SS   10 
+
+
+
+*/
 
 
 #include <Audio.h>
@@ -34,15 +47,31 @@ void setup() {
       delay(500);
     }
   }
-
-
-
 }
+
+
+
+
 
 void loop() {
 
-playRaw1.playFrom("R2.RAW",0);
-delay(10000);
+  int pot = ReadAndAverage(2,64);
+
+
+
 
   
 }
+
+
+
+
+int ReadAndAverage (int input_number, int average_count){
+  int values;
+  for(int i = 0; i < average_count; i++){
+   values = values + analogRead(input_number); 
+  }
+  values = values / average_count;
+  return values;
+}
+
