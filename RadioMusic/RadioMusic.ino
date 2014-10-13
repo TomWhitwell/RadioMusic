@@ -25,9 +25,9 @@ AudioOutputAnalog        dac1;           //xy=334,98
 AudioConnection          patchCord1(playRaw1, dac1);
 // GUItool: end automatically generated code
 
-// SETUP FILES TO STORE DETAILS OF FILES ON THE SD CARD 
+// SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 50
-#define BANKS 8
+#define BANKS 4
 String FILE_TYPE = "WAV";
 String FILE_NAMES [BANKS][MAX_FILES];
 String FILE_DIRECTORIES[BANKS][MAX_FILES];
@@ -35,6 +35,11 @@ unsigned long FILE_SIZES[BANKS][MAX_FILES];
 int FILE_COUNT[BANKS];
 String CURRENT_DIRECTORY = "0";
 File root;
+// SETUP VARS TO STORE PLAYBACK AND SPOT CHANGES 
+#define POT_MOVE_HYSTERESIS 4 // STEPS BETWEEN CHANGES 
+#define POT_TIME_HYSTERESIS 100 // MILLIS BETWEEN CHANGES
+int POT_OLD;
+unsigned long POT_LAST_MOVE;
 
 
 void setup() {
@@ -71,9 +76,18 @@ void loop() {
 
 int pot = ReadAndAverage(2,64);
 
+int potChange = pot - POT_OLD;
+unsigned long sinceLastPot = millis() - POT_LAST_MOVE;
 
-
+if (abs(potChange) > POT_MOVE_HYSTERESIS && sinceLastPot > POT_TIME_HYSTERESIS){
+  // Change the channel. 
  
+
+  POT_OLD = pot;
+  POT_LAST_MOVE = millis();
+}
+
+
 
 
 
