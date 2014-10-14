@@ -3,6 +3,8 @@ To Do:
 HARDWARE 
 
 - Add 2nd pot & CV
+- Add bank switching 
+- Add reset input 
 
 - Optimise pot range 
 -- Try shottkey diodes 
@@ -26,3 +28,8 @@ SOFTWARE
 - Bank Switching 
 - Add time knob/CV 
 - Add Reset input 
+
+- Add eternal play with eeprom writes 
+
+- Mute clicks on file changes 
+- Support Wav Files 
