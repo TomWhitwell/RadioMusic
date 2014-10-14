@@ -7,7 +7,7 @@ HARDWARE
 - Add reset input 
 
 - Optimise pot range 
--- Try shottkey diodes 
+-- Try schottky diodes 
 -- Consider trimmer 
 -- Consider attenuator
 -- Consider pot & CV on separate ADC channels 
@@ -36,3 +36,6 @@ SOFTWARE
 
 - Mute clicks on file changes 
 - Support Wav Files 
+
+- Fix: 
+-- as station knob is moved, repeatedly calls the same file, causing clicking 

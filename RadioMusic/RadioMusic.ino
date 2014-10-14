@@ -35,12 +35,18 @@ unsigned long FILE_SIZES[BANKS][MAX_FILES];
 int FILE_COUNT[BANKS];
 String CURRENT_DIRECTORY = "0";
 File root;
-// SETUP VARS TO STORE PLAYBACK AND SPOT CHANGES 
-#define CHANNELPIN 2 // which analog pin takes the channel cv/knob 
-#define POT_MOVE_HYSTERESIS 4 // STEPS BETWEEN CHANGES 
-#define POT_TIME_HYSTERESIS 0 // MILLIS BETWEEN CHANGES
-int POT_OLD;
-unsigned long POT_LAST_MOVE;
+
+// SETUP VARS TO STORE CONTROLS 
+#define CHAN_POT_PIN 9 // pin for Channel pot
+#define CHAN_CV_PIN 8 // pin for Channel CV 
+int CHAN_POT;
+int CHAN_CV;
+boolean CHAN_CHANGED = true; 
+unsigned long CHAN_CHANGED_TIME; 
+
+// CHANGE HOW INTERFACE REACTS 
+#define HYSTERESIS 5 // MINIMUM MILLIS BETWEEN CHANGES
+
 int PLAY_BANK = 1; // preset as 1 before bank changing system built 
 int PLAY_CHANNEL; 
 
@@ -68,6 +74,8 @@ void setup() {
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
   scanDirectory(root, 0);
+  delay(2000);
+  printFileList();
 }
 
 
@@ -76,35 +84,36 @@ void setup() {
 
 void loop() {
 
-  // Read Channel pot / CV 
-int pot = analogRead(CHANNELPIN);
-
-// Check to see if Channel pot has changed a little, or recently 
-  int potChange = pot - POT_OLD;
-  unsigned long sinceLastPot = millis() - POT_LAST_MOVE;
-
-
-  if (abs(potChange) > POT_MOVE_HYSTERESIS && sinceLastPot > POT_TIME_HYSTERESIS){
-PLAY_CHANNEL = map(pot,0,1024,0,FILE_COUNT[PLAY_BANK]);
+  checkInterface(); 
   
-char* charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-
-if (playRaw1.isPlaying()){
-unsigned long playhead = playRaw1.fileOffset();
-playRaw1.playFrom(charFilename,playhead);
-}
-else {
- playRaw1.playFrom(charFilename,0); 
-}
-
-    POT_OLD = pot;
-    POT_LAST_MOVE = millis();
+  if (CHAN_CHANGED == true){
+  char* charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
+  unsigned long playhead = playRaw1.fileOffset();
+  playRaw1.playFrom(charFilename,playhead);
+  Serial.println (charFilename);
+  CHAN_CHANGED = false; 
   }
+  
+
+
 }
 
 
+// READ AND SCALE POTS AND CVs AND RETURN TO GLOBAL VARIBLES 
+
+void checkInterface(){
+  int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
+  channel = constrain(channel, 0, 1024);
+  channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]);
+  unsigned long elapsed = millis() - CHAN_CHANGED_TIME;
+    if (channel != PLAY_CHANNEL && elapsed > HYSTERESIS) {
+      PLAY_CHANNEL = channel;
+      CHAN_CHANGED = true;
+    }
 
 
+
+}
 
 
 
@@ -146,6 +155,8 @@ char* buildPath (int bank, int channel){
   liveFilename += FILE_NAMES[bank][channel];
   char filename[18];
   liveFilename.toCharArray(filename, 17);
+  Serial.println(filename);
+
   return filename;
 }
 
@@ -172,5 +183,6 @@ void printFileList(){
     }
   }
 }
+
 
 
