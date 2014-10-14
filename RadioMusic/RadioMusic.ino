@@ -1,17 +1,17 @@
 /*
 RADIO MUSIC 
-
-Audio out: Onboard DAC, teensy3.1 pin A14/DAC
-
-SD Card Connections: 
-SCLK 14
-MISO 12
-MOSI 7 
-SS   10 
-
-
-
-*/
+ 
+ Audio out: Onboard DAC, teensy3.1 pin A14/DAC
+ 
+ SD Card Connections: 
+ SCLK 14
+ MISO 12
+ MOSI 7 
+ SS   10 
+ 
+ 
+ 
+ */
 
 
 #include <Audio.h>
@@ -28,7 +28,7 @@ AudioConnection          patchCord1(playRaw1, dac1);
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 50
 #define BANKS 4
-String FILE_TYPE = "WAV";
+String FILE_TYPE = "RAW";
 String FILE_NAMES [BANKS][MAX_FILES];
 String FILE_DIRECTORIES[BANKS][MAX_FILES];
 unsigned long FILE_SIZES[BANKS][MAX_FILES];
@@ -36,25 +36,28 @@ int FILE_COUNT[BANKS];
 String CURRENT_DIRECTORY = "0";
 File root;
 // SETUP VARS TO STORE PLAYBACK AND SPOT CHANGES 
+#define CHANNELPIN 2 // which analog pin takes the channel cv/knob 
 #define POT_MOVE_HYSTERESIS 4 // STEPS BETWEEN CHANGES 
-#define POT_TIME_HYSTERESIS 100 // MILLIS BETWEEN CHANGES
+#define POT_TIME_HYSTERESIS 0 // MILLIS BETWEEN CHANGES
 int POT_OLD;
 unsigned long POT_LAST_MOVE;
+int PLAY_BANK = 1; // preset as 1 before bank changing system built 
+int PLAY_CHANNEL; 
 
 
 void setup() {
-  
-// START SERIAL MONITOR   
-  Serial.begin(9600);
-  
-// MEMORY REQUIRED FOR AUDIOCONNECTIONS   
+
+  // START SERIAL MONITOR   
+  Serial.begin(38400);
+
+  // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
 
-// SD CARD SETTINGS FOR AUDIO SHIELD 
+  // SD CARD SETTINGS FOR AUDIO SHIELD 
   SPI.setMOSI(7);
   SPI.setSCK(14);
 
-// REPORT ERROR IF SD CARD CANNOT BE READ 
+  // REPORT ERROR IF SD CARD CANNOT BE READ 
   if (!(SD.begin(10))) {
     while (1) {
       Serial.println("Unable to access the SD card");
@@ -62,10 +65,9 @@ void setup() {
     }
   }
 
-// OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
-root = SD.open("/");  
-scanDirectory(root, 0);
-  
+  // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
+  root = SD.open("/");  
+  scanDirectory(root, 0);
 }
 
 
@@ -74,41 +76,43 @@ scanDirectory(root, 0);
 
 void loop() {
 
-int pot = ReadAndAverage(2,64);
+  // Read Channel pot / CV 
+int pot = analogRead(CHANNELPIN);
 
-int potChange = pot - POT_OLD;
-unsigned long sinceLastPot = millis() - POT_LAST_MOVE;
-
-if (abs(potChange) > POT_MOVE_HYSTERESIS && sinceLastPot > POT_TIME_HYSTERESIS){
-  // Change the channel. 
- 
-
-  POT_OLD = pot;
-  POT_LAST_MOVE = millis();
-}
+// Check to see if Channel pot has changed a little, or recently 
+  int potChange = pot - POT_OLD;
+  unsigned long sinceLastPot = millis() - POT_LAST_MOVE;
 
 
-
-
-
+  if (abs(potChange) > POT_MOVE_HYSTERESIS && sinceLastPot > POT_TIME_HYSTERESIS){
+PLAY_CHANNEL = map(pot,0,1024,0,FILE_COUNT[PLAY_BANK]);
   
+  String liveFilename = PLAY_BANK;
+  liveFilename += "/";
+  liveFilename += FILE_NAMES[PLAY_BANK][PLAY_CHANNEL];
+  char charFilename[18];
+liveFilename.toCharArray(charFilename, 17);
+Serial.println(charFilename);
+
+if (playRaw1.isPlaying()){
+unsigned long playhead = playRaw1.fileOffset();
+playRaw1.playFrom(charFilename,playhead);
+}
+else {
+ playRaw1.playFrom(charFilename,0); 
 }
 
-
-
-
-
-
-
-// READ AVERAGE VALUES FROM NAMED ANALOG INPUT 
-int ReadAndAverage (int input_number, int average_count){
-  int values;
-  for(int i = 0; i < average_count; i++){
-   values = values + analogRead(input_number); 
+    POT_OLD = pot;
+    POT_LAST_MOVE = millis();
   }
-  values = values / average_count;
-  return values;
 }
+
+
+
+
+
+
+
 
 
 // SCAN SD DIRECTORIES INTO ARRAYS 
@@ -138,4 +142,27 @@ void scanDirectory(File dir, int numTabs) {
     entry.close();
   }
 }
+
+void printFileList(){
+
+  for (int x = 0; x < BANKS; x++){ 
+    Serial.print("Bank: ");
+    Serial.println(x);
+
+    Serial.print (FILE_COUNT[x]);
+    Serial.print(" ");
+    Serial.print (FILE_TYPE);
+    Serial.println(" Files found"); 
+
+    for (int i = 0; i < FILE_COUNT[x]; i++){
+      Serial.print (FILE_DIRECTORIES[x][i]);
+      Serial.print(" | ");
+      Serial.print(FILE_NAMES[x][i]);
+      Serial.print(" | ");
+      Serial.print(FILE_SIZES[x][i]);
+      Serial.println(" | ");
+    }
+  }
+}
+
 
