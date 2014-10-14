@@ -87,12 +87,7 @@ int pot = analogRead(CHANNELPIN);
   if (abs(potChange) > POT_MOVE_HYSTERESIS && sinceLastPot > POT_TIME_HYSTERESIS){
 PLAY_CHANNEL = map(pot,0,1024,0,FILE_COUNT[PLAY_BANK]);
   
-  String liveFilename = PLAY_BANK;
-  liveFilename += "/";
-  liveFilename += FILE_NAMES[PLAY_BANK][PLAY_CHANNEL];
-  char charFilename[18];
-liveFilename.toCharArray(charFilename, 17);
-Serial.println(charFilename);
+char* charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
 
 if (playRaw1.isPlaying()){
 unsigned long playhead = playRaw1.fileOffset();
@@ -142,6 +137,19 @@ void scanDirectory(File dir, int numTabs) {
     entry.close();
   }
 }
+
+
+// TAKE BANK AND CHANNEL AND RETURN PROPERLY FORMATTED PATH TO THE FILE 
+char* buildPath (int bank, int channel){
+  String liveFilename = bank;
+  liveFilename += "/";
+  liveFilename += FILE_NAMES[bank][channel];
+  char filename[18];
+  liveFilename.toCharArray(filename, 17);
+  return filename;
+}
+
+
 
 void printFileList(){
 
