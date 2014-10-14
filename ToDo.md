@@ -22,6 +22,9 @@ HARDWARE
 - Bank switching 
 -- Decide on # of banks available 
 
+- Issues: 
+-- Negative input current creates small positive reading on CV inputs 
+-- Check range of useful travel on pots 
 
 SOFTWARE 
 
