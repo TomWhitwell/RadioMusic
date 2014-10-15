@@ -37,5 +37,7 @@ SOFTWARE
 - Mute clicks on file changes 
 - Support Wav Files 
 
-- Fix: 
+- ISSUES: 
+-- Files don't loop 
 -- as station knob is moved, repeatedly calls the same file, causing clicking 
+

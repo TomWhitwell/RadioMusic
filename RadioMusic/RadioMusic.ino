@@ -44,6 +44,9 @@ int CHAN_CV;
 boolean CHAN_CHANGED = true; 
 unsigned long CHAN_CHANGED_TIME; 
 int PLAY_CHANNEL; 
+unsigned long loopcount; 
+unsigned long playhead;
+char* charFilename;
 
 // BANK SWITCHER SETUP 
 #define BUTTON 2
@@ -103,8 +106,8 @@ void loop() {
   checkInterface(); 
 
   if (CHAN_CHANGED == true){
-    char* charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-    unsigned long playhead = playRaw1.fileOffset();
+    charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
+    playhead = playRaw1.fileOffset();
     playRaw1.playFrom(charFilename,playhead);
     ledWrite(pow(2,PLAY_BANK));
     Serial.print("Bank:");
@@ -117,7 +120,14 @@ void loop() {
   }
 
 
+// IF FILE ENDS, RESTART FROM THE BEGINNING 
+if (playRaw1.isPlaying() == false){
+CHAN_CHANGED = true; 
+}
 
+
+
+loopcount++;
 }
 
 
