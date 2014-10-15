@@ -13,7 +13,7 @@ RADIO MUSIC
  
  */
 
-
+#include <Bounce.h>
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
@@ -26,7 +26,7 @@ AudioConnection          patchCord1(playRaw1, dac1);
 // GUItool: end automatically generated code
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
-#define MAX_FILES 50
+#define MAX_FILES 100
 #define BANKS 4
 String FILE_TYPE = "RAW";
 String FILE_NAMES [BANKS][MAX_FILES];
@@ -43,16 +43,32 @@ int CHAN_POT;
 int CHAN_CV;
 boolean CHAN_CHANGED = true; 
 unsigned long CHAN_CHANGED_TIME; 
+int PLAY_CHANNEL; 
+
+// BANK SWITCHER SETUP 
+#define BUTTON 2
+#define LED0 3
+#define LED1 4
+#define LED2 5
+#define LED3 6
+Bounce bankSwitch = Bounce( BUTTON, 20 ); 
+int PLAY_BANK = 0; 
+
 
 // CHANGE HOW INTERFACE REACTS 
 #define HYSTERESIS 5 // MINIMUM MILLIS BETWEEN CHANGES
 
-int PLAY_BANK = 1; // preset as 1 before bank changing system built 
-int PLAY_CHANNEL; 
 
 
 void setup() {
 
+  //PINS FOR BANK SWITCH AND LEDS 
+  pinMode(BUTTON,INPUT);
+  pinMode(LED0,OUTPUT);
+  pinMode(LED1,OUTPUT);
+  pinMode(LED2,OUTPUT);
+  pinMode(LED3,OUTPUT);
+ledWrite(pow(2,PLAY_BANK));
   // START SERIAL MONITOR   
   Serial.begin(38400);
 
@@ -74,8 +90,8 @@ void setup() {
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
   scanDirectory(root, 0);
-  delay(2000);
-  printFileList();
+delay(2000);
+printFileList();
 }
 
 
@@ -85,33 +101,58 @@ void setup() {
 void loop() {
 
   checkInterface(); 
-  
+
   if (CHAN_CHANGED == true){
-  char* charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-  unsigned long playhead = playRaw1.fileOffset();
-  playRaw1.playFrom(charFilename,playhead);
-  Serial.println (charFilename);
-  CHAN_CHANGED = false; 
+    char* charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
+    unsigned long playhead = playRaw1.fileOffset();
+    playRaw1.playFrom(charFilename,playhead);
+    ledWrite(pow(2,PLAY_BANK));
+    Serial.print("Bank:");
+    Serial.print(PLAY_BANK);
+    Serial.print(" Channel:");
+    Serial.print(PLAY_CHANNEL);  
+    Serial.print(" File:");  
+    Serial.println (charFilename);
+    CHAN_CHANGED = false; 
   }
-  
+
 
 
 }
 
 
+// WRITE A 4 DIGIT BINARY NUMBER TO LED0-LED3 
+void ledWrite(int n){
+    digitalWrite(LED0, HIGH && (n & B00001000));
+    digitalWrite(LED1, HIGH && (n & B00000100));
+    digitalWrite(LED2, HIGH && (n & B00000010));
+    digitalWrite(LED3, HIGH && (n & B00000001)); 
+}
+
+
+
 // READ AND SCALE POTS AND CVs AND RETURN TO GLOBAL VARIBLES 
 
 void checkInterface(){
+ 
+  // Channel Pot 
   int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
   channel = constrain(channel, 0, 1024);
   channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]);
   unsigned long elapsed = millis() - CHAN_CHANGED_TIME;
-    if (channel != PLAY_CHANNEL && elapsed > HYSTERESIS) {
-      PLAY_CHANNEL = channel;
-      CHAN_CHANGED = true;
-    }
+  if (channel != PLAY_CHANNEL && elapsed > HYSTERESIS) {
+    PLAY_CHANNEL = channel;
+    CHAN_CHANGED = true;
+  }
 
-
+// Bank Button 
+  if ( bankSwitch.update() ) {
+    if ( bankSwitch.read() == HIGH ) {
+      PLAY_BANK++;
+      if (PLAY_BANK >= BANKS) PLAY_BANK = 0;   
+    CHAN_CHANGED = true;
+    }    
+  }
 
 }
 
@@ -135,6 +176,7 @@ void scanDirectory(File dir, int numTabs) {
       FILE_SIZES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.size();
       FILE_DIRECTORIES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = CURRENT_DIRECTORY;
       FILE_COUNT[intCurrentDirectory]++;
+//      ledWrite (FILE_COUNT[intCurrentDirectory]);
 
     };
 
@@ -183,6 +225,7 @@ void printFileList(){
     }
   }
 }
+
 
 
 
