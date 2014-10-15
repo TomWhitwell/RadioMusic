@@ -3,6 +3,15 @@ RADIO MUSIC
  
  Audio out: Onboard DAC, teensy3.1 pin A14/DAC
  
+ Bank Button: 2
+ Bank LEDs 3,4,5,6
+ Reset Button: 8 
+ 
+ Channel Pot: A9 
+ Channel CV: A8 
+ Time Pot: A7 
+ Time CV: A6 
+ 
  SD Card Connections: 
  SCLK 14
  MISO 12
@@ -39,8 +48,8 @@ File root;
 // SETUP VARS TO STORE CONTROLS 
 #define CHAN_POT_PIN 9 // pin for Channel pot
 #define CHAN_CV_PIN 8 // pin for Channel CV 
-int CHAN_POT;
-int CHAN_CV;
+#define TIME_POT_PIN 7 // pin for Time pot
+#define TIME_CV_PIN 6 // pin for Time CV 
 boolean CHAN_CHANGED = true; 
 unsigned long CHAN_CHANGED_TIME; 
 int PLAY_CHANNEL; 
@@ -105,17 +114,18 @@ void loop() {
 
   checkInterface(); 
 
+// IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED == true){
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     playhead = playRaw1.fileOffset();
     playRaw1.playFrom(charFilename,playhead);
     ledWrite(pow(2,PLAY_BANK));
-    Serial.print("Bank:");
-    Serial.print(PLAY_BANK);
-    Serial.print(" Channel:");
-    Serial.print(PLAY_CHANNEL);  
-    Serial.print(" File:");  
-    Serial.println (charFilename);
+//    Serial.print("Bank:");
+//    Serial.print(PLAY_BANK);
+//    Serial.print(" Channel:");
+//    Serial.print(PLAY_CHANNEL);  
+//    Serial.print(" File:");  
+//    Serial.println (charFilename);
     CHAN_CHANGED = false; 
   }
 
