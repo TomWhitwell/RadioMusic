@@ -53,12 +53,17 @@ File root;
 #define RESET_BUTTON 8 // Reset button 
 boolean CHAN_CHANGED = true; 
 boolean RESET_CHANGED = false; 
+int timePotOld;
 Bounce resetSwitch = Bounce( RESET_BUTTON, 20 ); // Bounce setup for Reset
 unsigned long CHAN_CHANGED_TIME; 
 int PLAY_CHANNEL; 
 unsigned long loopcount; 
 unsigned long playhead;
 char* charFilename;
+
+// TESTING VARS 
+unsigned long TEMP_TIME;
+unsigned long TEMP_TIME_POT;
 
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
@@ -71,7 +76,8 @@ int PLAY_BANK = 0;
 
 
 // CHANGE HOW INTERFACE REACTS 
-#define HYSTERESIS 5 // MINIMUM MILLIS BETWEEN CHANGES
+#define HYSTERESIS 10 // MINIMUM MILLIS BETWEEN CHANGES
+#define TIME_HYSTERESIS 4 // MINIMUM KNOB POSITIONS MOVED 
 
 
 
@@ -117,15 +123,19 @@ void setup() {
 ////////////////////////////////////////////////////
 
 void loop() {
+if (loopcount>200){
 
   checkInterface(); 
+
+loopcount = 0;  
+}
+
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED == true || RESET_CHANGED == true){
     Serial.println(" Channel or reset change in main loop");
-
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-    if (RESET_CHANGED == false) {playhead = playRaw1.fileOffset();};
+    if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
     playRaw1.playFrom(charFilename,playhead);
     ledWrite(pow(2,PLAY_BANK));
     //    Serial.print("Bank:");
@@ -138,44 +148,41 @@ void loop() {
    RESET_CHANGED = false; 
   }
 
-//
-//  // IF ANYTHING CHANGES, DO THIS
-//  if (CHAN_CHANGED == true){
-//    Serial.println(" Channel change in main loop");
-//
-//    charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-//    playhead = playRaw1.fileOffset();
-//    playRaw1.playFrom(charFilename,playhead);
-//    ledWrite(pow(2,PLAY_BANK));
-//    //    Serial.print("Bank:");
-//    //    Serial.print(PLAY_BANK);
-//    //    Serial.print(" Channel:");
-//    //    Serial.print(PLAY_CHANNEL);  
-//    //    Serial.print(" File:");  
-//    //    Serial.println (charFilename);
-//    CHAN_CHANGED = false; 
-//  }
-
 
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   if (playRaw1.isPlaying() == false){
     CHAN_CHANGED = true; 
   }
   
-    // IF RESET BUTTON PRESSED, DO THIS 
-//  if (RESET_CHANGED == true){
-//    Serial.println(" Reset in main loop");
-//    playRaw1.playFrom(charFilename,playhead);
-//    RESET_CHANGED = false;
-//  }
 
-if (loopcount>1000){
-Serial.print("playhead=");
-Serial.print(playhead >> 16); 
-Serial.print(" fileOffset=");
-Serial.println(playRaw1.fileOffset() >> 16);
-loopcount = 0;  
-}
+
+//if (loopcount>2000){
+//Serial.print("playhead=");
+//Serial.print(playhead >> 16); 
+//
+//Serial.print(" fileOffset=");
+//unsigned long playPosition = playRaw1.fileOffset();
+//Serial.print(playPosition >> 16);
+//
+//Serial.print(" file length=");
+//unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
+//Serial.print(fileLength >>16);
+//
+//Serial.print(" pot position");
+//Serial.print(TEMP_TIME_POT);
+//
+//Serial.print(" knob time=");
+//Serial.print(TEMP_TIME >> 16);
+//
+//Serial.print( "local calc=");
+//Serial.print(((fileLength / 1024) * TEMP_TIME_POT ) >> 16);
+//
+//Serial.print(" reset at=");
+//
+//unsigned long fileStart = 0; 
+//fileStart = (playPosition / fileLength) * fileLength;
+//Serial.println(fileStart + TEMP_TIME >> 16);
+
 
 
 
@@ -203,16 +210,44 @@ void ledWrite(int n){
 // READ AND SCALE POTS AND CVs AND RETURN TO GLOBAL VARIBLES 
 
 void checkInterface(){
-
+  unsigned long elapsed;
   // Channel Pot 
   int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
   channel = constrain(channel, 0, 1024);
   channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]);
-  unsigned long elapsed = millis() - CHAN_CHANGED_TIME;
+  elapsed = millis() - CHAN_CHANGED_TIME;
   if (channel != PLAY_CHANNEL && elapsed > HYSTERESIS) {
     PLAY_CHANNEL = channel;
     CHAN_CHANGED = true;
+    CHAN_CHANGED_TIME = millis();
   }
+  
+  // Time pot 
+int timePot = analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
+timePot = constrain(timePot, 0, 1024); 
+  elapsed = millis() - CHAN_CHANGED_TIME;
+
+if (abs(timePot - timePotOld) > TIME_HYSTERESIS && elapsed > HYSTERESIS){
+
+
+  unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
+unsigned long newTime = ((fileLength/1024) * timePot);
+unsigned long playPosition = playRaw1.fileOffset();
+unsigned long fileStart = (playPosition / fileLength) * fileLength;
+playhead = fileStart + newTime;
+RESET_CHANGED = true;
+
+
+
+timePotOld = timePot;
+}
+
+
+
+
+
+
+
 
   // Reset Button 
   if ( resetSwitch.update() ) {
@@ -304,7 +339,10 @@ void printFileList(){
 }
 
 
+// Replacement Map function to deal with very large numbers 
+unsigned long myMap(unsigned long x, unsigned long in_min, unsigned long in_max, unsigned long out_min, unsigned long out_max) {
 
-
+      return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 
 
