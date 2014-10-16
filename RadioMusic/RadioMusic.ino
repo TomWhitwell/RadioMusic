@@ -6,6 +6,7 @@ RADIO MUSIC
  Bank Button: 2
  Bank LEDs 3,4,5,6
  Reset Button: 8 
+ Reset CV input: 9 
  
  Channel Pot: A9 
  Channel CV: A8 
@@ -136,7 +137,9 @@ loopcount = 0;
     Serial.println(" Channel or reset change in main loop");
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
+if (playhead %2) playhead--; // odd playhead starts = white noise 
     playRaw1.playFrom(charFilename,playhead);
+
     ledWrite(pow(2,PLAY_BANK));
     //    Serial.print("Bank:");
     //    Serial.print(PLAY_BANK);
@@ -235,7 +238,7 @@ unsigned long newTime = ((fileLength/1024) * timePot);
 unsigned long playPosition = playRaw1.fileOffset();
 unsigned long fileStart = (playPosition / fileLength) * fileLength;
 playhead = fileStart + newTime;
-RESET_CHANGED = true;
+//RESET_CHANGED = true;
 
 
 

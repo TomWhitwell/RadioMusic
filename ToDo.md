@@ -38,6 +38,8 @@ SOFTWARE
 - Support Wav Files 
 
 - ISSUES: 
+-- Many of white noise bursts in time pot - need to limit everything to 512 byte blocks? 
+-- Continue work on between-station jittering 
 -- Files don't loop RESOLVED 
 -- as station knob is moved, repeatedly calls the same file, causing clicking RESOLVED 
 
