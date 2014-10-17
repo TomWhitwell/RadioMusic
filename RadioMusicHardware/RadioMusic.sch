@@ -7520,6 +7520,8 @@ Source: http://www.murata.com .. BL01RN1_DS.pdf</description>
 <part name="U$3" library="TomW" deviceset="VERT_SD_CARD" device=""/>
 <part name="L1" library="inductors" deviceset="BL0" device="1RN1A"/>
 <part name="L2" library="inductors" deviceset="BL0" device="1RN1A"/>
+<part name="RESET_LED" library="TomW" deviceset="LED" device="3MM"/>
+<part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
 </parts>
 <sheets>
 <sheet>
@@ -7613,7 +7615,7 @@ where Reset was on Teensy3</text>
 <instance part="LED2" gate="G$1" x="180.34" y="162.56" rot="R270"/>
 <instance part="LED3" gate="G$1" x="187.96" y="160.02" rot="R270"/>
 <instance part="LED4" gate="G$1" x="180.34" y="157.48" rot="R270"/>
-<instance part="SUPPLY21" gate="GND" x="162.56" y="152.4"/>
+<instance part="SUPPLY21" gate="GND" x="162.56" y="147.32"/>
 <instance part="R17" gate="G$1" x="167.64" y="165.1"/>
 <instance part="R18" gate="G$1" x="167.64" y="162.56"/>
 <instance part="R19" gate="G$1" x="167.64" y="160.02"/>
@@ -7622,6 +7624,8 @@ where Reset was on Teensy3</text>
 <instance part="U$3" gate="G$1" x="284.48" y="149.86"/>
 <instance part="L1" gate="G$1" x="149.86" y="33.02"/>
 <instance part="L2" gate="G$1" x="149.86" y="10.16"/>
+<instance part="RESET_LED" gate="G$1" x="185.42" y="144.78" rot="R270"/>
+<instance part="R21" gate="G$1" x="170.18" y="144.78"/>
 </instances>
 <busses>
 </busses>
@@ -7778,8 +7782,13 @@ where Reset was on Teensy3</text>
 <wire x1="162.56" y1="160.02" x2="162.56" y2="157.48" width="0.1524" layer="91"/>
 <junction x="162.56" y="160.02"/>
 <pinref part="R20" gate="G$1" pin="1"/>
-<wire x1="162.56" y1="157.48" x2="162.56" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="157.48" x2="162.56" y2="152.4" width="0.1524" layer="91"/>
 <junction x="162.56" y="157.48"/>
+<pinref part="R21" gate="G$1" pin="1"/>
+<wire x1="162.56" y1="152.4" x2="162.56" y2="149.86" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="144.78" x2="165.1" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="152.4" x2="162.56" y2="152.4" width="0.1524" layer="91"/>
+<junction x="162.56" y="152.4"/>
 </segment>
 <segment>
 <wire x1="271.78" y1="139.7" x2="276.86" y2="139.7" width="0.1524" layer="91"/>
@@ -8329,6 +8338,20 @@ where Reset was on Teensy3</text>
 <pinref part="FUSE" gate="G$1" pin="P$2"/>
 <pinref part="L2" gate="G$1" pin="1"/>
 <wire x1="144.78" y1="10.16" x2="142.24" y2="10.16" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$24" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="11"/>
+<pinref part="RESET_LED" gate="G$1" pin="A"/>
+<wire x1="187.96" y1="144.78" x2="200.66" y2="144.78" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$25" class="0">
+<segment>
+<pinref part="RESET_LED" gate="G$1" pin="C"/>
+<pinref part="R21" gate="G$1" pin="2"/>
+<wire x1="175.26" y1="144.78" x2="180.34" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
