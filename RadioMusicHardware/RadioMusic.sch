@@ -8064,11 +8064,11 @@ Standard 8-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <variantdefs>
 </variantdefs>
 <classes>
-<class number="0" name="default" width="0.6096" drill="0">
+<class number="0" name="default" width="0.2032" drill="0">
 </class>
-<class number="1" name="power" width="0.6096" drill="0">
+<class number="1" name="power" width="0.2032" drill="0">
 </class>
-<class number="2" name="ground" width="0.6096" drill="0">
+<class number="2" name="ground" width="0.2032" drill="0">
 </class>
 </classes>
 <parts>
@@ -8192,7 +8192,7 @@ SD-SS
 </plain>
 <instances>
 <instance part="CHANNEL" gate="G$1" x="20.32" y="127"/>
-<instance part="SV1" gate="G$1" x="33.02" y="20.32"/>
+<instance part="SV1" gate="G$1" x="15.24" y="22.86"/>
 <instance part="SUPPLY16" gate="G$1" x="63.5" y="10.16"/>
 <instance part="SUPPLY17" gate="+12V" x="63.5" y="40.64"/>
 <instance part="C1" gate="G$1" x="63.5" y="33.02"/>
@@ -8277,6 +8277,8 @@ SD-SS
 <instance part="JP2" gate="G$1" x="317.5" y="198.12"/>
 <instance part="JP3" gate="G$1" x="307.34" y="167.64"/>
 <instance part="JP4" gate="G$1" x="320.04" y="170.18"/>
+<instance part="IC3" gate="P" x="53.34" y="27.94"/>
+<instance part="IC4" gate="P" x="55.88" y="27.94"/>
 </instances>
 <busses>
 </busses>
@@ -8284,33 +8286,33 @@ SD-SS
 <net name="GND" class="2">
 <segment>
 <pinref part="SV1" gate="G$1" pin="7"/>
-<wire x1="43.18" y1="22.86" x2="40.64" y2="22.86" width="0.1524" layer="91"/>
-<label x="43.18" y="22.86" size="1.778" layer="95"/>
+<wire x1="25.4" y1="25.4" x2="22.86" y2="25.4" width="0.1524" layer="91"/>
+<label x="25.4" y="25.4" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="SV1" gate="G$1" pin="5"/>
-<wire x1="43.18" y1="20.32" x2="40.64" y2="20.32" width="0.1524" layer="91"/>
-<label x="43.18" y="20.32" size="1.778" layer="95"/>
+<wire x1="25.4" y1="22.86" x2="22.86" y2="22.86" width="0.1524" layer="91"/>
+<label x="25.4" y="22.86" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="SV1" gate="G$1" pin="3"/>
-<wire x1="43.18" y1="17.78" x2="40.64" y2="17.78" width="0.1524" layer="91"/>
-<label x="43.18" y="17.78" size="1.778" layer="95"/>
+<wire x1="25.4" y1="20.32" x2="22.86" y2="20.32" width="0.1524" layer="91"/>
+<label x="25.4" y="20.32" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="SV1" gate="G$1" pin="8"/>
-<wire x1="22.86" y1="22.86" x2="25.4" y2="22.86" width="0.1524" layer="91"/>
-<label x="20.32" y="22.86" size="1.778" layer="95"/>
+<wire x1="5.08" y1="25.4" x2="7.62" y2="25.4" width="0.1524" layer="91"/>
+<label x="2.54" y="25.4" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="SV1" gate="G$1" pin="6"/>
-<wire x1="22.86" y1="20.32" x2="25.4" y2="20.32" width="0.1524" layer="91"/>
-<label x="20.32" y="20.32" size="1.778" layer="95"/>
+<wire x1="5.08" y1="22.86" x2="7.62" y2="22.86" width="0.1524" layer="91"/>
+<label x="2.54" y="22.86" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="SV1" gate="G$1" pin="4"/>
-<wire x1="22.86" y1="17.78" x2="25.4" y2="17.78" width="0.1524" layer="91"/>
-<label x="20.32" y="17.78" size="1.778" layer="95"/>
+<wire x1="5.08" y1="20.32" x2="7.62" y2="20.32" width="0.1524" layer="91"/>
+<label x="2.54" y="20.32" size="1.778" layer="95"/>
 </segment>
 <segment>
 <wire x1="76.2" y1="22.86" x2="76.2" y2="27.94" width="0.1524" layer="91"/>
@@ -8464,6 +8466,12 @@ SD-SS
 <pinref part="IC2" gate="A1" pin="VI"/>
 <wire x1="81.28" y1="38.1" x2="76.2" y2="38.1" width="0.1524" layer="91"/>
 <junction x="76.2" y="38.1"/>
+<pinref part="IC3" gate="P" pin="V+"/>
+<pinref part="IC4" gate="P" pin="V+"/>
+<wire x1="53.34" y1="35.56" x2="55.88" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="35.56" x2="55.88" y2="38.1" width="0.1524" layer="91"/>
+<junction x="55.88" y="35.56"/>
+<wire x1="55.88" y1="38.1" x2="63.5" y2="38.1" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <wire x1="160.02" y1="33.02" x2="154.94" y2="33.02" width="0.1524" layer="91"/>
@@ -8480,6 +8488,12 @@ SD-SS
 <wire x1="76.2" y1="15.24" x2="76.2" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="76.2" y1="12.7" x2="63.5" y2="12.7" width="0.1524" layer="91"/>
 <junction x="63.5" y="12.7"/>
+<pinref part="IC3" gate="P" pin="V-"/>
+<pinref part="IC4" gate="P" pin="V-"/>
+<wire x1="53.34" y1="20.32" x2="55.88" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="63.5" y1="12.7" x2="55.88" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="12.7" x2="55.88" y2="20.32" width="0.1524" layer="91"/>
+<junction x="55.88" y="20.32"/>
 </segment>
 <segment>
 <label x="160.02" y="10.16" size="1.778" layer="95" xref="yes"/>
@@ -8490,13 +8504,13 @@ SD-SS
 <net name="+12V_INLET" class="0">
 <segment>
 <pinref part="SV1" gate="G$1" pin="10"/>
-<wire x1="22.86" y1="25.4" x2="25.4" y2="25.4" width="0.1524" layer="91"/>
-<label x="7.62" y="25.4" size="1.778" layer="95"/>
+<wire x1="5.08" y1="27.94" x2="7.62" y2="27.94" width="0.1524" layer="91"/>
+<label x="-10.16" y="27.94" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="SV1" gate="G$1" pin="9"/>
-<wire x1="43.18" y1="25.4" x2="40.64" y2="25.4" width="0.1524" layer="91"/>
-<label x="43.18" y="25.4" size="1.778" layer="95"/>
+<wire x1="25.4" y1="27.94" x2="22.86" y2="27.94" width="0.1524" layer="91"/>
+<label x="25.4" y="27.94" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="1" gate="G$1" pin="P$1"/>
@@ -8511,13 +8525,13 @@ SD-SS
 <net name="-12V_INLET" class="0">
 <segment>
 <pinref part="SV1" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="15.24" x2="40.64" y2="15.24" width="0.1524" layer="91"/>
-<label x="43.18" y="15.24" size="1.778" layer="95"/>
+<wire x1="25.4" y1="17.78" x2="22.86" y2="17.78" width="0.1524" layer="91"/>
+<label x="25.4" y="17.78" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="SV1" gate="G$1" pin="2"/>
-<wire x1="22.86" y1="15.24" x2="25.4" y2="15.24" width="0.1524" layer="91"/>
-<label x="7.62" y="15.24" size="1.778" layer="95"/>
+<wire x1="5.08" y1="17.78" x2="7.62" y2="17.78" width="0.1524" layer="91"/>
+<label x="-10.16" y="17.78" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="FUSE" gate="G$1" pin="P$1"/>
