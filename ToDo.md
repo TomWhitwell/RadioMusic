@@ -3,6 +3,7 @@ To Do:
 HARDWARE 
 
 - Separate reset button and CV input 
+- Remove Bank switch DONE 
 - Add LED for resets 
 
 - Optimise pot range 
@@ -35,13 +36,13 @@ SOFTWARE
 - Bank Switching DONE
 - Add time knob/CV DONE 
 - Add Reset input DONE 
-- Add eternal play with eeprom writes UNCLEAR HOW 
+- Add eternal play with eeprom writes TRY AGAIN 
 
 - Mute clicks on file changes 
 - Support Wav Files 
 
 - ISSUES: 
--- Many of white noise bursts in time pot - need to limit everything to 512 byte blocks? / resolved - caused by odd numbers 
+-- Many of white noise bursts in time pot - need to limit everything to 512 byte blocks? / RESOLVED - caused by odd numbers 
 -- Continue work on between-station jittering 
 -- Files don't loop RESOLVED 
 -- as station knob is moved, repeatedly calls the same file, causing clicking RESOLVED 
