@@ -5,7 +5,8 @@ RADIO MUSIC
  
  Bank Button: 2
  Bank LEDs 3,4,5,6
- Reset Button: 8 
+ Reset Button: 8 // NOT BUILT YET IN PROTOTYPE 
+ Reset LED 12 
  Reset CV input: 9 
  
  Channel Pot: A9 
@@ -29,11 +30,21 @@ RADIO MUSIC
 #include <SPI.h>
 #include <SD.h>
 
+//// GUItool: begin automatically generated code
+//AudioPlaySdRaw           playRaw1;       //xy=183,98
+//AudioOutputAnalog        dac1;           //xy=334,98
+//AudioConnection          patchCord1(playRaw1, dac1);
+//// GUItool: end automatically generated code
+
 // GUItool: begin automatically generated code
-AudioPlaySdRaw           playRaw1;       //xy=183,98
+AudioPlaySdRaw           playRaw1;       //xy=131,81
+AudioEffectFade          fade1;          //xy=257,169
 AudioOutputAnalog        dac1;           //xy=334,98
-AudioConnection          patchCord1(playRaw1, dac1);
+AudioConnection          patchCord1(playRaw1, fade1);
+AudioConnection          patchCord2(fade1, dac1);
 // GUItool: end automatically generated code
+
+
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 100
@@ -52,6 +63,8 @@ File root;
 #define TIME_POT_PIN 7 // pin for Time pot
 #define TIME_CV_PIN 6 // pin for Time CV
 #define RESET_BUTTON 8 // Reset button 
+#define RESET_LED 12 // Reset LED indicator 
+#define RESET_CV 9 // Reset pulse input 
 boolean CHAN_CHANGED = true; 
 boolean RESET_CHANGED = false; 
 int timePotOld;
@@ -79,6 +92,7 @@ int PLAY_BANK = 0;
 // CHANGE HOW INTERFACE REACTS 
 #define HYSTERESIS 10 // MINIMUM MILLIS BETWEEN CHANGES
 #define TIME_HYSTERESIS 4 // MINIMUM KNOB POSITIONS MOVED 
+#define DECLICK 10 // milliseconds of fade in/out on switching 
 
 
 
@@ -87,6 +101,8 @@ void setup() {
   //PINS FOR BANK SWITCH AND LEDS 
   pinMode(BANK_BUTTON,INPUT);
   pinMode(RESET_BUTTON, INPUT);
+  pinMode(RESET_CV, INPUT);
+  pinMode(RESET_LED, OUTPUT);
   pinMode(LED0,OUTPUT);
   pinMode(LED1,OUTPUT);
   pinMode(LED2,OUTPUT);
@@ -131,6 +147,26 @@ if (loopcount>200){
 loopcount = 0;  
 }
 
+// SERIAL CHECK FOR TESTNG 
+
+if (Serial.available() > 0) {
+            // read the incoming byte:
+            char serialinput = Serial.read();
+
+            if (serialinput == 'a')
+            {
+fade1.fadeOut(1000);
+            };
+                        if (serialinput == 'b')
+            {
+fade1.fadeIn(1000);
+            }
+    }
+
+// SERIAL CHECK 
+
+
+
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED == true || RESET_CHANGED == true){
@@ -138,7 +174,13 @@ loopcount = 0;
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
 if (playhead %2) playhead--; // odd playhead starts = white noise 
-    playRaw1.playFrom(charFilename,playhead);
+
+
+fade1.fadeOut(DECLICK);                         // fade out before change 
+unsigned long timer1 = millis()+DECLICK;
+while(millis() < timer1){};                     // wait for fade out to complete 
+    playRaw1.playFrom(charFilename,playhead);   // change audio 
+fade1.fadeIn(DECLICK);                          // fade back in 
 
     ledWrite(pow(2,PLAY_BANK));
     //    Serial.print("Bank:");

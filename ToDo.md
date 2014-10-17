@@ -2,9 +2,8 @@ To Do:
 
 HARDWARE 
 
-- Add 2nd pot & CV
-- Add bank switching DONE
-- Add reset input 
+- Separate reset button and CV input 
+- Add LED for resets 
 
 - Optimise pot range 
 -- Try schottky diodes 
@@ -26,19 +25,23 @@ HARDWARE
 -- Negative input current creates small positive reading on CV inputs 
 -- Check range of useful travel on pots 
 
+- Add 2nd pot & CV DONE 
+- Add bank switching DONE
+- Add reset input DONE 
+
+
 SOFTWARE 
 
 - Bank Switching DONE
-- Add time knob/CV 
-- Add Reset input 
-
+- Add time knob/CV DONE 
+- Add Reset input DONE 
 - Add eternal play with eeprom writes UNCLEAR HOW 
 
 - Mute clicks on file changes 
 - Support Wav Files 
 
 - ISSUES: 
--- Many of white noise bursts in time pot - need to limit everything to 512 byte blocks? 
+-- Many of white noise bursts in time pot - need to limit everything to 512 byte blocks? / resolved - caused by odd numbers 
 -- Continue work on between-station jittering 
 -- Files don't loop RESOLVED 
 -- as station knob is moved, repeatedly calls the same file, causing clicking RESOLVED 
