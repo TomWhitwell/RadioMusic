@@ -92,9 +92,9 @@ int PLAY_BANK = 0;
 // CHANGE HOW INTERFACE REACTS 
 #define HYSTERESIS 10 // MINIMUM MILLIS BETWEEN CHANGES
 #define TIME_HYSTERESIS 4 // MINIMUM KNOB POSITIONS MOVED 
-#define DECLICK 10 // milliseconds of fade in/out on switching 
-
-
+#define DECLICK 19 // milliseconds of fade in/out on switching 
+elapsedMillis declickDelay;
+elapsedMillis liveClock;
 
 void setup() {
 
@@ -141,57 +141,32 @@ void setup() {
 
 void loop() {
 if (loopcount>200){
-
   checkInterface(); 
-
 loopcount = 0;  
 }
-
-// SERIAL CHECK FOR TESTNG 
-
-if (Serial.available() > 0) {
-            // read the incoming byte:
-            char serialinput = Serial.read();
-
-            if (serialinput == 'a')
-            {
-fade1.fadeOut(1000);
-            };
-                        if (serialinput == 'b')
-            {
-fade1.fadeIn(1000);
-            }
-    }
-
-// SERIAL CHECK 
-
-
+  
+  
 
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED == true || RESET_CHANGED == true){
+fade1.fadeOut(DECLICK);      // fade out before change 
+delay(DECLICK);
     Serial.println(" Channel or reset change in main loop");
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
+declickDelay = 0;
+
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
 if (playhead %2) playhead--; // odd playhead starts = white noise 
 
-
-fade1.fadeOut(DECLICK);                         // fade out before change 
-unsigned long timer1 = millis()+DECLICK;
-while(millis() < timer1){};                     // wait for fade out to complete 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
 fade1.fadeIn(DECLICK);                          // fade back in 
-
+    
     ledWrite(pow(2,PLAY_BANK));
-    //    Serial.print("Bank:");
-    //    Serial.print(PLAY_BANK);
-    //    Serial.print(" Channel:");
-    //    Serial.print(PLAY_CHANNEL);  
-    //    Serial.print(" File:");  
-    //    Serial.println (charFilename);
     CHAN_CHANGED = false;
    RESET_CHANGED = false; 
   }
+  
 
 
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
@@ -199,38 +174,6 @@ fade1.fadeIn(DECLICK);                          // fade back in
     CHAN_CHANGED = true; 
   }
   
-
-
-//if (loopcount>2000){
-//Serial.print("playhead=");
-//Serial.print(playhead >> 16); 
-//
-//Serial.print(" fileOffset=");
-//unsigned long playPosition = playRaw1.fileOffset();
-//Serial.print(playPosition >> 16);
-//
-//Serial.print(" file length=");
-//unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
-//Serial.print(fileLength >>16);
-//
-//Serial.print(" pot position");
-//Serial.print(TEMP_TIME_POT);
-//
-//Serial.print(" knob time=");
-//Serial.print(TEMP_TIME >> 16);
-//
-//Serial.print( "local calc=");
-//Serial.print(((fileLength / 1024) * TEMP_TIME_POT ) >> 16);
-//
-//Serial.print(" reset at=");
-//
-//unsigned long fileStart = 0; 
-//fileStart = (playPosition / fileLength) * fileLength;
-//Serial.println(fileStart + TEMP_TIME >> 16);
-
-
-
-
   loopcount++;
 }
 
@@ -388,6 +331,15 @@ void printFileList(){
 unsigned long myMap(unsigned long x, unsigned long in_min, unsigned long in_max, unsigned long out_min, unsigned long out_max) {
 
       return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+void whatsPlaying (){
+Serial.print("Bank:");
+Serial.print(PLAY_BANK);
+Serial.print(" Channel:");
+Serial.print(PLAY_CHANNEL);  
+Serial.print(" File:");  
+Serial.println (charFilename); 
 }
 
 
