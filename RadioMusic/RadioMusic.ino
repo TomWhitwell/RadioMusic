@@ -92,9 +92,8 @@ int PLAY_BANK = 0;
 // CHANGE HOW INTERFACE REACTS 
 #define HYSTERESIS 10 // MINIMUM MILLIS BETWEEN CHANGES
 #define TIME_HYSTERESIS 4 // MINIMUM KNOB POSITIONS MOVED 
-#define DECLICK 19 // milliseconds of fade in/out on switching 
-elapsedMillis declickDelay;
-elapsedMillis liveClock;
+#define DECLICK 10 // milliseconds of fade in/out on switching 
+elapsedMillis showDisplay;
 
 void setup() {
 
@@ -140,21 +139,27 @@ void setup() {
 ////////////////////////////////////////////////////
 
 void loop() {
+  
+// CHECK INTERFACE EVERY x LOOPS OF THE MAIN ROUTINE   
 if (loopcount>200){
   checkInterface(); 
 loopcount = 0;  
+
 }
   
+// UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
+if (showDisplay > 250){
+ playDisplay();
+showDisplay = 0;}  
   
+
 
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED == true || RESET_CHANGED == true){
 fade1.fadeOut(DECLICK);      // fade out before change 
 delay(DECLICK);
-    Serial.println(" Channel or reset change in main loop");
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-declickDelay = 0;
 
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
 if (playhead %2) playhead--; // odd playhead starts = white noise 
@@ -223,8 +228,7 @@ unsigned long newTime = ((fileLength/1024) * timePot);
 unsigned long playPosition = playRaw1.fileOffset();
 unsigned long fileStart = (playPosition / fileLength) * fileLength;
 playhead = fileStart + newTime;
-//RESET_CHANGED = true;
-
+//RESET_CHANGED = true; // THIS LINE = POT CHANGES IMMEDIATELY CAUSE RESET 
 
 
 timePotOld = timePot;
@@ -297,7 +301,6 @@ char* buildPath (int bank, int channel){
   liveFilename += FILE_NAMES[bank][channel];
   char filename[18];
   liveFilename.toCharArray(filename, 17);
-  Serial.println(filename);
 
   return filename;
 }
@@ -342,4 +345,19 @@ Serial.print(" File:");
 Serial.println (charFilename); 
 }
 
+void playDisplay(){
+int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
+int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
 
+  
+  for (int i = 0; i < size; i++){
+if (i == position) Serial.print("|");
+else Serial.print("_");
+  }
+  
+  Serial.println(charFilename);
+  
+  
+  
+  
+}

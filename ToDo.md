@@ -38,10 +38,13 @@ SOFTWARE
 - Add Reset input DONE 
 - Add eternal play with eeprom writes TRY AGAIN 
 
-- Mute clicks on file changes 
+- Mute clicks on file changes DONE 
 - Support Wav Files 
 
+- Work on time pot behaviour - very random at the moment 
+
 - ISSUES: 
+-- Check limits - get a burst of white noise on high voltage into channel pot 
 -- Many of white noise bursts in time pot - need to limit everything to 512 byte blocks? / RESOLVED - caused by odd numbers 
 -- Continue work on between-station jittering 
 -- Files don't loop RESOLVED 
