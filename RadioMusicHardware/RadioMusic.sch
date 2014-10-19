@@ -8826,7 +8826,7 @@ Updated 01/08/2005&lt;/i&gt;&lt;/h4&gt;</description>
 <part name="JP2FRONT" library="SparkFun-Connectors" deviceset="M07" device="LOCK"/>
 <part name="IC3" library="TomW" deviceset="TL072" device="P"/>
 <part name="IC4" library="TomW" deviceset="TL072" device="P"/>
-<part name="R15" library="bourns" deviceset="3362" device="P"/>
+<part name="VOLUME" library="bourns" deviceset="3362" device="P"/>
 </parts>
 <sheets>
 <sheet>
@@ -8939,7 +8939,7 @@ to the front panel? </text>
 <instance part="JP2FRONT" gate="G$1" x="312.42" y="152.4"/>
 <instance part="IC3" gate="P" x="53.34" y="27.94"/>
 <instance part="IC4" gate="P" x="55.88" y="27.94"/>
-<instance part="R15" gate="G$1" x="231.14" y="58.42" rot="R270"/>
+<instance part="VOLUME" gate="G$1" x="231.14" y="58.42" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -9274,7 +9274,7 @@ to the front panel? </text>
 <wire x1="220.98" y1="58.42" x2="220.98" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="226.06" y1="58.42" x2="220.98" y2="58.42" width="0.1524" layer="91"/>
 <junction x="220.98" y="58.42"/>
-<pinref part="R15" gate="G$1" pin="1"/>
+<pinref part="VOLUME" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -9286,8 +9286,8 @@ to the front panel? </text>
 <wire x1="236.22" y1="58.42" x2="243.84" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="243.84" y1="58.42" x2="243.84" y2="68.58" width="0.1524" layer="91"/>
 <junction x="243.84" y="68.58"/>
-<pinref part="R15" gate="G$1" pin="3"/>
-<pinref part="R15" gate="G$1" pin="2"/>
+<pinref part="VOLUME" gate="G$1" pin="3"/>
+<pinref part="VOLUME" gate="G$1" pin="2"/>
 <wire x1="231.14" y1="53.34" x2="236.22" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="236.22" y1="53.34" x2="236.22" y2="58.42" width="0.1524" layer="91"/>
 <junction x="236.22" y="58.42"/>

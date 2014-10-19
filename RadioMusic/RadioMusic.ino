@@ -5,8 +5,8 @@ RADIO MUSIC
  
  Bank Button: 2
  Bank LEDs 3,4,5,6
- Reset Button: 8 // NOT BUILT YET IN PROTOTYPE 
- Reset LED 12 
+ Reset Button: 8  
+ Reset LED 11 
  Reset CV input: 9 
  
  Channel Pot: A9 
@@ -63,7 +63,7 @@ File root;
 #define TIME_POT_PIN 7 // pin for Time pot
 #define TIME_CV_PIN 6 // pin for Time CV
 #define RESET_BUTTON 8 // Reset button 
-#define RESET_LED 12 // Reset LED indicator 
+#define RESET_LED 11 // Reset LED indicator 
 #define RESET_CV 9 // Reset pulse input 
 boolean CHAN_CHANGED = true; 
 boolean RESET_CHANGED = false; 
@@ -93,7 +93,9 @@ int PLAY_BANK = 0;
 #define HYSTERESIS 10 // MINIMUM MILLIS BETWEEN CHANGES
 #define TIME_HYSTERESIS 4 // MINIMUM KNOB POSITIONS MOVED 
 #define DECLICK 10 // milliseconds of fade in/out on switching 
-elapsedMillis showDisplay;
+#define FLASHTIME 10 // How long do LEDs flash for? 
+elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
+elapsedMillis resetLedTimer = 0;
 
 void setup() {
 
@@ -150,9 +152,9 @@ loopcount = 0;
 // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
 if (showDisplay > 250){
  playDisplay();
-showDisplay = 0;}  
+showDisplay = 0;}
   
-
+digitalWrite(RESET_LED, resetLedTimer < FLASHTIME);
 
 
   // IF ANYTHING CHANGES, DO THIS
@@ -170,6 +172,8 @@ fade1.fadeIn(DECLICK);                          // fade back in
     ledWrite(pow(2,PLAY_BANK));
     CHAN_CHANGED = false;
    RESET_CHANGED = false; 
+   resetLedTimer = 0; // turn on Reset LED 
+   
   }
   
 
@@ -355,7 +359,7 @@ if (i == position) Serial.print("|");
 else Serial.print("_");
   }
   
-  Serial.println(charFilename);
+//  Serial.println(charFilename);
   
   
   
