@@ -2,8 +2,6 @@ To Do:
 
 HARDWARE 
 
-- Separate reset button and CV input 
-- Remove Bank switch  
 
 - Optimise pot range 
 -- Try schottky diodes 
@@ -12,7 +10,10 @@ HARDWARE
 
 
 - Experiment with +5v or +3.3v voltage regulators 
--- Measure current draw 
+-- Measure current draw: 
+5v - 60ma with all LEDs showing 
++12v = 75ma with all LEDs 
+-12v = 8ma
 
 - Issues: 
 -- Negative input current creates small positive reading on CV inputs 
@@ -50,7 +51,8 @@ HARDWARE - DONE
 -- Decide on # of banks available DONE 4 LEDs = up to 16 banks
 -- Consider pot & CV on separate ADC channels DONE
 - Add LED for resets 
-
+- Separate reset button and CV input 
+- Remove Bank switch  
 
 
 SOFTWARE - DONE

@@ -9,4 +9,7 @@ It uses a teensy3.1 to play files from a SD card to simulate a voltage controlle
 
 October 2014: Very early prototyping 
 
+4hp 
+75ma Current Draw 
+
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)

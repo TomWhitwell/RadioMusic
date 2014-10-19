@@ -163,8 +163,8 @@ void loop() {
    
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
-    if (playhead %2) playhead--; // odd playhead starts = white noise 
-
+//    if (playhead %2) playhead--; // odd playhead starts = white noise 
+playhead = (playhead / 16) * 16; 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
     fade1.fadeIn(DECLICK);                          // fade back in 
 
