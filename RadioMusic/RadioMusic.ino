@@ -30,11 +30,6 @@ RADIO MUSIC
 #include <SPI.h>
 #include <SD.h>
 
-//// GUItool: begin automatically generated code
-//AudioPlaySdRaw           playRaw1;       //xy=183,98
-//AudioOutputAnalog        dac1;           //xy=334,98
-//AudioConnection          patchCord1(playRaw1, dac1);
-//// GUItool: end automatically generated code
 
 // GUItool: begin automatically generated code
 AudioPlaySdRaw           playRaw1;       //xy=131,81
@@ -56,6 +51,7 @@ unsigned long FILE_SIZES[BANKS][MAX_FILES];
 int FILE_COUNT[BANKS];
 String CURRENT_DIRECTORY = "0";
 File root;
+#define BLOCK_SIZE 2 // size of blocks to read - must be more than 1, performance might improve with 16?
 
 // SETUP VARS TO STORE CONTROLS 
 #define CHAN_POT_PIN 9 // pin for Channel pot
@@ -69,15 +65,14 @@ boolean CHAN_CHANGED = true;
 boolean RESET_CHANGED = false; 
 int timePotOld;
 Bounce resetSwitch = Bounce( RESET_BUTTON, 20 ); // Bounce setup for Reset
+Bounce resetCv = Bounce( RESET_CV, 10 ); // Bounce setup for Reset
+
 unsigned long CHAN_CHANGED_TIME; 
 int PLAY_CHANNEL; 
 unsigned long loopcount; 
 unsigned long playhead;
 char* charFilename;
 
-// TESTING VARS 
-unsigned long TEMP_TIME;
-unsigned long TEMP_TIME_POT;
 
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
@@ -143,48 +138,48 @@ void setup() {
 ////////////////////////////////////////////////////
 
 void loop() {
-  
-// CHECK INTERFACE EVERY x LOOPS OF THE MAIN ROUTINE   
-if (loopcount>200){
-  checkInterface(); 
-loopcount = 0;  
 
-}
-  
-// UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
-if (showDisplay > 250){
- playDisplay();
-showDisplay = 0;}
-  
-digitalWrite(RESET_LED, resetLedTimer < FLASHTIME);
+  // CHECK INTERFACE EVERY x LOOPS OF THE MAIN ROUTINE   
+  if (loopcount>200){
+    checkInterface(); 
+    loopcount = 0;  
+
+  }
+
+  // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
+  if (showDisplay > 250){
+    playDisplay();
+    showDisplay = 0;
+  }
+
+  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME);
 
 
   // IF ANYTHING CHANGES, DO THIS
-  if (CHAN_CHANGED == true || RESET_CHANGED == true){
-fade1.fadeOut(DECLICK);      // fade out before change 
-delay(DECLICK);
+  if (CHAN_CHANGED || RESET_CHANGED){
+   
+    fade1.fadeOut(DECLICK);      // fade out before change 
+    delay(DECLICK);
+   
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
-if (playhead %2) playhead--; // odd playhead starts = white noise 
+    if (playhead %2) playhead--; // odd playhead starts = white noise 
 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
-fade1.fadeIn(DECLICK);                          // fade back in 
-    
+    fade1.fadeIn(DECLICK);                          // fade back in 
+
     ledWrite(pow(2,PLAY_BANK));
     CHAN_CHANGED = false;
-   RESET_CHANGED = false; 
-   resetLedTimer = 0; // turn on Reset LED 
-   
+    RESET_CHANGED = false; 
+    resetLedTimer = 0; // turn on Reset LED 
+
   }
-  
+
 
 
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
-  if (playRaw1.isPlaying() == false){
-    CHAN_CHANGED = true; 
-  }
-  
+  CHAN_CHANGED = !playRaw1.isPlaying();
+
   loopcount++;
 }
 
@@ -220,25 +215,25 @@ void checkInterface(){
     CHAN_CHANGED = true;
     CHAN_CHANGED_TIME = millis();
   }
-  
+
   // Time pot 
-int timePot = analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
-timePot = constrain(timePot, 0, 1024); 
+  int timePot = analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
+  timePot = constrain(timePot, 0, 1024); 
   elapsed = millis() - CHAN_CHANGED_TIME;
 
-if (abs(timePot - timePotOld) > TIME_HYSTERESIS && elapsed > HYSTERESIS){
+  if (abs(timePot - timePotOld) > TIME_HYSTERESIS && elapsed > HYSTERESIS){
 
 
-  unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
-unsigned long newTime = ((fileLength/1024) * timePot);
-unsigned long playPosition = playRaw1.fileOffset();
-unsigned long fileStart = (playPosition / fileLength) * fileLength;
-playhead = fileStart + newTime;
-//RESET_CHANGED = true; // THIS LINE = POT CHANGES IMMEDIATELY CAUSE RESET 
+    unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
+    unsigned long newTime = ((fileLength/1024) * timePot);
+    unsigned long playPosition = playRaw1.fileOffset();
+    unsigned long fileStart = (playPosition / fileLength) * fileLength;
+    playhead = fileStart + newTime;
+    //RESET_CHANGED = true; // THIS LINE = POT CHANGES IMMEDIATELY CAUSE RESET 
 
 
-timePotOld = timePot;
-}
+    timePotOld = timePot;
+  }
 
 
 
@@ -249,18 +244,20 @@ timePotOld = timePot;
 
   // Reset Button 
   if ( resetSwitch.update() ) {
-RESET_CHANGED = resetSwitch.read();
+    RESET_CHANGED = resetSwitch.read();
   }
 
+// Reset CV 
+if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
 
-// Hold Reset to Change Bank 
-bankTimer = bankTimer * digitalRead(RESET_BUTTON);
-if (bankTimer > HOLDTIME){
-      PLAY_BANK++;
-      if (PLAY_BANK >= BANKS) PLAY_BANK = 0;   
-      CHAN_CHANGED = true;
+  // Hold Reset to Change Bank 
+  bankTimer = bankTimer * digitalRead(RESET_BUTTON);
+  if (bankTimer > HOLDTIME){
+    PLAY_BANK++;
+    if (PLAY_BANK >= BANKS) PLAY_BANK = 0;   
+    CHAN_CHANGED = true;
     bankTimer = 0;  
-}
+  }
 
   // Bank Button 
   if ( bankSwitch.update() ) {
@@ -346,31 +343,32 @@ void printFileList(){
 // Replacement Map function to deal with very large numbers 
 unsigned long myMap(unsigned long x, unsigned long in_min, unsigned long in_max, unsigned long out_min, unsigned long out_max) {
 
-      return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 void whatsPlaying (){
-Serial.print("Bank:");
-Serial.print(PLAY_BANK);
-Serial.print(" Channel:");
-Serial.print(PLAY_CHANNEL);  
-Serial.print(" File:");  
-Serial.println (charFilename); 
+  Serial.print("Bank:");
+  Serial.print(PLAY_BANK);
+  Serial.print(" Channel:");
+  Serial.print(PLAY_CHANNEL);  
+  Serial.print(" File:");  
+  Serial.println (charFilename); 
 }
 
 void playDisplay(){
-int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
-int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
+  int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
+  int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
 
-  
+
   for (int i = 0; i < size; i++){
-if (i == position) Serial.print("|");
-else Serial.print("_");
+    if (i == position) Serial.print("|");
+    else Serial.print("_");
   }
-  
-//  Serial.println(charFilename);
-  
-  
-  
-  
+
+  //  Serial.println(charFilename);
+
+
+
+
 }
+

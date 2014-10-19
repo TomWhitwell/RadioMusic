@@ -8919,7 +8919,7 @@ to the front panel? </text>
 <instance part="R13" gate="G$1" x="157.48" y="127" rot="R90"/>
 <instance part="R14" gate="G$1" x="134.62" y="137.16"/>
 <instance part="RESET_BUTTON" gate="G$1" x="165.1" y="198.12"/>
-<instance part="R16" gate="G$1" x="172.72" y="190.5" rot="R90"/>
+<instance part="R16" gate="G$1" x="172.72" y="190.5" rot="R270"/>
 <instance part="LED1" gate="G$1" x="172.72" y="165.1" rot="R270"/>
 <instance part="LED2" gate="G$1" x="172.72" y="162.56" rot="R270"/>
 <instance part="LED3" gate="G$1" x="172.72" y="160.02" rot="R270"/>
@@ -9575,7 +9575,7 @@ to the front panel? </text>
 <wire x1="170.18" y1="198.12" x2="172.72" y2="198.12" width="0.1524" layer="91"/>
 <pinref part="R16" gate="G$1" pin="1"/>
 <wire x1="172.72" y1="198.12" x2="182.88" y2="198.12" width="0.1524" layer="91"/>
-<wire x1="172.72" y1="185.42" x2="172.72" y2="198.12" width="0.1524" layer="91"/>
+<wire x1="172.72" y1="195.58" x2="172.72" y2="198.12" width="0.1524" layer="91"/>
 <junction x="172.72" y="198.12"/>
 <label x="182.88" y="198.12" size="1.016" layer="95" xref="yes"/>
 </segment>
@@ -9750,7 +9750,7 @@ to the front panel? </text>
 </segment>
 <segment>
 <pinref part="R16" gate="G$1" pin="2"/>
-<wire x1="172.72" y1="182.88" x2="172.72" y2="195.58" width="0.1524" layer="91"/>
+<wire x1="172.72" y1="182.88" x2="172.72" y2="185.42" width="0.1524" layer="91"/>
 <label x="172.72" y="182.88" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
