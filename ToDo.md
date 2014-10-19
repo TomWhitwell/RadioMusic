@@ -4,7 +4,6 @@ HARDWARE
 
 - Separate reset button and CV input 
 - Remove Bank switch  
-- Add LED for resets 
 
 - Optimise pot range 
 -- Try schottky diodes 
@@ -22,7 +21,6 @@ HARDWARE
 
 SOFTWARE 
 
-- Single button Bank Switching 
 
 Save settings: 
 - Retain Bank after powerup 
@@ -51,6 +49,7 @@ HARDWARE - DONE
 - Bank switching 
 -- Decide on # of banks available DONE 4 LEDs = up to 16 banks
 -- Consider pot & CV on separate ADC channels DONE
+- Add LED for resets 
 
 
 
@@ -61,3 +60,4 @@ SOFTWARE - DONE
 - Mute clicks on file changes DONE 
 - Add time knob/CV DONE 
 - Add Reset input DONE 
+- Single button Bank Switching 

@@ -8927,12 +8927,12 @@ to the front panel? </text>
 <instance part="R17" gate="G$1" x="160.02" y="165.1"/>
 <instance part="R18" gate="G$1" x="160.02" y="162.56"/>
 <instance part="R19" gate="G$1" x="160.02" y="160.02"/>
-<instance part="R20" gate="G$1" x="160.02" y="157.48"/>
+<instance part="R20" gate="G$1" x="160.02" y="157.48" rot="R180"/>
 <instance part="U$3" gate="G$1" x="218.44" y="109.22"/>
 <instance part="L1" gate="G$1" x="149.86" y="33.02" rot="R180"/>
 <instance part="L2" gate="G$1" x="149.86" y="10.16" rot="R180"/>
 <instance part="RESET_LED" gate="G$1" x="172.72" y="152.4" rot="R270"/>
-<instance part="R21" gate="G$1" x="160.02" y="152.4"/>
+<instance part="R21" gate="G$1" x="160.02" y="152.4" rot="R180"/>
 <instance part="JP1BACK" gate="G$1" x="307.34" y="187.96" rot="MR0"/>
 <instance part="JP1FRONT" gate="G$1" x="307.34" y="187.96"/>
 <instance part="JP2BACK" gate="G$1" x="302.26" y="152.4" rot="MR0"/>
@@ -9408,7 +9408,7 @@ to the front panel? </text>
 <segment>
 <pinref part="LED4" gate="G$1" pin="C"/>
 <pinref part="R20" gate="G$1" pin="1"/>
-<wire x1="154.94" y1="157.48" x2="167.64" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="157.48" x2="167.64" y2="157.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MISO_F" class="0">
@@ -9477,7 +9477,7 @@ to the front panel? </text>
 <segment>
 <pinref part="RESET_LED" gate="G$1" pin="C"/>
 <pinref part="R21" gate="G$1" pin="1"/>
-<wire x1="154.94" y1="152.4" x2="167.64" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="152.4" x2="167.64" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LED1" class="0">
@@ -9733,14 +9733,14 @@ to the front panel? </text>
 <wire x1="154.94" y1="162.56" x2="154.94" y2="160.02" width="0.1524" layer="91"/>
 <junction x="154.94" y="162.56"/>
 <pinref part="R19" gate="G$1" pin="1"/>
-<wire x1="154.94" y1="160.02" x2="165.1" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="160.02" x2="154.94" y2="157.48" width="0.1524" layer="91"/>
 <junction x="154.94" y="160.02"/>
 <pinref part="R20" gate="G$1" pin="2"/>
-<wire x1="165.1" y1="157.48" x2="165.1" y2="152.4" width="0.1524" layer="91"/>
-<junction x="165.1" y="157.48"/>
+<wire x1="154.94" y1="157.48" x2="154.94" y2="152.4" width="0.1524" layer="91"/>
+<junction x="154.94" y="157.48"/>
 <pinref part="R21" gate="G$1" pin="2"/>
-<wire x1="165.1" y1="152.4" x2="154.94" y2="149.86" width="0.1524" layer="91"/>
-<junction x="165.1" y="152.4"/>
+<wire x1="154.94" y1="152.4" x2="154.94" y2="149.86" width="0.1524" layer="91"/>
+<junction x="154.94" y="152.4"/>
 <label x="154.94" y="149.86" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>

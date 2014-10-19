@@ -94,8 +94,10 @@ int PLAY_BANK = 0;
 #define TIME_HYSTERESIS 4 // MINIMUM KNOB POSITIONS MOVED 
 #define DECLICK 10 // milliseconds of fade in/out on switching 
 #define FLASHTIME 10 // How long do LEDs flash for? 
+#define HOLDTIME 400 // How many millis to hold a button to get 2ndary function? 
 elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
 elapsedMillis resetLedTimer = 0;
+elapsedMillis bankTimer = 0;
 
 void setup() {
 
@@ -247,11 +249,18 @@ timePotOld = timePot;
 
   // Reset Button 
   if ( resetSwitch.update() ) {
-    if ( resetSwitch.read() == HIGH ) {
-      RESET_CHANGED = true; 
-    }
+RESET_CHANGED = resetSwitch.read();
   }
 
+
+// Hold Reset to Change Bank 
+bankTimer = bankTimer * digitalRead(RESET_BUTTON);
+if (bankTimer > HOLDTIME){
+      PLAY_BANK++;
+      if (PLAY_BANK >= BANKS) PLAY_BANK = 0;   
+      CHAN_CHANGED = true;
+    bankTimer = 0;  
+}
 
   // Bank Button 
   if ( bankSwitch.update() ) {
