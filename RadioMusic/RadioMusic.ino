@@ -150,10 +150,10 @@ void loop() {
   if (showDisplay > 250){
     playDisplay();
     showDisplay = 0;
+    
   }
 
   digitalWrite(RESET_LED, resetLedTimer < FLASHTIME);
-
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED || RESET_CHANGED){
