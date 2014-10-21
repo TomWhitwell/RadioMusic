@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="25" unitdist="mil" unit="mm" style="lines" multiple="1" display="yes" altdistance="8" altunitdist="mil" altunit="mil"/>
+<grid distance="25" unitdist="mil" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.1" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="yes" active="yes"/>
@@ -133,136 +133,14 @@
 <wire x1="0" y1="0" x2="128.5" y2="0" width="0.0254" layer="20"/>
 <wire x1="128.5" y1="0" x2="128.5" y2="20" width="0.0254" layer="20"/>
 <wire x1="128.5" y1="20" x2="0" y2="20" width="0.0254" layer="20"/>
-<wire x1="130.75" y1="10" x2="-9.25" y2="10" width="0.1" layer="51"/>
-<wire x1="64.25" y1="-9.5" x2="64.25" y2="30.5" width="0.1" layer="51"/>
+<rectangle x1="48.1" y1="14" x2="61.6" y2="16.8" layer="46"/>
+<hole x="63.455" y="3.675" drill="3.1"/>
+<hole x="115.906" y="16.756" drill="3.1"/>
+<hole x="115.906" y="12.311" drill="3.1"/>
+<hole x="115.906" y="7.866" drill="3.1"/>
+<hole x="115.906" y="3.421" drill="3.1"/>
 </plain>
 <libraries>
-<library name="TomW">
-<packages>
-<package name="EVUF">
-<description>&lt;b&gt;9 mm Square Rotary Potentiometers&lt;/b&gt; Vertical, Snap-in&lt;p&gt;
-Source: Panasonic</description>
-<wire x1="-4.1" y1="5.4" x2="4.1" y2="5.4" width="0.2032" layer="21"/>
-<wire x1="4.65" y1="4.85" x2="4.65" y2="-5.35" width="0.2032" layer="51"/>
-<wire x1="4.1" y1="-5.9" x2="-4.1" y2="-5.9" width="0.2032" layer="21"/>
-<wire x1="-4.65" y1="-5.35" x2="-4.65" y2="4.85" width="0.2032" layer="51"/>
-<wire x1="-4.75" y1="0.9" x2="-5.5" y2="0.9" width="0.2032" layer="51"/>
-<wire x1="-5.5" y1="0.9" x2="-5.5" y2="-0.9" width="0.2032" layer="51"/>
-<wire x1="-5.5" y1="-0.9" x2="-4.75" y2="-0.9" width="0.2032" layer="51"/>
-<wire x1="4.75" y1="-0.9" x2="5.5" y2="-0.9" width="0.2032" layer="51"/>
-<wire x1="5.5" y1="-0.9" x2="5.5" y2="0.9" width="0.2032" layer="51"/>
-<wire x1="5.5" y1="0.9" x2="4.75" y2="0.9" width="0.2032" layer="51"/>
-<wire x1="-4.1" y1="4.85" x2="-4.65" y2="4.85" width="0.2032" layer="21"/>
-<wire x1="-4.1" y1="5.4" x2="-4.1" y2="4.85" width="0.2032" layer="21"/>
-<wire x1="-4.1" y1="-5.35" x2="-4.1" y2="-5.9" width="0.2032" layer="21"/>
-<wire x1="-4.65" y1="-5.35" x2="-4.1" y2="-5.35" width="0.2032" layer="21"/>
-<wire x1="4.1" y1="-5.35" x2="4.65" y2="-5.35" width="0.2032" layer="21"/>
-<wire x1="4.1" y1="-5.9" x2="4.1" y2="-5.35" width="0.2032" layer="21"/>
-<wire x1="4.1" y1="4.85" x2="4.1" y2="5.4" width="0.2032" layer="21"/>
-<wire x1="4.65" y1="4.85" x2="4.1" y2="4.85" width="0.2032" layer="21"/>
-<wire x1="-4.65" y1="2.65" x2="-4.65" y2="4.85" width="0.2032" layer="21"/>
-<wire x1="-4.65" y1="-5.35" x2="-4.65" y2="-2.15" width="0.2032" layer="21"/>
-<wire x1="4.65" y1="4.85" x2="4.65" y2="2.65" width="0.2032" layer="21"/>
-<wire x1="4.65" y1="-2.15" x2="4.65" y2="-5.35" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="1.397" width="0.0508" layer="21"/>
-<pad name="1" x="-2.5" y="-7" drill="1.1" diameter="1.6764" shape="square" rot="R270"/>
-<pad name="2" x="0" y="-7" drill="1.1" diameter="1.6764" shape="octagon" rot="R270"/>
-<pad name="3" x="2.5" y="-7" drill="1.1" diameter="1.6764" shape="octagon" rot="R270"/>
-<pad name="M1" x="4.5" y="0" drill="2.1" diameter="2.8" shape="square" rot="R270"/>
-<pad name="M2" x="-4.5" y="0" drill="2.1" diameter="2.8" shape="square" rot="R270"/>
-<text x="-3.81" y="2.54" size="1.0668" layer="25">&gt;NAME</text>
-<text x="-3.81" y="-3.81" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-2.925" y1="-7.325" x2="-2.075" y2="-6" layer="51"/>
-<rectangle x1="-0.425" y1="-7.325" x2="0.425" y2="-6" layer="51"/>
-<rectangle x1="2.075" y1="-7.325" x2="2.925" y2="-6" layer="51"/>
-<circle x="0" y="0" radius="1.016" width="0.0508" layer="21"/>
-</package>
-<package name="D6_BUTTON_RND">
-<description>Momentary Pushbutton Switch</description>
-<pad name="P$1" x="-2.5" y="2.5" drill="0.81" shape="square"/>
-<pad name="P$2" x="2.5" y="2.5" drill="0.81" shape="square"/>
-<pad name="P$3" x="2.5" y="-2.5" drill="0.81" shape="square"/>
-<pad name="P$4" x="-2.5" y="-2.5" drill="0.81" shape="square"/>
-<wire x1="-5" y1="3" x2="-5" y2="-3" width="0.127" layer="21"/>
-<wire x1="-5" y1="3" x2="-5" y2="-3" width="0.127" layer="21" curve="-298.072487"/>
-<circle x="0" y="0" radius="4.5" width="0.127" layer="51"/>
-<wire x1="-1" y1="0" x2="1" y2="0" width="0.127" layer="21"/>
-<wire x1="0" y1="1" x2="0" y2="-1" width="0.127" layer="21"/>
-<text x="-6.35" y="2.54" size="1.27" layer="25" rot="R270">&gt;NAME</text>
-</package>
-<package name="LED3MM">
-<description>&lt;B&gt;LED&lt;/B&gt;&lt;p&gt;
-3 mm, round</description>
-<wire x1="1.5748" y1="-1.27" x2="1.5748" y2="1.27" width="0.254" layer="21"/>
-<wire x1="0" y1="2.032" x2="1.561" y2="1.3009" width="0.254" layer="21" curve="-50.193108"/>
-<wire x1="-1.7929" y1="0.9562" x2="0" y2="2.032" width="0.254" layer="21" curve="-61.926949"/>
-<wire x1="0" y1="-2.032" x2="1.5512" y2="-1.3126" width="0.254" layer="21" curve="49.763022"/>
-<wire x1="-1.7643" y1="-1.0082" x2="0" y2="-2.032" width="0.254" layer="21" curve="60.255215"/>
-<wire x1="-2.032" y1="0" x2="-1.7891" y2="0.9634" width="0.254" layer="21" curve="-28.301701"/>
-<wire x1="-2.032" y1="0" x2="-1.7306" y2="-1.065" width="0.254" layer="21" curve="31.60822"/>
-<pad name="A" x="-1.27" y="0" drill="0.8128" shape="square"/>
-<pad name="K" x="1.27" y="0" drill="0.8128" shape="octagon"/>
-<text x="1.905" y="0.381" size="1.27" layer="51" ratio="10">&gt;NAME</text>
-<text x="1.905" y="-1.651" size="1.27" layer="51" ratio="10">&gt;VALUE</text>
-<wire x1="-0.694903125" y1="-1.5877125" x2="-0.694903125" y2="-0.9527125" width="0.127" layer="21"/>
-<wire x1="-0.38163125" y1="-1.26428125" x2="-1.01663125" y2="-1.26428125" width="0.127" layer="21"/>
-</package>
-<package name="VERT_MICROSD">
-<pad name="GND1" x="-4.3" y="-3.17" drill="0.9" shape="square"/>
-<pad name="GND2" x="4.3" y="-3.17" drill="0.9" shape="square"/>
-<pad name="P$1" x="-3.35" y="0" drill="0.7"/>
-<pad name="P$2" x="-2.25" y="1.1" drill="0.7"/>
-<pad name="P$3" x="-1.15" y="0" drill="0.7"/>
-<pad name="P$4" x="-0.05" y="1.1" drill="0.7"/>
-<pad name="P$5" x="1.05" y="0" drill="0.7"/>
-<pad name="P$6" x="2.15" y="1.1" drill="0.7"/>
-<pad name="P$7" x="3.25" y="0" drill="0.7"/>
-<pad name="P$8" x="4.35" y="1.1" drill="0.7"/>
-<wire x1="-6" y1="-0.47" x2="6" y2="-0.47" width="0.08" layer="51"/>
-<wire x1="6" y1="-0.47" x2="6" y2="-2.77" width="0.08" layer="21"/>
-<wire x1="6" y1="-2.77" x2="-6" y2="-2.77" width="0.08" layer="51"/>
-<wire x1="-6" y1="-2.77" x2="-6.8" y2="-2.77" width="0.08" layer="21"/>
-<wire x1="-6.8" y1="-2.77" x2="-6.8" y2="-0.47" width="0.08" layer="21"/>
-<wire x1="-6.8" y1="-0.47" x2="-6" y2="-0.47" width="0.08" layer="21"/>
-<wire x1="-6" y1="-2.77" x2="-6" y2="-3.57" width="0.06" layer="21"/>
-<wire x1="-6" y1="-3.57" x2="6" y2="-3.57" width="0.06" layer="21"/>
-<wire x1="6" y1="-3.57" x2="6" y2="-2.77" width="0.06" layer="21"/>
-<wire x1="-6" y1="-0.47" x2="-6" y2="1.33" width="0.06" layer="21"/>
-<wire x1="-6" y1="1.33" x2="6" y2="1.33" width="0.06" layer="21"/>
-<wire x1="6" y1="1.33" x2="6" y2="-0.47" width="0.06" layer="21"/>
-<wire x1="-6.265" y1="-1.42" x2="4.965" y2="-1.42" width="0.05" layer="51"/>
-<wire x1="4.965" y1="-1.42" x2="4.965" y2="-2.27" width="0.05" layer="51"/>
-<wire x1="4.965" y1="-2.27" x2="-6.265" y2="-2.27" width="0.05" layer="51"/>
-<wire x1="-6.265" y1="-2.27" x2="-6.265" y2="-1.42" width="0.05" layer="51"/>
-</package>
-</packages>
-</library>
-<library name="thonkiconn">
-<packages>
-<package name="WQP-PJ301M-12_JACK">
-<wire x1="-4.5" y1="6" x2="-1.5" y2="6" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="6" x2="1.5" y2="6" width="0.127" layer="21"/>
-<wire x1="1.5" y1="6" x2="4.5" y2="6" width="0.127" layer="21"/>
-<wire x1="-4.5" y1="6" x2="-4.5" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="-4.5" y1="-4.5" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="0.2" y1="-4.5" x2="4.5" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="4.5" y1="-4.5" x2="4.5" y2="6" width="0.127" layer="21"/>
-<circle x="0" y="0" radius="3.162275" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="6" x2="-1.5" y2="4" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="4" x2="1.5" y2="4" width="0.127" layer="21"/>
-<wire x1="1.5" y1="4" x2="1.5" y2="6" width="0.127" layer="21"/>
-<pad name="P$1" x="0" y="5" drill="1.1" thermals="no"/>
-<pad name="P$2" x="0" y="-3.5" drill="1.1"/>
-<pad name="P$3" x="0" y="-6.5" drill="1.1"/>
-<circle x="0" y="0" radius="2.690721875" width="0.127" layer="21"/>
-<wire x1="-0.2" y1="-4.6" x2="-0.2" y2="-6.7" width="0.127" layer="21"/>
-<wire x1="-0.2" y1="-6.7" x2="0.2" y2="-6.7" width="0.127" layer="21"/>
-<wire x1="0.2" y1="-6.7" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
-<rectangle x1="-2.8" y1="-2.8" x2="2.8" y2="2.8" layer="41"/>
-<text x="-4.7498" y="-4.4704" size="1.27" layer="21" rot="R90">&gt;NAME</text>
-</package>
-</packages>
-</library>
 </libraries>
 <attributes>
 </attributes>
@@ -455,46 +333,28 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="CHANNEL-POT" library="TomW" package="EVUF" value="50k" x="106" y="10.025" smashed="yes" rot="R270">
-<attribute name="NAME" x="108.825" y="13.66" size="0.6096" layer="25" rot="R270"/>
-<attribute name="VALUE" x="101.58" y="11.985" size="0.6096" layer="27" rot="R270"/>
-</element>
-<element name="CHANNEL-CV" library="thonkiconn" package="WQP-PJ301M-12_JACK" value="" x="31.705" y="5.58" rot="R90"/>
-<element name="RESET-CV" library="thonkiconn" package="WQP-PJ301M-12_JACK" value="" x="17.1" y="15.105" rot="R90"/>
-<element name="OUTPUT" library="thonkiconn" package="WQP-PJ301M-12_JACK" value="" x="17.1" y="4.945" rot="R90"/>
-<element name="TIME-POT" library="TomW" package="EVUF" value="50k" x="78.06" y="10.025" smashed="yes" rot="R270">
-<attribute name="NAME" x="80.6" y="13.835" size="0.6096" layer="25" rot="R270"/>
-<attribute name="VALUE" x="74.25" y="13.835" size="0.6096" layer="27" rot="R270"/>
-</element>
-<element name="TIME-CV" library="thonkiconn" package="WQP-PJ301M-12_JACK" value="" x="31.705" y="15.105" rot="R90"/>
-<element name="RESET" library="TomW" package="D6_BUTTON_RND" value="D6_PUSH_SWITCH" x="55.2" y="6.85" rot="R180"/>
-<element name="LED1" library="TomW" package="LED3MM" value="" x="115.906" y="16.756" rot="R90"/>
-<element name="LED2" library="TomW" package="LED3MM" value="" x="115.906" y="12.311" rot="R90"/>
-<element name="LED3" library="TomW" package="LED3MM" value="" x="115.906" y="7.866" rot="R270"/>
-<element name="LED4" library="TomW" package="LED3MM" value="" x="115.906" y="3.421" rot="R270"/>
-<element name="X1" library="TomW" package="VERT_MICROSD" value="VERT_SD_CARD" x="55.2" y="17.01"/>
-<element name="LED5" library="TomW" package="LED3MM" value="" x="63.455" y="3.675" rot="R270"/>
 </elements>
 <signals>
 <signal name="VBAT">
 </signal>
-<signal name="LED4_F">
-<contactref element="LED4" pad="A"/>
-</signal>
-<signal name="LED3_F">
-<contactref element="LED3" pad="A"/>
-</signal>
-<signal name="+3.3V_F">
-<contactref element="TIME-POT" pad="3"/>
-</signal>
-<signal name="GND_F" class="2" airwireshidden="yes">
-<contactref element="CHANNEL-CV" pad="P$3"/>
-</signal>
-<signal name="N$1">
+<signal name="GND">
+<via x="17.1" y="15.105" extent="1-16" drill="6"/>
+<via x="31.705" y="15.105" extent="1-16" drill="6"/>
+<via x="17.1" y="4.945" extent="1-16" drill="6"/>
+<via x="31.705" y="4.945" extent="1-16" drill="6"/>
+<via x="55.2" y="6.85" extent="1-16" drill="9.2"/>
+<via x="78.06" y="10.025" extent="1-16" drill="7.1"/>
 <via x="3" y="12.5" extent="1-16" drill="3.2"/>
-</signal>
-<signal name="N$2">
+<via x="106" y="10.025" extent="1-16" drill="7.1"/>
 <via x="125.5" y="12.5" extent="1-16" drill="3.2"/>
+<wire x1="106" y1="10.025" x2="125.5" y2="12.5" width="0" layer="19" extent="1-1"/>
+<wire x1="78.06" y1="10.025" x2="106" y2="10.025" width="0" layer="19" extent="1-1"/>
+<wire x1="55.2" y1="6.85" x2="78.06" y2="10.025" width="0" layer="19" extent="1-1"/>
+<wire x1="31.705" y1="4.945" x2="55.2" y2="6.85" width="0" layer="19" extent="1-1"/>
+<wire x1="31.705" y1="15.105" x2="31.705" y2="4.945" width="0" layer="19" extent="1-1"/>
+<wire x1="17.1" y1="15.105" x2="31.705" y2="15.105" width="0" layer="19" extent="1-1"/>
+<wire x1="17.1" y1="4.945" x2="17.1" y2="15.105" width="0" layer="19" extent="1-1"/>
+<wire x1="3" y1="12.5" x2="17.1" y2="15.105" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>
