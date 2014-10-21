@@ -5266,11 +5266,11 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <variantdefs>
 </variantdefs>
 <classes>
-<class number="0" name="default" width="0.2032" drill="0">
+<class number="0" name="default" width="0.3048" drill="0">
 </class>
-<class number="1" name="power" width="0.3048" drill="0">
+<class number="1" name="power" width="0.4572" drill="0">
 </class>
-<class number="2" name="ground" width="0.3048" drill="0">
+<class number="2" name="ground" width="0.4572" drill="0">
 </class>
 </classes>
 <parts>

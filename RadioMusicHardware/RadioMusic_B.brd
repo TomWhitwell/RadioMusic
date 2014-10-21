@@ -8,24 +8,24 @@
 </settings>
 <grid distance="16" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="8" altunitdist="mil" altunit="mil"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
 <layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
 <layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
 <layer number="15" name="Route15" color="4" fill="6" visible="no" active="yes"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="yes"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="yes"/>
 <layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="25" name="tNames" color="7" fill="1" visible="no" active="yes"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="no" active="yes"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
@@ -137,7 +137,26 @@
 <text x="-5.715" y="22.86" size="1.778" layer="1">BACK BOARD: COMPONENTS + JUMPERS ON TOP, PWR, TEENSY, TRIM  ON BOTTOM 
 </text>
 <wire x1="53.5" y1="-10" x2="53.5" y2="30" width="0.1" layer="51"/>
-<wire x1="53.5" y1="-10" x2="53.5" y2="30" width="0.1" layer="51"/>
+<text x="71.12" y="7.3152" size="0.762" layer="22" rot="MR0">RadioMusic Back PCB  Rev 1 
+Designed in Herne Hill, London by Tom Whitwell 
+October 2014 CC-BY-SA
+musicthing.co.uk</text>
+<text x="73.5584" y="3.2512" size="1.016" layer="22" rot="MR0">&lt;-Set output volume</text>
+<text x="23.5712" y="7.7216" size="2.286" layer="22" rot="MR0">TEENSY 3.1</text>
+<text x="3.2512" y="13.8176" size="1.016" layer="22" rot="SMR270">USB this end</text>
+<text x="35.7632" y="15.4432" size="0.508" layer="22" rot="MR0" align="top-left">Inspired by: 
+John Cage 
+Don Buchla 
+Stockhausen
+Nicholas Collins
+Max Neuhaus, 
+Akin Fernandez
+UbuWeb 
+Resonance FM 
+Thanks to: 
+Paul Stoffregen, 
+Steven Thonk
+The Muff Wigglers</text>
 </plain>
 <libraries>
 <library name="TomW">
@@ -8394,8 +8413,8 @@ design rules under a new name.</description>
 <element name="F2" library="TomW" package="C050H075X075" value="FUSE" x="102.87" y="15.24" smashed="yes" rot="R180">
 <attribute name="VALUE" x="104.14" y="15.24" size="0.6096" layer="27" ratio="10" rot="R180"/>
 </element>
-<element name="U$2" library="TW_logos" package="MTM_2CM_SCREEN_200DPI" value="" x="110.49" y="18.034"/>
-<element name="U1" library="TomW" package="TEENSY_3.1_TW" value="TEENSY_3.1_TW" x="18.415" y="9.525" rot="MR270"/>
+<element name="U$2" library="TW_logos" package="MTM_2CM_SCREEN_200DPI" value="" x="76.7588" y="0.1524" rot="MR90"/>
+<element name="U1" library="TomW" package="TEENSY_3.1_TW" value="TEENSY_3.1_TW" x="18.415" y="9.525" smashed="yes" rot="MR270"/>
 <element name="IC3" library="gm-regulators" package="TO92" value="7805L" x="26.035" y="6.985" rot="R270"/>
 <element name="D1" library="diode" package="DO34-7" value="" x="6.985" y="9.525" rot="R270"/>
 <element name="D2" library="diode" package="DO34-7" value="" x="8.89" y="9.525" rot="R90"/>
@@ -8419,7 +8438,6 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="55.88" y="-1.905" size="1.27" layer="27"/>
 </element>
 <element name="OUTPUT" library="bourns" package="3362P" value="" x="77.47" y="3.81" smashed="yes" rot="MR90">
-<attribute name="NAME" x="81.407" y="0.508" size="1.27" layer="26" ratio="10" rot="MR90"/>
 <attribute name="VALUE" x="72.263" y="0.5334" size="1.27" layer="28" ratio="10" rot="MR90"/>
 </element>
 <element name="IC4" library="linear" package="DIL14" value="TL074" x="61.595" y="9.525" smashed="yes">
