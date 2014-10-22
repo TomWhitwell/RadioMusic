@@ -4492,6 +4492,8 @@ diameter 1.8 mm, horizontal, grid 7.62 mm</description>
 <text x="2.54" y="-2.3114" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="A" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
 <pin name="C" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
+<text x="-2.54" y="0" size="0.4064" layer="99" align="center">SpiceOrder 1</text>
+<text x="2.54" y="0" size="0.4064" layer="99" align="center">SpiceOrder 2</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -5434,6 +5436,7 @@ Source: http://www.murata.com .. BL01RN1_DS.pdf</description>
 <text x="-2.54" y="-3.81" size="1.27" layer="27">&gt;VALUE</text>
 <rectangle x1="-3.81" y1="-0.325" x2="-2.475" y2="0.325" layer="21"/>
 <rectangle x1="2.475" y1="-0.325" x2="3.81" y2="0.325" layer="21" rot="R180"/>
+<text x="-2.103334375" y="-0.345784375" size="0.7112" layer="21" ratio="9" distance="61">FERRITE</text>
 </package>
 <package name="BL02RN1">
 <description>&lt;b&gt;Noise Suppression Products/EMI Suppression Filters, Lead EMIFIL(R) Inductor Type&lt;/b&gt;&lt;p&gt;
@@ -7073,8 +7076,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <part name="SUPPLY2" library="supply2" deviceset="GND" device=""/>
 <part name="U1" library="TomW" deviceset="TEENSY_3.1_TW" device=""/>
 <part name="IC3" library="gm-regulators" deviceset="78*" device="L" technology="05"/>
-<part name="D1" library="diode" deviceset="BAT81" device="" value=""/>
-<part name="D2" library="diode" deviceset="BAT81" device="" value=""/>
+<part name="D1" library="diode" deviceset="BAT81" device="" value="BAT81"/>
+<part name="D2" library="diode" deviceset="BAT81" device="" value="BAT81"/>
 <part name="R4" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="8.2k"/>
 <part name="R3" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="8.2k"/>
 <part name="C1" library="TomW" deviceset="C-EU" device="050-024X044" value="1n"/>
@@ -7084,8 +7087,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <part name="R7" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
 <part name="C2" library="TomW" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="R1" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47R"/>
-<part name="D3" library="diode" deviceset="BAT81" device="" value=""/>
-<part name="D4" library="diode" deviceset="BAT81" device="" value=""/>
+<part name="D3" library="diode" deviceset="BAT81" device="" value="BAT81"/>
+<part name="D4" library="diode" deviceset="BAT81" device="" value="BAT81"/>
 <part name="R2" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47R"/>
 <part name="L1" library="inductors" deviceset="BL0" device="1RN1A"/>
 <part name="L2" library="inductors" deviceset="BL0" device="1RN1A"/>
@@ -7154,12 +7157,12 @@ SD-SS
 <instance part="D2" gate="1" x="40.64" y="106.68" rot="R90"/>
 <instance part="R4" gate="G$1" x="162.56" y="73.66"/>
 <instance part="R3" gate="G$1" x="142.24" y="73.66" rot="R180"/>
-<instance part="C1" gate="G$1" x="175.26" y="83.82" rot="R270"/>
+<instance part="C1" gate="G$1" x="175.26" y="83.82" rot="R90"/>
 <instance part="C4" gate="G$1" x="170.18" y="58.42"/>
-<instance part="C3" gate="G$1" x="205.74" y="71.12" rot="R270"/>
+<instance part="C3" gate="G$1" x="205.74" y="71.12" rot="R90"/>
 <instance part="R5" gate="G$1" x="213.36" y="58.42" rot="R90"/>
-<instance part="R7" gate="G$1" x="220.98" y="48.26" rot="R90"/>
-<instance part="C2" gate="G$1" x="129.54" y="73.66" rot="R270"/>
+<instance part="R7" gate="G$1" x="220.98" y="48.26" rot="R270"/>
+<instance part="C2" gate="G$1" x="129.54" y="73.66" rot="R90"/>
 <instance part="R1" gate="G$1" x="35.56" y="114.3" rot="R180"/>
 <instance part="IC4" gate="C" x="17.78" y="60.96"/>
 <instance part="D3" gate="1" x="40.64" y="68.58" rot="R90"/>
@@ -7223,7 +7226,7 @@ SD-SS
 </segment>
 <segment>
 <pinref part="R7" gate="G$1" pin="2"/>
-<wire x1="220.98" y1="40.64" x2="220.98" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="220.98" y1="40.64" x2="220.98" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="R5" gate="G$1" pin="1"/>
 <wire x1="213.36" y1="40.64" x2="213.36" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="220.98" y1="40.64" x2="213.36" y2="40.64" width="0.1524" layer="91"/>
@@ -7417,7 +7420,7 @@ SD-SS
 </segment>
 <segment>
 <pinref part="C2" gate="G$1" pin="1"/>
-<wire x1="119.38" y1="73.66" x2="132.08" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="73.66" x2="127" y2="73.66" width="0.1524" layer="91"/>
 <label x="119.38" y="73.66" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
@@ -7439,7 +7442,7 @@ SD-SS
 <wire x1="147.32" y1="73.66" x2="152.4" y2="73.66" width="0.1524" layer="91"/>
 <pinref part="C1" gate="G$1" pin="1"/>
 <wire x1="152.4" y1="73.66" x2="157.48" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="177.8" y1="83.82" x2="152.4" y2="83.82" width="0.1524" layer="91"/>
+<wire x1="172.72" y1="83.82" x2="152.4" y2="83.82" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="83.82" x2="152.4" y2="73.66" width="0.1524" layer="91"/>
 <junction x="152.4" y="73.66"/>
 </segment>
@@ -7447,7 +7450,7 @@ SD-SS
 <net name="N$5" class="0">
 <segment>
 <pinref part="C1" gate="G$1" pin="2"/>
-<wire x1="170.18" y1="83.82" x2="195.58" y2="83.82" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="83.82" x2="195.58" y2="83.82" width="0.1524" layer="91"/>
 <wire x1="195.58" y1="83.82" x2="195.58" y2="71.12" width="0.1524" layer="91"/>
 <pinref part="IC4" gate="D" pin="OUT"/>
 <wire x1="195.58" y1="71.12" x2="190.5" y2="71.12" width="0.1524" layer="91"/>
@@ -7458,14 +7461,14 @@ SD-SS
 <wire x1="195.58" y1="63.5" x2="195.58" y2="71.12" width="0.1524" layer="91"/>
 <junction x="195.58" y="71.12"/>
 <pinref part="C3" gate="G$1" pin="1"/>
-<wire x1="208.28" y1="71.12" x2="195.58" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="71.12" x2="195.58" y2="71.12" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$6" class="0">
 <segment>
 <pinref part="C3" gate="G$1" pin="2"/>
 <pinref part="IC4" gate="A" pin="+IN"/>
-<wire x1="200.66" y1="71.12" x2="213.36" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="210.82" y1="71.12" x2="213.36" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="71.12" x2="223.52" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="71.12" x2="213.36" y2="63.5" width="0.1524" layer="91"/>
 <junction x="213.36" y="71.12"/>
@@ -7478,7 +7481,7 @@ SD-SS
 <pinref part="R7" gate="G$1" pin="1"/>
 <wire x1="223.52" y1="66.04" x2="220.98" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="220.98" y1="66.04" x2="220.98" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="220.98" y1="58.42" x2="220.98" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="220.98" y1="58.42" x2="220.98" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="226.06" y1="58.42" x2="220.98" y2="58.42" width="0.1524" layer="91"/>
 <junction x="220.98" y="58.42"/>
 <pinref part="OUTPUT" gate="G$1" pin="1"/>
@@ -7488,7 +7491,7 @@ SD-SS
 <segment>
 <pinref part="R3" gate="G$1" pin="2"/>
 <pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="124.46" y1="73.66" x2="137.16" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="73.66" x2="137.16" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="TIME_CV" class="0">
