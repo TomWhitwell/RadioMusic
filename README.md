@@ -9,7 +9,13 @@ It uses a teensy3.1 to play files from a SD card to simulate a voltage controlle
 
 October 2014: Very early prototyping 
 
-4hp 
-75ma Current Draw 
-
+<ul>
+<li>4hp 
+<li>75ma Current Draw 
+<ul>
+<li>60ma from 5v regulator
+<li>8ma from -12v</ul>
+<li>Up to 32gb storage
+<il>Files stored as headerless .raw wav files (normal .wav file support in backlog)
+</ul>
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
