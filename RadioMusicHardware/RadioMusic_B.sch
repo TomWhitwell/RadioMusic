@@ -7140,7 +7140,7 @@ SD-SS
 <instance part="SUPPLY1" gate="+12V" x="63.5" y="45.72"/>
 <instance part="C6" gate="G$1" x="63.5" y="33.02"/>
 <instance part="GND1" gate="1" x="68.58" y="22.86"/>
-<instance part="C5" gate="G$1" x="76.2" y="35.56" rot="R180"/>
+<instance part="C5" gate="G$1" x="76.2" y="33.02" rot="R180"/>
 <instance part="C8" gate="G$1" x="76.2" y="20.32"/>
 <instance part="C7" gate="G$1" x="63.5" y="22.86"/>
 <instance part="D5" gate="1" x="127" y="27.94" rot="R90"/>
@@ -7248,11 +7248,10 @@ SD-SS
 <junction x="63.5" y="25.4"/>
 </segment>
 <segment>
-<wire x1="76.2" y1="22.86" x2="76.2" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="C5" gate="G$1" pin="1"/>
 <pinref part="C8" gate="G$1" pin="1"/>
-<wire x1="76.2" y1="25.4" x2="76.2" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="76.2" y1="27.94" x2="76.2" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="22.86" x2="76.2" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="27.94" x2="76.2" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="81.28" y1="27.94" x2="76.2" y2="27.94" width="0.1524" layer="91"/>
 <junction x="76.2" y="27.94"/>
 <label x="81.28" y="27.94" size="1.778" layer="95" xref="yes"/>
@@ -7269,16 +7268,15 @@ SD-SS
 <pinref part="SUPPLY1" gate="+12V" pin="+12V"/>
 <wire x1="63.5" y1="43.18" x2="63.5" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="C5" gate="G$1" pin="2"/>
-<wire x1="76.2" y1="40.64" x2="63.5" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="38.1" x2="76.2" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="43.18" x2="63.5" y2="43.18" width="0.1524" layer="91"/>
 <junction x="63.5" y="43.18"/>
 <pinref part="IC3" gate="A1" pin="VI"/>
-<wire x1="81.28" y1="38.1" x2="76.2" y2="40.64" width="0.1524" layer="91"/>
-<junction x="76.2" y="40.64"/>
-<wire x1="53.34" y1="35.56" x2="55.88" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="35.56" x2="55.88" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="38.1" x2="63.5" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="81.28" y1="38.1" x2="76.2" y2="38.1" width="0.1524" layer="91"/>
+<junction x="76.2" y="38.1"/>
+<wire x1="55.88" y1="35.56" x2="55.88" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="43.18" x2="63.5" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="IC4" gate="P" pin="V+"/>
-<junction x="55.88" y="35.56"/>
 </segment>
 <segment>
 <wire x1="160.02" y1="33.02" x2="154.94" y2="33.02" width="0.1524" layer="91"/>
@@ -7295,11 +7293,9 @@ SD-SS
 <wire x1="76.2" y1="15.24" x2="76.2" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="76.2" y1="12.7" x2="63.5" y2="12.7" width="0.1524" layer="91"/>
 <junction x="63.5" y="12.7"/>
-<wire x1="53.34" y1="20.32" x2="55.88" y2="20.32" width="0.1524" layer="91"/>
 <wire x1="63.5" y1="12.7" x2="55.88" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="12.7" x2="55.88" y2="20.32" width="0.1524" layer="91"/>
 <pinref part="IC4" gate="P" pin="V-"/>
-<junction x="55.88" y="20.32"/>
 </segment>
 <segment>
 <label x="160.02" y="10.16" size="1.778" layer="95" xref="yes"/>
