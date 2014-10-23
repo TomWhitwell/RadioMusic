@@ -22,6 +22,7 @@ HARDWARE
 
 SOFTWARE 
 
+Hot Swap SD Cards 
 
 Save settings: 
 - Retain Bank after powerup 
