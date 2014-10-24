@@ -34,11 +34,12 @@ RADIO MUSIC
 // GUItool: begin automatically generated code
 AudioPlaySdRaw           playRaw1;       //xy=131,81
 AudioEffectFade          fade1;          //xy=257,169
+AudioAnalyzePeak         peak1;          //xy=317,123
 AudioOutputAnalog        dac1;           //xy=334,98
 AudioConnection          patchCord1(playRaw1, fade1);
 AudioConnection          patchCord2(fade1, dac1);
+AudioConnection          patchCord3(playRaw1, peak1);
 // GUItool: end automatically generated code
-
 
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
@@ -94,6 +95,11 @@ elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - in
 elapsedMillis resetLedTimer = 0;
 elapsedMillis bankTimer = 0;
 
+elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
+#define meterHIDE 2000 // how long to hide Meter after bank change 
+elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
+#define peakFPS 24 //  FRAMERATE FOR PEAK METER 
+
 void setup() {
 
   //PINS FOR BANK SWITCH AND LEDS 
@@ -148,12 +154,12 @@ void loop() {
 
   // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
   if (showDisplay > 250){
-    playDisplay();
+//    playDisplay();
     showDisplay = 0;
     
   }
 
-  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME);
+  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED || RESET_CHANGED){
@@ -163,12 +169,11 @@ void loop() {
    
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
-//    if (playhead %2) playhead--; // odd playhead starts = white noise 
-playhead = (playhead / 16) * 16; 
+playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
     fade1.fadeIn(DECLICK);                          // fade back in 
 
-    ledWrite(pow(2,PLAY_BANK));
+    ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
     resetLedTimer = 0; // turn on Reset LED 
@@ -176,10 +181,13 @@ playhead = (playhead / 16) * 16;
   }
 
 
-
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   CHAN_CHANGED = !playRaw1.isPlaying();
 
+// CALL PEAK METER   
+if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();
+
+  
   loopcount++;
 }
 
@@ -257,6 +265,7 @@ if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
     if (PLAY_BANK >= BANKS) PLAY_BANK = 0;   
     CHAN_CHANGED = true;
     bankTimer = 0;  
+    meterDisplay = 0;
   }
 
   // Bank Button 
@@ -346,6 +355,8 @@ unsigned long myMap(unsigned long x, unsigned long in_min, unsigned long in_max,
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+// SHOW CURRENTLY PLAYING TRACK IN SERIAL MONITOR 
+
 void whatsPlaying (){
   Serial.print("Bank:");
   Serial.print(PLAY_BANK);
@@ -355,20 +366,24 @@ void whatsPlaying (){
   Serial.println (charFilename); 
 }
 
+
+// SHOW VISUAL INDICATOR OF TRACK PROGRESS IN SERIAL MONITOR 
 void playDisplay(){
   int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
   int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
-
-
   for (int i = 0; i < size; i++){
     if (i == position) Serial.print("|");
     else Serial.print("_");
   }
-
-  //  Serial.println(charFilename);
-
-
-
-
+  Serial.println("");
 }
+
+// DISPLAY PEAK METER IN LEDS 
+    void peakMeter(){
+    if (peak1.available()) {
+      fps = 0;
+      int monoPeak = peak1.read() * 5.0;
+      ledWrite((pow(2,monoPeak))-1); // 
+    }
+    }
 

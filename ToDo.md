@@ -22,19 +22,23 @@ HARDWARE
 
 SOFTWARE 
 
-Hot Swap SD Cards 
-
 Save settings: 
 - Retain Bank after powerup 
 - Retain playhead position after powerup 
 
-- Work on time pot behaviour - very random at the moment 
+Interface: 
+- Work on time pot behaviour - seems a bit random at the moment 
+
+Performance: 
+- Only load *current* directory into array = big reduction of memory use 
+
 
 - ISSUES: 
 -- Check limits - get a burst of white noise on high voltage into channel pot 
 -- Continue work on between-station jittering 
 
 BACKLOG: 
+- Hot Swap SD Cards 
 - Support Wav Files 
 - Pitch changing / reverse play 
 
@@ -64,3 +68,5 @@ SOFTWARE - DONE
 - Add time knob/CV DONE 
 - Add Reset input DONE 
 - Single button Bank Switching 
+- allow up to 16 dirs
+- Peak meter display 
