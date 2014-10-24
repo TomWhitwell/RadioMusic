@@ -24,6 +24,7 @@ RADIO MUSIC
  
  */
 
+#include <EEPROM.h>
 #include <Bounce.h>
 #include <Audio.h>
 #include <Wire.h>
@@ -83,7 +84,7 @@ char* charFilename;
 #define LED3 6
 Bounce bankSwitch = Bounce( BANK_BUTTON, 20 ); 
 int PLAY_BANK = 0; 
-
+#define BANK_SAVE 0
 
 // CHANGE HOW INTERFACE REACTS 
 #define HYSTERESIS 10 // MINIMUM MILLIS BETWEEN CHANGES
@@ -124,9 +125,12 @@ void setup() {
 
   // REPORT ERROR IF SD CARD CANNOT BE READ 
   if (!(SD.begin(10))) {
-    while (1) {
+    while (!(SD.begin(10))) {
       Serial.println("Unable to access the SD card");
-      delay(500);
+      ledWrite(15);
+      delay(100);
+      ledWrite(0);
+      delay(100);
     }
   }
 
@@ -134,7 +138,16 @@ void setup() {
   root = SD.open("/");  
   scanDirectory(root, 0);
   delay(2000);
-  printFileList();
+//  printFileList();
+  
+  // CHECK EEPROM FOR SAVED BANK POSITION 
+  int a = EEPROM.read(BANK_SAVE);
+  if (a >= 0 && a <= BANKS){
+    PLAY_BANK = a;
+    Serial.println("loading bank from eeprom");
+  }
+  else {EEPROM.write(BANK_SAVE,0); 
+Serial.println("eeprom wiped");};
 }
 
 
@@ -266,14 +279,18 @@ if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
+              EEPROM.write(BANK_SAVE, PLAY_BANK);
+    Serial.println("bank saved to eeprom");
   }
 
   // Bank Button 
   if ( bankSwitch.update() ) {
     if ( bankSwitch.read() == HIGH ) {
       PLAY_BANK++;
-      if (PLAY_BANK >= BANKS) PLAY_BANK = 0;   
+      if (PLAY_BANK >= BANKS) PLAY_BANK = 0; 
       CHAN_CHANGED = true;
+          EEPROM.write(BANK_SAVE, PLAY_BANK);
+    Serial.println("bank saved to eeprom");
     }    
   }
 
