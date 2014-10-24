@@ -138,16 +138,16 @@ void setup() {
   root = SD.open("/");  
   scanDirectory(root, 0);
   delay(2000);
-//  printFileList();
-  
+  //  printFileList();
+
   // CHECK EEPROM FOR SAVED BANK POSITION 
   int a = EEPROM.read(BANK_SAVE);
   if (a >= 0 && a <= BANKS){
     PLAY_BANK = a;
-    Serial.println("loading bank from eeprom");
   }
-  else {EEPROM.write(BANK_SAVE,0); 
-Serial.println("eeprom wiped");};
+  else {
+    EEPROM.write(BANK_SAVE,0); 
+  };
 }
 
 
@@ -167,40 +167,37 @@ void loop() {
 
   // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
   if (showDisplay > 250){
-//    playDisplay();
+    //    playDisplay();
     showDisplay = 0;
-    
+
   }
 
   digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED || RESET_CHANGED){
-   
+
     fade1.fadeOut(DECLICK);      // fade out before change 
     delay(DECLICK);
-   
+
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
-playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
+    playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
     fade1.fadeIn(DECLICK);                          // fade back in 
-
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
     resetLedTimer = 0; // turn on Reset LED 
-
   }
 
 
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   CHAN_CHANGED = !playRaw1.isPlaying();
 
-// CALL PEAK METER   
-if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();
+  // CALL PEAK METER   
+  if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();
 
-  
   loopcount++;
 }
 
@@ -244,7 +241,6 @@ void checkInterface(){
 
   if (abs(timePot - timePotOld) > TIME_HYSTERESIS && elapsed > HYSTERESIS){
 
-
     unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
     unsigned long newTime = ((fileLength/1024) * timePot);
     unsigned long playPosition = playRaw1.fileOffset();
@@ -252,15 +248,8 @@ void checkInterface(){
     playhead = fileStart + newTime;
     //RESET_CHANGED = true; // THIS LINE = POT CHANGES IMMEDIATELY CAUSE RESET 
 
-
     timePotOld = timePot;
   }
-
-
-
-
-
-
 
 
   // Reset Button 
@@ -268,10 +257,10 @@ void checkInterface(){
     RESET_CHANGED = resetSwitch.read();
   }
 
-// Reset CV 
-if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
+  // Reset CV 
+  if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
 
-  // Hold Reset to Change Bank 
+  // Hold Reset Button to Change Bank 
   bankTimer = bankTimer * digitalRead(RESET_BUTTON);
   if (bankTimer > HOLDTIME){
     PLAY_BANK++;
@@ -279,25 +268,20 @@ if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
-              EEPROM.write(BANK_SAVE, PLAY_BANK);
-    Serial.println("bank saved to eeprom");
+    EEPROM.write(BANK_SAVE, PLAY_BANK);
   }
 
-  // Bank Button 
+  // Bank Button - if separate switch installed 
   if ( bankSwitch.update() ) {
     if ( bankSwitch.read() == HIGH ) {
       PLAY_BANK++;
       if (PLAY_BANK >= BANKS) PLAY_BANK = 0; 
       CHAN_CHANGED = true;
-          EEPROM.write(BANK_SAVE, PLAY_BANK);
-    Serial.println("bank saved to eeprom");
+      EEPROM.write(BANK_SAVE, PLAY_BANK);
     }    
   }
 
 }
-
-
-
 
 
 // SCAN SD DIRECTORIES INTO ARRAYS 
@@ -396,11 +380,12 @@ void playDisplay(){
 }
 
 // DISPLAY PEAK METER IN LEDS 
-    void peakMeter(){
-    if (peak1.available()) {
-      fps = 0;
-      int monoPeak = peak1.read() * 5.0;
-      ledWrite((pow(2,monoPeak))-1); // 
-    }
-    }
+void peakMeter(){
+  if (peak1.available()) {
+    fps = 0;
+    int monoPeak = peak1.read() * 5.0;
+    ledWrite((pow(2,monoPeak))-1); // 
+  }
+}
+
 

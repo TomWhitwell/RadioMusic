@@ -23,7 +23,6 @@ HARDWARE
 SOFTWARE 
 
 Save settings: 
-- Retain Bank after powerup 
 - Retain playhead position after powerup 
 
 Interface: 
@@ -70,3 +69,4 @@ SOFTWARE - DONE
 - Single button Bank Switching 
 - allow up to 16 dirs
 - Peak meter display 
+- Retain Bank after powerup 
