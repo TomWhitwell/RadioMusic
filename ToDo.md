@@ -27,6 +27,7 @@ Save settings:
 
 Interface: 
 - Work on time pot behaviour - seems a bit random at the moment 
+- Check on ENDS - are first and last files in directory playable? 
 
 Performance: 
 - Only load *current* directory into array = big reduction of memory use 

@@ -96,6 +96,7 @@ elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - in
 elapsedMillis resetLedTimer = 0;
 elapsedMillis bankTimer = 0;
 
+// CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
 #define meterHIDE 2000 // how long to hide Meter after bank change 
 elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
@@ -113,6 +114,7 @@ void setup() {
   pinMode(LED2,OUTPUT);
   pinMode(LED3,OUTPUT);
   ledWrite(pow(2,PLAY_BANK));
+  
   // START SERIAL MONITOR   
   Serial.begin(38400);
 
