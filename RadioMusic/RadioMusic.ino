@@ -78,10 +78,10 @@ char* charFilename;
 
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
-#define LED0 3
-#define LED1 4
-#define LED2 5
-#define LED3 6
+#define LED0 6
+#define LED1 5
+#define LED2 4
+#define LED3 3
 Bounce bankSwitch = Bounce( BANK_BUTTON, 20 ); 
 int PLAY_BANK = 0; 
 #define BANK_SAVE 0
