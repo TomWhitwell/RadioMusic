@@ -7094,7 +7094,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <part name="L2" library="inductors" deviceset="BL0" device="1RN1A"/>
 <part name="JP1" library="SparkFun-Connectors" deviceset="M11" device="PTH" value="M11PTH"/>
 <part name="JP3" library="SparkFun-Connectors" deviceset="M07" device=""/>
-<part name="OUTPUT" library="bourns" deviceset="3362" device="P"/>
+<part name="OUTPUT" library="bourns" deviceset="3362" device="P" value="50k"/>
 <part name="IC4" library="linear" deviceset="TL074" device="P" value="TL074"/>
 </parts>
 <sheets>
