@@ -18,4 +18,7 @@ October 2014: Very early prototyping
 <li>Up to 32gb storage
 <il>Files stored as headerless .raw wav files (normal .wav file support in backlog)
 </ul>
+
+[Details and issues IN THE WIKI](https://github.com/TomWhitwell/RadioMusic/wiki)
+
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
