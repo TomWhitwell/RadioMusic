@@ -10,9 +10,9 @@ RADIO MUSIC
  Reset CV input: 9 
  
  Channel Pot: A9 
- Channel CV: A8 
+ Channel CV: A8 // check 
  Time Pot: A7 
- Time CV: A6 
+ Time CV: A6 // check 
  
  SD Card Connections: 
  SCLK 14
@@ -113,10 +113,10 @@ void setup() {
   pinMode(LED1,OUTPUT);
   pinMode(LED2,OUTPUT);
   pinMode(LED3,OUTPUT);
-  ledWrite(pow(2,PLAY_BANK));
+  ledWrite(PLAY_BANK);
   
   // START SERIAL MONITOR   
-  Serial.begin(38400);
+  Serial.begin(9600);
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
@@ -140,16 +140,16 @@ void setup() {
   root = SD.open("/");  
   scanDirectory(root, 0);
   delay(2000);
-  //  printFileList();
+printFileList();
 
-  // CHECK EEPROM FOR SAVED BANK POSITION 
-  int a = EEPROM.read(BANK_SAVE);
-  if (a >= 0 && a <= BANKS){
-    PLAY_BANK = a;
-  }
-  else {
-    EEPROM.write(BANK_SAVE,0); 
-  };
+//  // CHECK EEPROM FOR SAVED BANK POSITION 
+//  int a = EEPROM.read(BANK_SAVE);
+//  if (a >= 0 && a <= BANKS){
+//    PLAY_BANK = a;
+//  }
+//  else {
+//    EEPROM.write(BANK_SAVE,0); 
+//  };
 }
 
 
