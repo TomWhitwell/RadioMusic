@@ -11,7 +11,7 @@ It uses a teensy3.1 to play files from a SD card to simulate a voltage controlle
 - [Issues in the Issue List](https://github.com/TomWhitwell/RadioMusic/issues)
 
 October 2014: Very early prototyping 
-November 2014: First PCB build 
+November 2014: First PCB build: [Video](http://instagram.com/p/vCNc37DmSj/)
 
 <ul>
 <li>4hp 
