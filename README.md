@@ -26,5 +26,8 @@ November 2014: First PCB build
 
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
 
+<video width="320" height="240" controls>
+  <source src="http://videos-h-12.ak.instagram.com/hphotos-ak-xaf1/10753011_267798403344152_1559293186_n.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
 
-![EarlyPanelDesign](http://videos-h-12.ak.instagram.com/hphotos-ak-xaf1/10753011_267798403344152_1559293186_n.mp4)
