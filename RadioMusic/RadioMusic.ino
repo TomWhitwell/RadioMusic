@@ -44,8 +44,8 @@ AudioConnection          patchCord3(playRaw1, peak1);
 
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
-#define MAX_FILES 100
-#define BANKS 4
+#define MAX_FILES 75
+#define BANKS 8
 String FILE_TYPE = "RAW";
 String FILE_NAMES [BANKS][MAX_FILES];
 String FILE_DIRECTORIES[BANKS][MAX_FILES];
@@ -114,17 +114,21 @@ void setup() {
   pinMode(LED2,OUTPUT);
   pinMode(LED3,OUTPUT);
   ledWrite(PLAY_BANK);
-  
+
   // START SERIAL MONITOR   
-  Serial.begin(9600);
+  Serial.begin(38400);
+  delay(2000);
+  Serial.println("Starting up...");
+
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
-
+  Serial.println("Set memory...");
   // SD CARD SETTINGS FOR AUDIO SHIELD 
   SPI.setMOSI(7);
   SPI.setSCK(14);
-
+  Serial.println("SD card setting ...");
+  
   // REPORT ERROR IF SD CARD CANNOT BE READ 
   if (!(SD.begin(10))) {
     while (!(SD.begin(10))) {
@@ -135,21 +139,22 @@ void setup() {
       delay(100);
     }
   }
-
+  Serial.println("SD card is OK ...");
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
+    Serial.println("Open Root ...");
   scanDirectory(root, 0);
-  delay(2000);
-printFileList();
+  Serial.println("Scan directories ...");
+  printFileList();
 
-//  // CHECK EEPROM FOR SAVED BANK POSITION 
-//  int a = EEPROM.read(BANK_SAVE);
-//  if (a >= 0 && a <= BANKS){
-//    PLAY_BANK = a;
-//  }
-//  else {
-//    EEPROM.write(BANK_SAVE,0); 
-//  };
+  //  // CHECK EEPROM FOR SAVED BANK POSITION 
+  //  int a = EEPROM.read(BANK_SAVE);
+  //  if (a >= 0 && a <= BANKS){
+  //    PLAY_BANK = a;
+  //  }
+  //  else {
+  //    EEPROM.write(BANK_SAVE,0); 
+  //  };
 }
 
 
@@ -288,20 +293,26 @@ void checkInterface(){
 
 // SCAN SD DIRECTORIES INTO ARRAYS 
 void scanDirectory(File dir, int numTabs) {
-  while(true) {  
+  while(true) {
+  Serial.print(".");  
     File entry =  dir.openNextFile();
     if (! entry) {
       // no more files
+      Serial.println("No more files"); 
       break;
     }
     String fileName = entry.name();
+    Serial.print("Scanning:");
+    Serial.println(fileName);
 
     if (fileName.endsWith(FILE_TYPE) && fileName.startsWith("_") == 0){
       int intCurrentDirectory = CURRENT_DIRECTORY.toInt();
       FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.name();
       FILE_SIZES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.size();
       FILE_DIRECTORIES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = CURRENT_DIRECTORY;
+      Serial.println(FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]]);
       FILE_COUNT[intCurrentDirectory]++;
+
       //      ledWrite (FILE_COUNT[intCurrentDirectory]);
 
     };
@@ -389,5 +400,6 @@ void peakMeter(){
     ledWrite((pow(2,monoPeak))-1); // 
   }
 }
+
 
 
