@@ -25,3 +25,6 @@ November 2014: First PCB build
 
 
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
+
+
+![EarlyPanelDesign](http://videos-h-12.ak.instagram.com/hphotos-ak-xaf1/10753011_267798403344152_1559293186_n.mp4)
