@@ -7075,7 +7075,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <part name="F2" library="TomW" deviceset="PTC_FUSE" device="POLY_FUSE" value="FUSE"/>
 <part name="SUPPLY2" library="supply2" deviceset="GND" device=""/>
 <part name="U1" library="TomW" deviceset="TEENSY_3.1_TW" device=""/>
-<part name="IC3" library="gm-regulators" deviceset="78*" device="L" technology="05"/>
+<part name="IC3" library="gm-regulators" deviceset="78*" device="L" technology="05" value="78L05"/>
 <part name="D1" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="D2" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R4" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="8.2k"/>
