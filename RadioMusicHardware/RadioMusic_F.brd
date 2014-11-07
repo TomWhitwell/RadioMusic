@@ -144,7 +144,7 @@ musicthing.co.uk</text>
 THIS SIDE</text>
 <text x="70.485" y="11.43" size="1.27" layer="22" rot="MR90">--&gt;</text>
 <text x="71.755" y="6.985" size="1.27" layer="22" rot="SMR270">--&gt;</text>
-<text x="36.3474" y="13.9192" size="0.762" layer="21" rot="R90" align="center-left">&lt;-BAT81
+<text x="36.3474" y="13.9192" size="0.762" layer="21" rot="R90" align="center-left">&lt;-BAT42
    x2</text>
 <text x="74.0664" y="0.7112" size="0.762" layer="21" distance="40">Be super careful with 
 LED Polarity up here --&gt;</text>
@@ -8224,8 +8224,8 @@ design rules under a new name.</description>
 </element>
 <element name="R20" library="TomW" package="0207/10" value="100k" x="76.835" y="9.525" rot="R90"/>
 <element name="R21" library="TomW" package="0207/10" value="200k" x="79.375" y="9.525" rot="R90"/>
-<element name="D7" library="diode" package="DO34-7" value="BAT81" x="36.83" y="9.525" smashed="yes" rot="R90"/>
-<element name="D8" library="diode" package="DO34-7" value="BAT81" x="34.925" y="9.525" smashed="yes" rot="R270"/>
+<element name="D7" library="diode" package="DO34-7" value="BAT42" x="36.83" y="9.525" smashed="yes" rot="R90"/>
+<element name="D8" library="diode" package="DO34-7" value="BAT42" x="34.925" y="9.525" smashed="yes" rot="R270"/>
 <element name="R19" library="TomW" package="0207/10" value="100k" x="32.385" y="9.525" rot="R90"/>
 <element name="R18" library="TomW" package="0207/10" value="220R" x="29.845" y="9.525" rot="R90"/>
 <element name="RESET" library="TomW" package="D6_BUTTON_RND" value="D6_PUSH_SWITCH" x="44.45" y="6.35" smashed="yes" rot="R180">
@@ -8236,15 +8236,15 @@ design rules under a new name.</description>
 <element name="LED2" library="TomW" package="LED3MM" value="" x="105.156" y="11.811" rot="R90"/>
 <element name="LED3" library="TomW" package="LED3MM" value="" x="105.156" y="7.366" rot="R270"/>
 <element name="LED4" library="TomW" package="LED3MM" value="" x="105.156" y="2.921" rot="R270"/>
-<element name="R11" library="TomW" package="0207/10" value="1k" x="97.155" y="17.145"/>
-<element name="R12" library="TomW" package="0207/10" value="1k" x="102.235" y="9.525" rot="R90"/>
-<element name="R13" library="TomW" package="0207/10" value="1k" x="81.915" y="9.525" rot="R90"/>
-<element name="R14" library="TomW" package="0207/10" value="1k" x="95.885" y="1.905"/>
+<element name="R11" library="TomW" package="0207/10" value="2K" x="97.155" y="17.145"/>
+<element name="R12" library="TomW" package="0207/10" value="2K" x="102.235" y="9.525" rot="R90"/>
+<element name="R13" library="TomW" package="0207/10" value="2K" x="81.915" y="9.525" rot="R90"/>
+<element name="R14" library="TomW" package="0207/10" value="2K" x="95.885" y="1.905"/>
 <element name="X1" library="TomW" package="VERT_MICROSD" value="VERT_SD_CARD" x="44.45" y="16.51"/>
 <element name="LED5" library="TomW" package="LED3MM" value="" x="52.705" y="3.175" smashed="yes" rot="R270">
 <attribute name="VALUE" x="51.054" y="1.27" size="1.27" layer="51" ratio="10" rot="R270"/>
 </element>
-<element name="R15" library="TomW" package="0207/10" value="1k" x="55.245" y="9.525" rot="R90"/>
+<element name="R15" library="TomW" package="0207/10" value="2K" x="55.245" y="9.525" rot="R90"/>
 <element name="JP2" library="SparkFun-Connectors" package="1X11_LOCK" value="M11LOCK" x="82.55" y="17.145" locked="yes" smashed="yes" rot="MR0"/>
 <element name="JP4" library="SparkFun-Connectors" package="1X07_LOCK" value="" x="57.15" y="1.27" locked="yes" smashed="yes" rot="MR180">
 <attribute name="VALUE" x="55.88" y="4.445" size="1.27" layer="28" rot="MR180"/>
@@ -8252,15 +8252,6 @@ design rules under a new name.</description>
 <element name="U$1" library="TW_logos" package="MTM_2CM" value="" x="55.88" y="-0.635" rot="MR0"/>
 </elements>
 <signals>
-<signal name="GND" class="2" airwireshidden="yes">
-<contactref element="R10" pad="1"/>
-<contactref element="R21" pad="1"/>
-<wire x1="80.4672" y1="5.4864" x2="79.4512" y2="4.4704" width="0.4572" layer="1"/>
-<wire x1="83.312" y1="5.4864" x2="80.4672" y2="5.4864" width="0.4572" layer="1"/>
-<wire x1="84.328" y1="4.4704" x2="83.312" y2="5.4864" width="0.4572" layer="1"/>
-<wire x1="79.4512" y1="4.4704" x2="79.375" y2="4.445" width="0.4572" layer="1"/>
-<wire x1="84.328" y1="4.4704" x2="84.455" y2="4.445" width="0.4572" layer="1"/>
-</signal>
 <signal name="VBAT">
 </signal>
 <signal name="N$14">
@@ -8445,7 +8436,7 @@ design rules under a new name.</description>
 <wire x1="64.8208" y1="1.4224" x2="64.77" y2="1.397" width="0.3048" layer="16"/>
 <wire x1="88.1888" y1="6.9088" x2="88.25" y2="7.025" width="0.3048" layer="16"/>
 </signal>
-<signal name="GND_F" class="2" airwireshidden="yes">
+<signal name="GND_F" class="2">
 <contactref element="X1" pad="P$6"/>
 <contactref element="X1" pad="GND1"/>
 <contactref element="X1" pad="GND2"/>
@@ -8502,15 +8493,8 @@ design rules under a new name.</description>
 <wire x1="34.9504" y1="5.8928" x2="34.9504" y2="8.128" width="0.4572" layer="16"/>
 <wire x1="40.0304" y1="13.208" x2="40.15" y2="13.34" width="0.4572" layer="16"/>
 <wire x1="34.9504" y1="5.8928" x2="34.925" y2="5.715" width="0.4572" layer="16"/>
-<wire x1="89.2048" y1="3.4544" x2="89.7128" y2="2.9464" width="0.4572" layer="1"/>
-<wire x1="89.7128" y1="2.9464" x2="90.6272" y2="2.032" width="0.4572" layer="1"/>
-<wire x1="82.9056" y1="3.4544" x2="89.2048" y2="3.4544" width="0.4572" layer="1"/>
-<wire x1="81.915" y1="4.445" x2="82.9056" y2="3.4544" width="0.4572" layer="1"/>
-<wire x1="90.6272" y1="2.032" x2="90.805" y2="1.905" width="0.4572" layer="1"/>
 <wire x1="100.9904" y1="3.048" x2="102.2096" y2="4.2672" width="0.4572" layer="1"/>
-<wire x1="89.8144" y1="3.048" x2="100.9904" y2="3.048" width="0.4572" layer="1"/>
 <wire x1="102.2096" y1="4.2672" x2="102.235" y2="4.445" width="0.4572" layer="1"/>
-<wire x1="89.8144" y1="3.048" x2="89.7128" y2="2.9464" width="0.4572" layer="1"/>
 <wire x1="88.392" y1="13.4112" x2="89.5096" y2="14.5288" width="0.4572" layer="16"/>
 <wire x1="89.5096" y1="14.5288" x2="92.0496" y2="17.0688" width="0.4572" layer="16"/>
 <wire x1="88.392" y1="12.192" x2="88.392" y2="13.4112" width="0.4572" layer="16"/>
@@ -8533,6 +8517,14 @@ design rules under a new name.</description>
 <wire x1="55.2704" y1="14.4272" x2="55.245" y2="14.605" width="0.4572" layer="16"/>
 <wire x1="60.1472" y1="12.192" x2="60.31" y2="12.025" width="0.4572" layer="1"/>
 <via x="57.5056" y="12.192" extent="1-16" drill="0.3048"/>
+<contactref element="R10" pad="1"/>
+<contactref element="R21" pad="1"/>
+<wire x1="100.9904" y1="3.048" x2="91.948" y2="3.048" width="0.4572" layer="1"/>
+<wire x1="91.948" y1="3.048" x2="90.805" y2="1.905" width="0.4572" layer="1"/>
+<wire x1="79.375" y1="4.445" x2="81.915" y2="4.445" width="0.4572" layer="1"/>
+<wire x1="81.915" y1="4.445" x2="84.455" y2="4.445" width="0.4572" layer="1"/>
+<wire x1="84.455" y1="4.445" x2="88.265" y2="4.445" width="0.4572" layer="1"/>
+<wire x1="88.265" y1="4.445" x2="90.805" y2="1.905" width="0.4572" layer="1"/>
 </signal>
 <signal name="CHANNEL_CV_F">
 <contactref element="JP4" pad="6"/>

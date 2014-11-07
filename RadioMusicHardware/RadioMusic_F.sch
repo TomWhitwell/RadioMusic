@@ -4025,41 +4025,6 @@ diameter 1.8 mm, horizontal, grid 7.62 mm</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="supply2">
-<description>&lt;b&gt;Supply Symbols&lt;/b&gt;&lt;p&gt;
-GND, VCC, 0V, +5V, -5V, etc.&lt;p&gt;
-Please keep in mind, that these devices are necessary for the
-automatic wiring of the supply signals.&lt;p&gt;
-The pin name defined in the symbol is identical to the net which is to be wired automatically.&lt;p&gt;
-In this library the device names are the same as the pin names of the symbols, therefore the correct signal names appear next to the supply symbols in the schematic.&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-</packages>
-<symbols>
-<symbol name="GND">
-<wire x1="-1.27" y1="0" x2="1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="0" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="0" y1="-1.27" x2="-1.27" y2="0" width="0.254" layer="94"/>
-<text x="-1.905" y="-3.175" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="GND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="GND" prefix="SUPPLY">
-<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
-<gates>
-<gate name="GND" symbol="GND" x="0" y="0"/>
-</gates>
-<devices>
-<device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="thonkiconn">
 <packages>
 <package name="WQP-PJ301M-12_JACK">
@@ -5282,15 +5247,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="OUTPUT" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
 <part name="R9" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
 <part name="R10" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="200k"/>
-<part name="SUPPLY4" library="supply2" deviceset="GND" device=""/>
 <part name="R17" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="220R"/>
 <part name="TIME-POT" library="TomW" deviceset="ALPHA-9MM" device="A" technology="F2" value="50k"/>
 <part name="TIME-CV" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
 <part name="R20" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
 <part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="200k"/>
-<part name="SUPPLY5" library="supply2" deviceset="GND" device=""/>
-<part name="D7" library="diode" deviceset="BAT81" device=""/>
-<part name="D8" library="diode" deviceset="BAT81" device=""/>
+<part name="D7" library="diode" deviceset="BAT81" device="" value="BAT42"/>
+<part name="D8" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R19" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
 <part name="R18" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="220R"/>
 <part name="RESET" library="TomW" deviceset="D6_PUSH_SWITCH" device="" value="D6_PUSH_SWITCH"/>
@@ -5299,13 +5262,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="LED2" library="TomW" deviceset="LED" device="3MM"/>
 <part name="LED3" library="TomW" deviceset="LED" device="3MM"/>
 <part name="LED4" library="TomW" deviceset="LED" device="3MM"/>
-<part name="R11" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
-<part name="R12" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
-<part name="R13" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
-<part name="R14" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
+<part name="R11" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
+<part name="R12" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
+<part name="R13" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
+<part name="R14" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
 <part name="X1" library="TomW" deviceset="VERT_SD_CARD" device=""/>
 <part name="LED5" library="TomW" deviceset="LED" device="3MM"/>
-<part name="R15" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
+<part name="R15" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M11" device="LOCK"/>
 <part name="JP4" library="SparkFun-Connectors" deviceset="M07" device="LOCK"/>
 </parts>
@@ -5323,13 +5286,11 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <instance part="OUTPUT" gate="G$1" x="149.86" y="71.12"/>
 <instance part="R9" gate="G$1" x="50.8" y="116.84" rot="R180"/>
 <instance part="R10" gate="G$1" x="43.18" y="106.68" rot="R90"/>
-<instance part="SUPPLY4" gate="GND" x="43.18" y="96.52"/>
 <instance part="R17" gate="G$1" x="137.16" y="73.66"/>
 <instance part="TIME-POT" gate="G$1" x="30.48" y="22.86"/>
 <instance part="TIME-CV" gate="G$1" x="30.48" y="53.34" rot="MR0"/>
 <instance part="R20" gate="G$1" x="50.8" y="55.88" rot="R180"/>
 <instance part="R21" gate="G$1" x="43.18" y="45.72" rot="R90"/>
-<instance part="SUPPLY5" gate="GND" x="43.18" y="35.56"/>
 <instance part="D7" gate="1" x="109.22" y="53.34" rot="R90"/>
 <instance part="D8" gate="1" x="109.22" y="33.02" rot="R90"/>
 <instance part="R19" gate="G$1" x="119.38" y="33.02" rot="R270"/>
@@ -5343,7 +5304,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <instance part="R11" gate="G$1" x="144.78" y="45.72"/>
 <instance part="R12" gate="G$1" x="144.78" y="38.1"/>
 <instance part="R13" gate="G$1" x="144.78" y="30.48"/>
-<instance part="R14" gate="G$1" x="144.78" y="22.86" rot="R180"/>
+<instance part="R14" gate="G$1" x="144.78" y="22.86"/>
 <instance part="X1" gate="G$1" x="162.56" y="121.92"/>
 <instance part="LED5" gate="G$1" x="157.48" y="15.24" rot="R270"/>
 <instance part="R15" gate="G$1" x="144.78" y="15.24" rot="R180"/>
@@ -5353,18 +5314,6 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <busses>
 </busses>
 <nets>
-<net name="GND" class="2">
-<segment>
-<pinref part="R10" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="101.6" x2="43.18" y2="99.06" width="0.1524" layer="91"/>
-<pinref part="SUPPLY4" gate="GND" pin="GND"/>
-</segment>
-<segment>
-<pinref part="R21" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="40.64" x2="43.18" y2="38.1" width="0.1524" layer="91"/>
-<pinref part="SUPPLY5" gate="GND" pin="GND"/>
-</segment>
-</net>
 <net name="N$14" class="0">
 <segment>
 <pinref part="R18" gate="G$1" pin="2"/>
@@ -5397,7 +5346,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <segment>
 <pinref part="LED4" gate="G$1" pin="C"/>
 <pinref part="R14" gate="G$1" pin="2"/>
-<wire x1="139.7" y1="22.86" x2="152.4" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="22.86" x2="152.4" y2="22.86" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MISO_F" class="0">
@@ -5595,11 +5544,11 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <wire x1="139.7" y1="38.1" x2="139.7" y2="30.48" width="0.1524" layer="91"/>
 <junction x="139.7" y="38.1"/>
 <pinref part="R13" gate="G$1" pin="1"/>
-<wire x1="139.7" y1="30.48" x2="149.86" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="139.7" y1="30.48" x2="139.7" y2="22.86" width="0.1524" layer="91"/>
 <junction x="139.7" y="30.48"/>
 <pinref part="R14" gate="G$1" pin="1"/>
-<wire x1="149.86" y1="22.86" x2="139.7" y2="15.24" width="0.1524" layer="91"/>
-<junction x="149.86" y="22.86"/>
+<wire x1="139.7" y1="22.86" x2="139.7" y2="15.24" width="0.1524" layer="91"/>
+<junction x="139.7" y="22.86"/>
 <pinref part="R15" gate="G$1" pin="2"/>
 <wire x1="139.7" y1="15.24" x2="139.7" y2="7.62" width="0.1524" layer="91"/>
 <junction x="139.7" y="15.24"/>
@@ -5619,6 +5568,16 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <pinref part="JP2" gate="G$1" pin="1"/>
 <wire x1="205.74" y1="63.5" x2="203.2" y2="63.5" width="0.1524" layer="91"/>
 <label x="205.74" y="63.5" size="1.27" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R10" gate="G$1" pin="1"/>
+<wire x1="43.18" y1="99.06" x2="43.18" y2="101.6" width="0.1524" layer="91"/>
+<label x="43.18" y="99.06" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R21" gate="G$1" pin="1"/>
+<wire x1="43.18" y1="38.1" x2="43.18" y2="40.64" width="0.1524" layer="91"/>
+<label x="43.18" y="38.1" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CHANNEL_CV_F" class="0">

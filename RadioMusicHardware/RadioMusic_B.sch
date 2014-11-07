@@ -7076,8 +7076,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <part name="SUPPLY2" library="supply2" deviceset="GND" device=""/>
 <part name="U1" library="TomW" deviceset="TEENSY_3.1_TW" device=""/>
 <part name="IC3" library="gm-regulators" deviceset="78*" device="L" technology="05"/>
-<part name="D1" library="diode" deviceset="BAT81" device="" value="BAT81"/>
-<part name="D2" library="diode" deviceset="BAT81" device="" value="BAT81"/>
+<part name="D1" library="diode" deviceset="BAT81" device="" value="BAT42"/>
+<part name="D2" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R4" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="8.2k"/>
 <part name="R3" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="8.2k"/>
 <part name="C1" library="TomW" deviceset="C-EU" device="050-024X044" value="1n"/>
@@ -7087,8 +7087,8 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <part name="R7" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
 <part name="C2" library="TomW" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="R1" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47R"/>
-<part name="D3" library="diode" deviceset="BAT81" device="" value="BAT81"/>
-<part name="D4" library="diode" deviceset="BAT81" device="" value="BAT81"/>
+<part name="D3" library="diode" deviceset="BAT81" device="" value="BAT42"/>
+<part name="D4" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R2" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47R"/>
 <part name="L1" library="inductors" deviceset="BL0" device="1RN1A"/>
 <part name="L2" library="inductors" deviceset="BL0" device="1RN1A"/>
