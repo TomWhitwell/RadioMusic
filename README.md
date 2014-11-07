@@ -8,7 +8,7 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 It uses a teensy3.1 to play files from a SD card to simulate a voltage controlled AM/FM/Shortwave/Time Travel radio. 
 
 - [Documentation in the Wiki](https://github.com/TomWhitwell/RadioMusic/wiki)
-- [BOM](BOM---Parts-List)
+- [BOM](https://github.com/TomWhitwell/RadioMusic/wiki/BOM---Parts-List)
 - [Issues in the Issue List](https://github.com/TomWhitwell/RadioMusic/issues)
 
 October 2014: Very early prototyping 
