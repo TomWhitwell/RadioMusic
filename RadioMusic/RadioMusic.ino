@@ -128,7 +128,7 @@ void setup() {
   SPI.setMOSI(7);
   SPI.setSCK(14);
   Serial.println("SD card setting ...");
-  
+
   // REPORT ERROR IF SD CARD CANNOT BE READ 
   if (!(SD.begin(10))) {
     while (!(SD.begin(10))) {
@@ -142,19 +142,19 @@ void setup() {
   Serial.println("SD card is OK ...");
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
-    Serial.println("Open Root ...");
+  Serial.println("Open Root ...");
   scanDirectory(root, 0);
   Serial.println("Scan directories ...");
   printFileList();
 
-  //  // CHECK EEPROM FOR SAVED BANK POSITION 
-  //  int a = EEPROM.read(BANK_SAVE);
-  //  if (a >= 0 && a <= BANKS){
-  //    PLAY_BANK = a;
-  //  }
-  //  else {
-  //    EEPROM.write(BANK_SAVE,0); 
-  //  };
+  // CHECK EEPROM FOR SAVED BANK POSITION 
+  int a = EEPROM.read(BANK_SAVE);
+  if (a >= 0 && a <= BANKS){
+    PLAY_BANK = a;
+  }
+  else {
+    EEPROM.write(BANK_SAVE,0); 
+  };
 }
 
 
@@ -294,7 +294,7 @@ void checkInterface(){
 // SCAN SD DIRECTORIES INTO ARRAYS 
 void scanDirectory(File dir, int numTabs) {
   while(true) {
-  Serial.print(".");  
+    Serial.print(".");  
     File entry =  dir.openNextFile();
     if (! entry) {
       // no more files
@@ -400,6 +400,7 @@ void peakMeter(){
     ledWrite((pow(2,monoPeak))-1); // 
   }
 }
+
 
 
 
