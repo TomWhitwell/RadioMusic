@@ -11,7 +11,7 @@ It uses a teensy3.1 to play files from a SD card to simulate a voltage controlle
 - [BOM](https://github.com/TomWhitwell/RadioMusic/wiki/BOM---Parts-List)
 - [Issues in the Issue List](https://github.com/TomWhitwell/RadioMusic/issues)
 
-October 2014: Very early prototyping 
+October 2014: Very early prototyping  
 November 2014: First PCB build: [Video](http://instagram.com/p/vCNc37DmSj/)
 
 <ul>
@@ -26,7 +26,5 @@ November 2014: First PCB build: [Video](http://instagram.com/p/vCNc37DmSj/)
 
 
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
-
-<video src="http://videos-h-12.ak.instagram.com/hphotos-ak-xaf1/10753011_267798403344152_1559293186_n.mp4" width="320" height="200" controls preload></video>
 
 
