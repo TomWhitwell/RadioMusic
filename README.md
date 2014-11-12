@@ -3,9 +3,11 @@ RadioMusic
 
 A virtual Radio module for Eurorack 
 
-- [Documentation in the Wiki](https://github.com/TomWhitwell/RadioMusic/wiki)
-- [BOM](https://github.com/TomWhitwell/RadioMusic/wiki/BOM---Parts-List)
-- [Issues in the Issue List](https://github.com/TomWhitwell/RadioMusic/issues)
+- [Documentation](https://github.com/TomWhitwell/RadioMusic/wiki)
+- [Hardware](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusicHardware)
+- [Firmware](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusic)
+- [Parts List](https://github.com/TomWhitwell/RadioMusic/wiki/BOM---Parts-List)
+- [Issues](https://github.com/TomWhitwell/RadioMusic/issues)
 
 A digital way to simulate radio-powered compositions by John Cage, Karlheinz Stockhausen and Don Buchla's voltage-controlled radio experiments. 
 
