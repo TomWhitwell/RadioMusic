@@ -146,15 +146,16 @@ void setup() {
   scanDirectory(root, 0);
   Serial.println("Scan directories ...");
   printFileList();
-
-  // CHECK EEPROM FOR SAVED BANK POSITION 
-  int a = EEPROM.read(BANK_SAVE);
-  if (a >= 0 && a <= BANKS){
-    PLAY_BANK = a;
-  }
-  else {
-    EEPROM.write(BANK_SAVE,0); 
-  };
+//
+//  // CHECK EEPROM FOR SAVED BANK POSITION 
+//  int a = EEPROM.read(BANK_SAVE);
+//  if (a >= 0 && a <= BANKS){
+//    PLAY_BANK = a;
+//  }
+//  else {
+//    EEPROM.write(BANK_SAVE,0); 
+//  };
+  
 }
 
 
