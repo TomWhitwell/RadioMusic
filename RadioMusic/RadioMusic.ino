@@ -56,10 +56,10 @@ File root;
 #define BLOCK_SIZE 2 // size of blocks to read - must be more than 1, performance might improve with 16?
 
 // SETUP VARS TO STORE CONTROLS 
-#define CHAN_POT_PIN 9 // pin for Channel pot
-#define CHAN_CV_PIN 8 // pin for Channel CV 
-#define TIME_POT_PIN 7 // pin for Time pot
-#define TIME_CV_PIN 6 // pin for Time CV
+#define CHAN_POT_PIN A9 // pin for Channel pot
+#define CHAN_CV_PIN A6 // pin for Channel CV 
+#define TIME_POT_PIN A7 // pin for Time pot
+#define TIME_CV_PIN A8 // pin for Time CV
 #define RESET_BUTTON 8 // Reset button 
 #define RESET_LED 11 // Reset LED indicator 
 #define RESET_CV 9 // Reset pulse input 
