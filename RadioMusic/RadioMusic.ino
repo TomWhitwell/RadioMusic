@@ -146,16 +146,16 @@ void setup() {
   scanDirectory(root, 0);
   Serial.println("Scan directories ...");
   printFileList();
-//
-//  // CHECK EEPROM FOR SAVED BANK POSITION 
-//  int a = EEPROM.read(BANK_SAVE);
-//  if (a >= 0 && a <= BANKS){
-//    PLAY_BANK = a;
-//  }
-//  else {
-//    EEPROM.write(BANK_SAVE,0); 
-//  };
-  
+  //
+  //  // CHECK EEPROM FOR SAVED BANK POSITION 
+  //  int a = EEPROM.read(BANK_SAVE);
+  //  if (a >= 0 && a <= BANKS){
+  //    PLAY_BANK = a;
+  //  }
+  //  else {
+  //    EEPROM.write(BANK_SAVE,0); 
+  //  };
+
 }
 
 
@@ -170,26 +170,25 @@ void loop() {
   if (loopcount>200){
     checkInterface(); 
     loopcount = 0;  
-
   }
 
   // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
   if (showDisplay > 250){
-    //    playDisplay();
+//    playDisplay();
+whatsPlaying();
     showDisplay = 0;
-
   }
 
   digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED || RESET_CHANGED){
-
     fade1.fadeOut(DECLICK);      // fade out before change 
     delay(DECLICK);
-
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
+
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
+
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
     fade1.fadeIn(DECLICK);                          // fade back in 
@@ -197,6 +196,7 @@ void loop() {
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
     resetLedTimer = 0; // turn on Reset LED 
+
   }
 
 
@@ -232,9 +232,28 @@ void ledWrite(int n){
 void checkInterface(){
   unsigned long elapsed;
   // Channel Pot 
+  Serial.print("Channel pot raw=");
+  Serial.print(analogRead(CHAN_POT_PIN));
+  Serial.print(" Channel CV raw=");
+  Serial.print(analogRead(CHAN_CV_PIN));
+  
   int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
-  channel = constrain(channel, 0, 1024);
-  channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]);
+   Serial.print(" Combined raw=");
+  Serial.print(channel); 
+  
+  channel = constrain(channel, 0, 1023);
+   Serial.print(" constrained=");
+  Serial.print(channel); 
+
+  channel = map(channel,0,1023,0,FILE_COUNT[PLAY_BANK] - 1); // FILES ARE ZERO INDEXED
+  
+  Serial.print(" file count=");
+  Serial.print(FILE_COUNT[PLAY_BANK]);
+  
+  Serial.print(" mapped=");
+  Serial.println(channel); 
+
+
   elapsed = millis() - CHAN_CHANGED_TIME;
   if (channel != PLAY_CHANNEL && elapsed > HYSTERESIS) {
     PLAY_CHANNEL = channel;
@@ -353,6 +372,8 @@ void printFileList(){
     Serial.println(" Files found"); 
 
     for (int i = 0; i < FILE_COUNT[x]; i++){
+      Serial.print (i);
+      Serial.print (") ");
       Serial.print (FILE_DIRECTORIES[x][i]);
       Serial.print(" | ");
       Serial.print(FILE_NAMES[x][i]);
@@ -401,6 +422,7 @@ void peakMeter(){
     ledWrite((pow(2,monoPeak))-1); // 
   }
 }
+
 
 
 
