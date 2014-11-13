@@ -46,6 +46,7 @@ AudioConnection          patchCord3(playRaw1, peak1);
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 75
 #define BANKS 8
+int ACTIVE_BANKS; 
 String FILE_TYPE = "RAW";
 String FILE_NAMES [BANKS][MAX_FILES];
 String FILE_DIRECTORIES[BANKS][MAX_FILES];
@@ -121,36 +122,38 @@ void setup() {
   ledWrite(PLAY_BANK);
 
   // START SERIAL MONITOR   
-if (DEBUG)  {Serial.begin(38400); delay(2000);};
-
-if (DEBUG && V2)  Serial.println("Starting up...");
+  if (DEBUG)  {
+    Serial.begin(38400); 
+    delay(2000);
+  };
+  if (DEBUG && V2)  Serial.println("Starting up...");
 
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
-if (DEBUG && V2)    Serial.println("Set memory...");
+  if (DEBUG && V2)    Serial.println("Set memory...");
   // SD CARD SETTINGS FOR AUDIO SHIELD 
   SPI.setMOSI(7);
   SPI.setSCK(14);
-if (DEBUG && V2)    Serial.println("SD card setting ...");
+  if (DEBUG && V2)    Serial.println("SD card setting ...");
 
   // REPORT ERROR IF SD CARD CANNOT BE READ 
   if (!(SD.begin(10))) {
     while (!(SD.begin(10))) {
-if (DEBUG && V2)        Serial.println("Unable to access the SD card");
+      if (DEBUG && V2)        Serial.println("Unable to access the SD card");
       ledWrite(15);
       delay(100);
       ledWrite(0);
       delay(100);
     }
   }
-if (DEBUG && V2)    Serial.println("SD card is OK ...");
+  if (DEBUG && V2)    Serial.println("SD card is OK ...");
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
-if (DEBUG && V2)    Serial.println("Open Root ...");
+  if (DEBUG && V2)    Serial.println("Open Root ...");
   scanDirectory(root, 0);
-if (DEBUG && V2)    Serial.println("Scan directories ...");
-if (DEBUG && V2)    printFileList();
+  if (DEBUG && V2)    Serial.println("Scan directories ...");
+  if (DEBUG && V2)    printFileList();
   //
   //  // CHECK EEPROM FOR SAVED BANK POSITION 
   //  int a = EEPROM.read(BANK_SAVE);
@@ -179,8 +182,8 @@ void loop() {
 
   // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
   if (DEBUG && showDisplay > 250){
-//    playDisplay();
-//    whatsPlaying();
+    //    playDisplay();
+    //    whatsPlaying();
     showDisplay = 0;
   }
 
@@ -237,26 +240,26 @@ void ledWrite(int n){
 void checkInterface(){
   unsigned long elapsed;
   // Channel Pot 
-if (DEBUG && V1) Serial.print("Channel pot raw=");
-if (DEBUG && V1)  Serial.print(analogRead(CHAN_POT_PIN));
-if (DEBUG && V1)  Serial.print(" Channel CV raw=");
-if (DEBUG && V1)  Serial.print(analogRead(CHAN_CV_PIN));
-  
+  if (DEBUG && V1) Serial.print("Channel pot raw=");
+  if (DEBUG && V1)  Serial.print(analogRead(CHAN_POT_PIN));
+  if (DEBUG && V1)  Serial.print(" Channel CV raw=");
+  if (DEBUG && V1)  Serial.print(analogRead(CHAN_CV_PIN));
+
   int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
-if (DEBUG && V1)   Serial.print(" Combined raw=");
-if (DEBUG && V1)  Serial.print(channel); 
-  
+  if (DEBUG && V1)   Serial.print(" Combined raw=");
+  if (DEBUG && V1)  Serial.print(channel); 
+
   channel = constrain(channel, 0, 1023);
-if (DEBUG && V1)   Serial.print(" constrained=");
-if (DEBUG && V1)  Serial.print(channel); 
+  if (DEBUG && V1)   Serial.print(" constrained=");
+  if (DEBUG && V1)  Serial.print(channel); 
 
   channel = map(channel,0,1023,0,FILE_COUNT[PLAY_BANK] - 1); // FILES ARE ZERO INDEXED
 
-if (DEBUG && V1) Serial.print(" file count=");
-if (DEBUG && V1) Serial.print(FILE_COUNT[PLAY_BANK]);
-  
-if (DEBUG && V1) Serial.print(" mapped=");
-if (DEBUG && V1) Serial.println(channel); 
+  if (DEBUG && V1) Serial.print(" file count=");
+  if (DEBUG && V1) Serial.print(FILE_COUNT[PLAY_BANK]);
+
+  if (DEBUG && V1) Serial.print(" mapped=");
+  if (DEBUG && V1) Serial.println(channel); 
 
 
   elapsed = millis() - CHAN_CHANGED_TIME;
@@ -296,7 +299,7 @@ if (DEBUG && V1) Serial.println(channel);
   bankTimer = bankTimer * digitalRead(RESET_BUTTON);
   if (bankTimer > HOLDTIME){
     PLAY_BANK++;
-    if (PLAY_BANK >= BANKS) PLAY_BANK = 0;   
+    if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;   
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
@@ -328,6 +331,7 @@ void scanDirectory(File dir, int numTabs) {
 
     if (fileName.endsWith(FILE_TYPE) && fileName.startsWith("_") == 0){
       int intCurrentDirectory = CURRENT_DIRECTORY.toInt();
+      if (intCurrentDirectory > ACTIVE_BANKS) ACTIVE_BANKS = intCurrentDirectory; 
       FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.name();
       FILE_SIZES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.size();
       FILE_DIRECTORIES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = CURRENT_DIRECTORY;
@@ -422,6 +426,7 @@ void peakMeter(){
     ledWrite((pow(2,monoPeak))-1); // 
   }
 }
+
 
 
 
