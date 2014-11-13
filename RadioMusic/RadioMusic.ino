@@ -78,10 +78,10 @@ char* charFilename;
 
 
 // Debug /  Modes
-boolean DEBUG = true; 
+boolean DEBUG = false; 
 boolean V1 = false; // Verbose 1 = Print pot positions and calculations for channel selection 
 boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
-boolean V2 = true; // Verbose 3 = Activity around playhead movements 
+boolean V3 = false; // Verbose 3 = Activity around playhead movements 
 
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
@@ -197,9 +197,15 @@ void loop() {
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
 
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
-
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
+if (DEBUG && V3){
+  Serial.print("*File Started:");
+  Serial.println(playhead);
+
+}
+  
+
     fade1.fadeIn(DECLICK);                          // fade back in 
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
@@ -209,8 +215,12 @@ void loop() {
   }
 
 
-  // IF FILE ENDS, RESTART FROM THE BEGINNING 
-  CHAN_CHANGED = !playRaw1.isPlaying();
+ // IF FILE ENDS, RESTART FROM THE BEGINNING 
+if (!playRaw1.isPlaying()){
+  playhead = 0;
+ RESET_CHANGED = true;
+if (DEBUG && V3)Serial.println("*File Ended*");
+}
 
   // CALL PEAK METER   
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();
