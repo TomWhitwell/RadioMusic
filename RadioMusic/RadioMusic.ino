@@ -76,6 +76,11 @@ unsigned long playhead;
 char* charFilename;
 
 
+// Debug /  Modes
+boolean DEBUG = false; 
+boolean V1 = false; // Verbose 1 = Print pot positions and calculations for channel selection 
+boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
+
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
 #define LED0 6
@@ -116,36 +121,36 @@ void setup() {
   ledWrite(PLAY_BANK);
 
   // START SERIAL MONITOR   
-  Serial.begin(38400);
-  delay(2000);
-  Serial.println("Starting up...");
+if (DEBUG)  {Serial.begin(38400); delay(2000);};
+
+if (DEBUG && V2)  Serial.println("Starting up...");
 
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
-  Serial.println("Set memory...");
+if (DEBUG && V2)    Serial.println("Set memory...");
   // SD CARD SETTINGS FOR AUDIO SHIELD 
   SPI.setMOSI(7);
   SPI.setSCK(14);
-  Serial.println("SD card setting ...");
+if (DEBUG && V2)    Serial.println("SD card setting ...");
 
   // REPORT ERROR IF SD CARD CANNOT BE READ 
   if (!(SD.begin(10))) {
     while (!(SD.begin(10))) {
-      Serial.println("Unable to access the SD card");
+if (DEBUG && V2)        Serial.println("Unable to access the SD card");
       ledWrite(15);
       delay(100);
       ledWrite(0);
       delay(100);
     }
   }
-  Serial.println("SD card is OK ...");
+if (DEBUG && V2)    Serial.println("SD card is OK ...");
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
-  Serial.println("Open Root ...");
+if (DEBUG && V2)    Serial.println("Open Root ...");
   scanDirectory(root, 0);
-  Serial.println("Scan directories ...");
-  printFileList();
+if (DEBUG && V2)    Serial.println("Scan directories ...");
+if (DEBUG && V2)    printFileList();
   //
   //  // CHECK EEPROM FOR SAVED BANK POSITION 
   //  int a = EEPROM.read(BANK_SAVE);
@@ -173,9 +178,9 @@ void loop() {
   }
 
   // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
-  if (showDisplay > 250){
+  if (DEBUG && showDisplay > 250){
 //    playDisplay();
-whatsPlaying();
+//    whatsPlaying();
     showDisplay = 0;
   }
 
@@ -232,26 +237,26 @@ void ledWrite(int n){
 void checkInterface(){
   unsigned long elapsed;
   // Channel Pot 
-  Serial.print("Channel pot raw=");
-  Serial.print(analogRead(CHAN_POT_PIN));
-  Serial.print(" Channel CV raw=");
-  Serial.print(analogRead(CHAN_CV_PIN));
+if (DEBUG && V1) Serial.print("Channel pot raw=");
+if (DEBUG && V1)  Serial.print(analogRead(CHAN_POT_PIN));
+if (DEBUG && V1)  Serial.print(" Channel CV raw=");
+if (DEBUG && V1)  Serial.print(analogRead(CHAN_CV_PIN));
   
   int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
-   Serial.print(" Combined raw=");
-  Serial.print(channel); 
+if (DEBUG && V1)   Serial.print(" Combined raw=");
+if (DEBUG && V1)  Serial.print(channel); 
   
   channel = constrain(channel, 0, 1023);
-   Serial.print(" constrained=");
-  Serial.print(channel); 
+if (DEBUG && V1)   Serial.print(" constrained=");
+if (DEBUG && V1)  Serial.print(channel); 
 
   channel = map(channel,0,1023,0,FILE_COUNT[PLAY_BANK] - 1); // FILES ARE ZERO INDEXED
+
+if (DEBUG && V1) Serial.print(" file count=");
+if (DEBUG && V1) Serial.print(FILE_COUNT[PLAY_BANK]);
   
-  Serial.print(" file count=");
-  Serial.print(FILE_COUNT[PLAY_BANK]);
-  
-  Serial.print(" mapped=");
-  Serial.println(channel); 
+if (DEBUG && V1) Serial.print(" mapped=");
+if (DEBUG && V1) Serial.println(channel); 
 
 
   elapsed = millis() - CHAN_CHANGED_TIME;
@@ -314,23 +319,18 @@ void checkInterface(){
 // SCAN SD DIRECTORIES INTO ARRAYS 
 void scanDirectory(File dir, int numTabs) {
   while(true) {
-    Serial.print(".");  
     File entry =  dir.openNextFile();
     if (! entry) {
       // no more files
-      Serial.println("No more files"); 
       break;
     }
     String fileName = entry.name();
-    Serial.print("Scanning:");
-    Serial.println(fileName);
 
     if (fileName.endsWith(FILE_TYPE) && fileName.startsWith("_") == 0){
       int intCurrentDirectory = CURRENT_DIRECTORY.toInt();
       FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.name();
       FILE_SIZES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.size();
       FILE_DIRECTORIES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = CURRENT_DIRECTORY;
-      Serial.println(FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]]);
       FILE_COUNT[intCurrentDirectory]++;
 
       //      ledWrite (FILE_COUNT[intCurrentDirectory]);
