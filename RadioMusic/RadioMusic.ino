@@ -78,9 +78,10 @@ char* charFilename;
 
 
 // Debug /  Modes
-boolean DEBUG = false; 
+boolean DEBUG = true; 
 boolean V1 = false; // Verbose 1 = Print pot positions and calculations for channel selection 
 boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
+boolean V2 = true; // Verbose 3 = Activity around playhead movements 
 
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
@@ -154,15 +155,15 @@ void setup() {
   scanDirectory(root, 0);
   if (DEBUG && V2)    Serial.println("Scan directories ...");
   if (DEBUG && V2)    printFileList();
-  //
-  //  // CHECK EEPROM FOR SAVED BANK POSITION 
-  //  int a = EEPROM.read(BANK_SAVE);
-  //  if (a >= 0 && a <= BANKS){
-  //    PLAY_BANK = a;
-  //  }
-  //  else {
-  //    EEPROM.write(BANK_SAVE,0); 
-  //  };
+
+  // CHECK EEPROM FOR SAVED BANK POSITION 
+  int a = EEPROM.read(BANK_SAVE);
+  if (a >= 0 && a <= ACTIVE_BANKS){
+    PLAY_BANK = a;
+  }
+  else {
+    EEPROM.write(BANK_SAVE,0); 
+  };
 
 }
 
@@ -426,6 +427,7 @@ void peakMeter(){
     ledWrite((pow(2,monoPeak))-1); // 
   }
 }
+
 
 
 
