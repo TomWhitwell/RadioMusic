@@ -32,6 +32,15 @@ RADIO MUSIC
 #include <SD.h>
 
 
+
+// Debug /  Modes
+boolean DEBUG = true; 
+boolean V1 = true; // Verbose 1 = Print pot positions and calculations for channel selection 
+boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
+boolean V3 = false; // Verbose 3 = Activity around playhead movements 
+
+
+
 // GUItool: begin automatically generated code
 AudioPlaySdRaw           playRaw1;       //xy=131,81
 AudioEffectFade          fade1;          //xy=257,169
@@ -72,16 +81,9 @@ Bounce resetCv = Bounce( RESET_CV, 10 ); // Bounce setup for Reset
 
 unsigned long CHAN_CHANGED_TIME; 
 int PLAY_CHANNEL; 
-unsigned long loopcount; 
 unsigned long playhead;
 char* charFilename;
 
-
-// Debug /  Modes
-boolean DEBUG = false; 
-boolean V1 = false; // Verbose 1 = Print pot positions and calculations for channel selection 
-boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
-boolean V3 = false; // Verbose 3 = Activity around playhead movements 
 
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
@@ -100,8 +102,11 @@ int PLAY_BANK = 0;
 #define FLASHTIME 10 // How long do LEDs flash for? 
 #define HOLDTIME 400 // How many millis to hold a button to get 2ndary function? 
 elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
+int showFreq = 250; // how many millis between serial Debug updates 
 elapsedMillis resetLedTimer = 0;
 elapsedMillis bankTimer = 0;
+elapsedMillis checkI = 0; // check interface 
+int checkFreq = 5; // how often to check the interface in Millis 
 
 // CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
@@ -175,14 +180,14 @@ void setup() {
 
 void loop() {
 
-  // CHECK INTERFACE EVERY x LOOPS OF THE MAIN ROUTINE   
-  if (loopcount>200){
+  // CHECK INTERFACE EVERY checkFreq milliseconds   
+  if (checkI > checkFreq){
     checkInterface(); 
-    loopcount = 0;  
+    checkI = 0;  
   }
 
-  // UPDATE SERIAL PORT DISPLAY EVERY x MILLISECONDS   
-  if (DEBUG && showDisplay > 250){
+  // UPDATE SERIAL PORT DISPLAY EVERY showFreq MILLISECONDS   
+  if (DEBUG && showDisplay > showFreq){
     //    playDisplay();
     //    whatsPlaying();
     showDisplay = 0;
@@ -225,7 +230,6 @@ if (DEBUG && V3)Serial.println("*File Ended*");
   // CALL PEAK METER   
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();
 
-  loopcount++;
 }
 
 
@@ -264,7 +268,7 @@ void checkInterface(){
   if (DEBUG && V1)   Serial.print(" constrained=");
   if (DEBUG && V1)  Serial.print(channel); 
 
-  channel = map(channel,0,1023,0,FILE_COUNT[PLAY_BANK] - 1); // FILES ARE ZERO INDEXED
+  channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
 
   if (DEBUG && V1) Serial.print(" file count=");
   if (DEBUG && V1) Serial.print(FILE_COUNT[PLAY_BANK]);
