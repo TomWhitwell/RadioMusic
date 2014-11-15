@@ -34,10 +34,13 @@ RADIO MUSIC
 
 
 // Debug /  Modes
-boolean DEBUG = true; 
-boolean V1 = true; // Verbose 1 = Print pot positions and calculations for channel selection 
+boolean DEBUG = false; 
+boolean V1 = false; // Verbose 1 = Print pot positions and calculations for channel selection 
 boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
 boolean V3 = false; // Verbose 3 = Activity around playhead movements 
+
+// Options 
+boolean MUTE = true; // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
 
 
 
@@ -197,8 +200,8 @@ void loop() {
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED || RESET_CHANGED){
-    fade1.fadeOut(DECLICK);      // fade out before change 
-    delay(DECLICK);
+  if (MUTE){  fade1.fadeOut(DECLICK);      // fade out before change 
+    delay(DECLICK);}
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
 
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
@@ -211,7 +214,7 @@ if (DEBUG && V3){
 }
   
 
-    fade1.fadeIn(DECLICK);                          // fade back in 
+if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in 
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
