@@ -54,7 +54,7 @@ AudioConnection          patchCord3(playRaw1, peak1);
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 75
-#define BANKS 8
+#define BANKS 16
 int ACTIVE_BANKS; 
 String FILE_TYPE = "RAW";
 String FILE_NAMES [BANKS][MAX_FILES];
