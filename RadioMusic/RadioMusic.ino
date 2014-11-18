@@ -287,15 +287,15 @@ void checkInterface(){
     CHAN_CHANGED_TIME = millis();
   }
 
-  // Time pot 
+  // Time pot & CV 
   int timePot = analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
-  timePot = constrain(timePot, 0, 1024); 
+  timePot = constrain(timePot, 0, 1023); 
   elapsed = millis() - CHAN_CHANGED_TIME;
 
   if (abs(timePot - timePotOld) > TIME_HYSTERESIS && elapsed > HYSTERESIS){
 
     unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
-    unsigned long newTime = ((fileLength/1024) * timePot);
+    unsigned long newTime = ((fileLength/1023) * timePot);
     unsigned long playPosition = playRaw1.fileOffset();
     unsigned long fileStart = (playPosition / fileLength) * fileLength;
     playhead = fileStart + newTime;
