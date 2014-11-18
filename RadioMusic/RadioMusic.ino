@@ -99,9 +99,9 @@ int PLAY_BANK = 0;
 #define BANK_SAVE 0
 
 // CHANGE HOW INTERFACE REACTS 
-#define HYSTERESIS 10 // MINIMUM MILLIS BETWEEN CHANGES
-#define TIME_HYSTERESIS 4 // MINIMUM KNOB POSITIONS MOVED 
-#define DECLICK 10 // milliseconds of fade in/out on switching 
+#define HYSTERESIS 5 // MINIMUM MILLIS BETWEEN CHANGES
+#define TIME_HYSTERESIS 3 // MINIMUM KNOB POSITIONS MOVED 
+#define DECLICK 30 // milliseconds of fade in/out on switching 
 #define FLASHTIME 10 // How long do LEDs flash for? 
 #define HOLDTIME 400 // How many millis to hold a button to get 2ndary function? 
 elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
@@ -288,7 +288,16 @@ void checkInterface(){
   }
 
   // Time pot & CV 
-  int timePot = analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
+
+int averages = 5; // how many readings to take, to get average
+int timePot = 0;
+for(int a = 0; a < averages; a++){
+timePot += analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
+}
+timePot = timePot / averages; 
+timePot = (timePot / 2)*2; 
+
+
   timePot = constrain(timePot, 0, 1023); 
   elapsed = millis() - CHAN_CHANGED_TIME;
 
