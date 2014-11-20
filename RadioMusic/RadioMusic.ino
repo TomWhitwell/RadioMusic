@@ -178,14 +178,15 @@ void setup() {
 ////////////////////////////////////////////////////
 
 void loop() {
+  //////////////////////////////////////////
+  // CHECK INTERFACE  & UPDATE DISPLAYS/////  
+  //////////////////////////////////////////
 
-  // CHECK INTERFACE EVERY checkFreq milliseconds   
   if (checkI > checkFreq){
     checkInterface(); 
     checkI = 0;  
   }
 
-  // UPDATE SERIAL PORT DISPLAY EVERY showFreq MILLISECONDS   
   if (DEBUG && showDisplay > showFreq){
     //    playDisplay();
     //    whatsPlaying();
@@ -193,8 +194,14 @@ void loop() {
   }
 
   digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
+ 
+  if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();    // CALL PEAK METER   
 
-  // IF ANYTHING CHANGES, DO THIS
+  //////////////////////////////////////////
+  ////////REACT TO ANY CHANGES /////////////
+  //////////////////////////////////////////
+
+
   if (CHAN_CHANGED || RESET_CHANGED){
     if (MUTE){  
       fade1.fadeOut(DECLICK);      // fade out before change 
@@ -217,15 +224,18 @@ void loop() {
     resetLedTimer = 0; // turn on Reset LED 
   }
 
+
+  //////////////////////////////////////////
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
+  //////////////////////////////////////////
+
   if (!playRaw1.isPlaying()){
     playhead = 0;
     RESET_CHANGED = true;
     if (DEBUG && V3)Serial.println("*File Ended*");
   }
 
-  // CALL PEAK METER   
-  if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();
+
 
 }
 
