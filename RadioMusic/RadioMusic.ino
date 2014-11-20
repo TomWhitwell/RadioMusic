@@ -1,5 +1,6 @@
 /*
 RADIO MUSIC 
+ https://github.com/TomWhitwell/RadioMusic
  
  Audio out: Onboard DAC, teensy3.1 pin A14/DAC
  
@@ -17,6 +18,14 @@ RADIO MUSIC
  MISO 12
  MOSI 7 
  SS   10 
+ 
+ NB: Compile using modified versions of: 
+ SD.cpp (found in the main Arduino package) 
+ play_sd_raw.cpp  - In Teensy Audio Library 
+ play_sc_raw.h    - In Teensy Audio Library 
+ 
+ from:https://github.com/TomWhitwell/RadioMusic/tree/master/Collateral/Edited%20teensy%20files
+ 
  */
 
 #include <EEPROM.h>
@@ -30,10 +39,13 @@ RADIO MUSIC
 boolean DEBUG = false; // Must be true if any verbose options are true 
 boolean V1 = false; // Verbose 1 = Print pot positions and calculations for channel selection 
 boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
-boolean V3 = false; // Verbose 3 = Activity around playhead movements 
+boolean V3 = false; // Verbose 3 = Print activity about hot swap system  
+
 
 // Options 
-boolean MUTE = true; // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
+boolean MUTE = false; // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
+#define DECLICK 15 // milliseconds of fade in/out on switching 
+
 boolean SDsave = false; // If true, saves bank position on SD card. If false, saves on local EEprom NOT WORKING
 
 // GUItool: begin automatically generated code
@@ -45,6 +57,11 @@ AudioConnection          patchCord1(playRaw1, fade1);
 AudioConnection          patchCord2(fade1, dac1);
 AudioConnection          patchCord3(playRaw1, peak1);
 // GUItool: end automatically generated code
+
+// REBOOT CODES 
+#define RESTART_ADDR       0xE000ED0C
+#define READ_RESTART()     (*(volatile uint32_t *)RESTART_ADDR)
+#define WRITE_RESTART(val) ((*(volatile uint32_t *)RESTART_ADDR) = (val))
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 75
@@ -78,7 +95,6 @@ int PLAY_CHANNEL;
 unsigned long playhead;
 char* charFilename;
 
-
 // BANK SWITCHER SETUP 
 #define BANK_BUTTON 2 // Bank Button 
 #define LED0 6
@@ -92,7 +108,6 @@ int PLAY_BANK = 0;
 // CHANGE HOW INTERFACE REACTS 
 #define HYSTERESIS 5 // MINIMUM MILLIS BETWEEN CHANGES
 #define TIME_HYSTERESIS 3 // MINIMUM KNOB POSITIONS MOVED 
-#define DECLICK 30 // milliseconds of fade in/out on switching 
 #define FLASHTIME 10 // How long do LEDs flash for? 
 #define HOLDTIME 400 // How many millis to hold a button to get 2ndary function? 
 elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
@@ -124,7 +139,7 @@ void setup() {
   // START SERIAL MONITOR   
   if (DEBUG)  {
     Serial.begin(38400); 
-    delay(2000);
+    delay(1000);
   };
   if (DEBUG && V2)  Serial.println("Starting up...");
 
@@ -168,7 +183,6 @@ void setup() {
     if(!SDsave)  EEPROM.write(BANK_SAVE,0);
     if (SDsave) writeBank(0); 
   };
-  root = SD.open("/");  
 }
 
 
@@ -178,24 +192,24 @@ void setup() {
 ////////////////////////////////////////////////////
 
 void loop() {
+
+
+
   //////////////////////////////////////////
-  // CHECK INTERFACE  & UPDATE DISPLAYS/////  
+  // IF FILE ENDS, RESTART FROM THE BEGINNING 
   //////////////////////////////////////////
 
-  if (checkI > checkFreq){
-    checkInterface(); 
-    checkI = 0;  
+  if (!playRaw1.isPlaying()){
+    playhead = 0;
+    RESET_CHANGED = true;
+    if (DEBUG && V3)Serial.println("*File Ended*");
   }
 
-  if (DEBUG && showDisplay > showFreq){
-    //    playDisplay();
-    //    whatsPlaying();
-    showDisplay = 0;
+  if (playRaw1.failed){
+    if (DEBUG && V3) Serial.print("*****EXPLODE****");
+    reBoot();
   }
 
-  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
- 
-  if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();    // CALL PEAK METER   
 
   //////////////////////////////////////////
   ////////REACT TO ANY CHANGES /////////////
@@ -203,15 +217,29 @@ void loop() {
 
 
   if (CHAN_CHANGED || RESET_CHANGED){
+    if (DEBUG && V3){
+      Serial.print("In change block, Offset = ");
+      Serial.print(playRaw1.fileOffset());
+      Serial.print (" Playhead =");
+      Serial.print (playhead);
+      Serial.print (" Reset =");
+      Serial.print (RESET_CHANGED);
+      Serial.print (" CHANNEL =");
+      Serial.print (CHAN_CHANGED);
+      Serial.print (" failed=");
+      Serial.println(playRaw1.failed);
+    }
     if (MUTE){  
       fade1.fadeOut(DECLICK);      // fade out before change 
       delay(DECLICK);
     }
+
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
 
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
-    playRaw1.playFrom(charFilename,playhead);   // change audio 
+    playRaw1.playFrom(charFilename,playhead);   // change audio
+    delay(10);
     if (DEBUG && V3){
       Serial.print("*File Started:");
       Serial.println(playhead);
@@ -225,16 +253,29 @@ void loop() {
   }
 
 
+
   //////////////////////////////////////////
-  // IF FILE ENDS, RESTART FROM THE BEGINNING 
+  // CHECK INTERFACE  & UPDATE DISPLAYS/////  
   //////////////////////////////////////////
 
-  if (!playRaw1.isPlaying()){
-    playhead = 0;
-    RESET_CHANGED = true;
-    if (DEBUG && V3)Serial.println("*File Ended*");
+  if (checkI > checkFreq){
+    checkInterface(); 
+    checkI = 0;  
   }
 
+  if (DEBUG && showDisplay > showFreq){
+    //    playDisplay();
+    //    whatsPlaying();
+    if (DEBUG && V3)Serial.print("In main loop, Offset= ");
+    if (DEBUG && V3)Serial.print(playRaw1.fileOffset());
+    if (DEBUG && V3)Serial.print(" playTime=");
+
+    showDisplay = 0;
+  }
+
+  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
+
+  if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();    // CALL PEAK METER   
 
 
 }
@@ -368,7 +409,10 @@ char* buildPath (int bank, int channel){
   return filename;
 }
 
-
+void reBoot(){
+  delay (500);
+  WRITE_RESTART(0x5FA0004);
+}
 
 
 
@@ -480,6 +524,12 @@ void printFileList(){
     }
   }
 }
+
+
+
+
+
+
 
 
 
