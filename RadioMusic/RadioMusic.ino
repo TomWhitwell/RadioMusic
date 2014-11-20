@@ -34,14 +34,14 @@ RADIO MUSIC
 
 
 // Debug /  Modes
-boolean DEBUG = false; 
+boolean DEBUG = false; // Must be true if any verbose options are true 
 boolean V1 = false; // Verbose 1 = Print pot positions and calculations for channel selection 
 boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
 boolean V3 = false; // Verbose 3 = Activity around playhead movements 
 
 // Options 
 boolean MUTE = true; // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
-
+boolean SDsave = false; // If true, saves bank position on SD card. If false, saves on local EEprom NOT WORKING
 
 
 // GUItool: begin automatically generated code
@@ -138,6 +138,8 @@ void setup() {
   if (DEBUG && V2)  Serial.println("Starting up...");
 
 
+
+
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
   if (DEBUG && V2)    Serial.println("Set memory...");
@@ -146,7 +148,10 @@ void setup() {
   SPI.setSCK(14);
   if (DEBUG && V2)    Serial.println("SD card setting ...");
 
-  // REPORT ERROR IF SD CARD CANNOT BE READ 
+
+
+
+  // OPEN SD CARD 
   if (!(SD.begin(10))) {
     while (!(SD.begin(10))) {
       if (DEBUG && V2)        Serial.println("Unable to access the SD card");
@@ -157,6 +162,8 @@ void setup() {
     }
   }
   if (DEBUG && V2)    Serial.println("SD card is OK ...");
+  
+  
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
   if (DEBUG && V2)    Serial.println("Open Root ...");
@@ -164,21 +171,31 @@ void setup() {
   if (DEBUG && V2)    Serial.println("Scan directories ...");
   if (DEBUG && V2)    printFileList();
 
-  // CHECK EEPROM FOR SAVED BANK POSITION 
-  int a = EEPROM.read(BANK_SAVE);
+
+
+
+  // CHECK  FOR SAVED BANK POSITION 
+  int a = 0;
+  if (!SDsave) a = EEPROM.read(BANK_SAVE);
+  if (SDsave) a = readBank(); 
   if (a >= 0 && a <= ACTIVE_BANKS){
     PLAY_BANK = a;
+    CHAN_CHANGED = true;
   }
   else {
-    EEPROM.write(BANK_SAVE,0); 
+    if(!SDsave)  EEPROM.write(BANK_SAVE,0);
+    if (SDsave) writeBank(0); 
   };
+  root = SD.open("/");  
+
+
 
 }
 
 
 
 ////////////////////////////////////////////////////
-// /////////////MAIN LOOP//////////////////////////
+///////////////MAIN LOOP//////////////////////////
 ////////////////////////////////////////////////////
 
 void loop() {
@@ -200,21 +217,23 @@ void loop() {
 
   // IF ANYTHING CHANGES, DO THIS
   if (CHAN_CHANGED || RESET_CHANGED){
-  if (MUTE){  fade1.fadeOut(DECLICK);      // fade out before change 
-    delay(DECLICK);}
+    if (MUTE){  
+      fade1.fadeOut(DECLICK);      // fade out before change 
+      delay(DECLICK);
+    }
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
 
     if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio 
-if (DEBUG && V3){
-  Serial.print("*File Started:");
-  Serial.println(playhead);
+    if (DEBUG && V3){
+      Serial.print("*File Started:");
+      Serial.println(playhead);
 
-}
-  
+    }
 
-if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in 
+
+    if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in 
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
@@ -223,12 +242,12 @@ if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in
   }
 
 
- // IF FILE ENDS, RESTART FROM THE BEGINNING 
-if (!playRaw1.isPlaying()){
-  playhead = 0;
- RESET_CHANGED = true;
-if (DEBUG && V3)Serial.println("*File Ended*");
-}
+  // IF FILE ENDS, RESTART FROM THE BEGINNING 
+  if (!playRaw1.isPlaying()){
+    playhead = 0;
+    RESET_CHANGED = true;
+    if (DEBUG && V3)Serial.println("*File Ended*");
+  }
 
   // CALL PEAK METER   
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE) peakMeter();
@@ -289,13 +308,13 @@ void checkInterface(){
 
   // Time pot & CV 
 
-int averages = 5; // how many readings to take, to get average
-int timePot = 0;
-for(int a = 0; a < averages; a++){
-timePot += analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
-}
-timePot = timePot / averages; 
-timePot = (timePot / 2)*2; 
+  int averages = 5; // how many readings to take, to get average
+  int timePot = 0;
+  for(int a = 0; a < averages; a++){
+    timePot += analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
+  }
+  timePot = timePot / averages; 
+  timePot = (timePot / 2)*2; 
 
 
   timePot = constrain(timePot, 0, 1023); 
@@ -330,7 +349,10 @@ timePot = (timePot / 2)*2;
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
-    EEPROM.write(BANK_SAVE, PLAY_BANK);
+
+    if (!SDsave) EEPROM.write(BANK_SAVE, PLAY_BANK);
+    if (SDsave) writeBank(PLAY_BANK);
+
   }
 
   // Bank Button - if separate switch installed 
@@ -339,7 +361,8 @@ timePot = (timePot / 2)*2;
       PLAY_BANK++;
       if (PLAY_BANK >= BANKS) PLAY_BANK = 0; 
       CHAN_CHANGED = true;
-      EEPROM.write(BANK_SAVE, PLAY_BANK);
+      if (!SDsave) EEPROM.write(BANK_SAVE, PLAY_BANK);
+      if (SDsave) writeBank(PLAY_BANK);
     }    
   }
 
@@ -452,6 +475,37 @@ void peakMeter(){
     int monoPeak = peak1.read() * 5.0;
     ledWrite((pow(2,monoPeak))-1); // 
   }
+}
+
+
+// READ TWO NUMBER VALUE FROM pos FILE FOR BANK SETTING 
+int readBank(){
+  AudioNoInterrupts();
+  if (SD.exists("pos")){
+    File tempFile;
+    tempFile = SD.open("pos", FILE_READ);
+    int a = tempFile.read() - '0'; 
+    int b = tempFile.read() - '0'; 
+    if (b >= 0){ 
+      a = a*10 + b;
+    };
+    return a;
+    tempFile.close();  
+
+  }
+  else  writeBank(0);
+AudioInterrupts();
+}
+
+// WRITE 2 NUMBER VALUE TO pos FILE FOR BANK POSITION  
+void writeBank(int bank){
+  AudioNoInterrupts();
+  File tempFile;
+  SD.remove("pos");
+  tempFile = SD.open("pos", FILE_WRITE);
+  tempFile.print(bank);
+  tempFile.close();  
+AudioInterrupts();
 }
 
 
