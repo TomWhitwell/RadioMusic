@@ -8,20 +8,15 @@ RADIO MUSIC
  Reset Button: 8  
  Reset LED 11 
  Reset CV input: 9 
- 
  Channel Pot: A9 
  Channel CV: A8 // check 
  Time Pot: A7 
  Time CV: A6 // check 
- 
  SD Card Connections: 
  SCLK 14
  MISO 12
  MOSI 7 
  SS   10 
- 
- 
- 
  */
 
 #include <EEPROM.h>
@@ -30,8 +25,6 @@ RADIO MUSIC
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
-
-
 
 // Debug /  Modes
 boolean DEBUG = false; // Must be true if any verbose options are true 
@@ -43,7 +36,6 @@ boolean V3 = false; // Verbose 3 = Activity around playhead movements
 boolean MUTE = true; // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
 boolean SDsave = false; // If true, saves bank position on SD card. If false, saves on local EEprom NOT WORKING
 
-
 // GUItool: begin automatically generated code
 AudioPlaySdRaw           playRaw1;       //xy=131,81
 AudioEffectFade          fade1;          //xy=257,169
@@ -53,7 +45,6 @@ AudioConnection          patchCord1(playRaw1, fade1);
 AudioConnection          patchCord2(fade1, dac1);
 AudioConnection          patchCord3(playRaw1, peak1);
 // GUItool: end automatically generated code
-
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 75
@@ -137,9 +128,6 @@ void setup() {
   };
   if (DEBUG && V2)  Serial.println("Starting up...");
 
-
-
-
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
   if (DEBUG && V2)    Serial.println("Set memory...");
@@ -147,9 +135,6 @@ void setup() {
   SPI.setMOSI(7);
   SPI.setSCK(14);
   if (DEBUG && V2)    Serial.println("SD card setting ...");
-
-
-
 
   // OPEN SD CARD 
   if (!(SD.begin(10))) {
@@ -162,17 +147,14 @@ void setup() {
     }
   }
   if (DEBUG && V2)    Serial.println("SD card is OK ...");
-  
-  
+
+
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   root = SD.open("/");  
   if (DEBUG && V2)    Serial.println("Open Root ...");
   scanDirectory(root, 0);
   if (DEBUG && V2)    Serial.println("Scan directories ...");
   if (DEBUG && V2)    printFileList();
-
-
-
 
   // CHECK  FOR SAVED BANK POSITION 
   int a = 0;
@@ -187,9 +169,6 @@ void setup() {
     if (SDsave) writeBank(0); 
   };
   root = SD.open("/");  
-
-
-
 }
 
 
@@ -229,18 +208,14 @@ void loop() {
     if (DEBUG && V3){
       Serial.print("*File Started:");
       Serial.println(playhead);
-
     }
-
 
     if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in 
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
     resetLedTimer = 0; // turn on Reset LED 
-
   }
-
 
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   if (!playRaw1.isPlaying()){
@@ -261,18 +236,9 @@ void loop() {
 
 
 
-
-// WRITE A 4 DIGIT BINARY NUMBER TO LED0-LED3 
-void ledWrite(int n){
-  digitalWrite(LED0, HIGH && (n & B00001000));
-  digitalWrite(LED1, HIGH && (n & B00000100));
-  digitalWrite(LED2, HIGH && (n & B00000010));
-  digitalWrite(LED3, HIGH && (n & B00000001)); 
-}
-
-
-
-// READ AND SCALE POTS AND CVs AND RETURN TO GLOBAL VARIBLES 
+//////////////////////////////////////////
+// CHECK INTERFACE POTS BUTTONS ETC //////
+/////////////////////////////////////////
 
 void checkInterface(){
   unsigned long elapsed;
@@ -281,33 +247,24 @@ void checkInterface(){
   if (DEBUG && V1)  Serial.print(analogRead(CHAN_POT_PIN));
   if (DEBUG && V1)  Serial.print(" Channel CV raw=");
   if (DEBUG && V1)  Serial.print(analogRead(CHAN_CV_PIN));
-
   int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
   if (DEBUG && V1)   Serial.print(" Combined raw=");
   if (DEBUG && V1)  Serial.print(channel); 
-
   channel = constrain(channel, 0, 1023);
   if (DEBUG && V1)   Serial.print(" constrained=");
   if (DEBUG && V1)  Serial.print(channel); 
-
   channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
-
   if (DEBUG && V1) Serial.print(" file count=");
   if (DEBUG && V1) Serial.print(FILE_COUNT[PLAY_BANK]);
-
   if (DEBUG && V1) Serial.print(" mapped=");
   if (DEBUG && V1) Serial.println(channel); 
-
-
   elapsed = millis() - CHAN_CHANGED_TIME;
   if (channel != PLAY_CHANNEL && elapsed > HYSTERESIS) {
     PLAY_CHANNEL = channel;
     CHAN_CHANGED = true;
     CHAN_CHANGED_TIME = millis();
   }
-
   // Time pot & CV 
-
   int averages = 5; // how many readings to take, to get average
   int timePot = 0;
   for(int a = 0; a < averages; a++){
@@ -315,20 +272,16 @@ void checkInterface(){
   }
   timePot = timePot / averages; 
   timePot = (timePot / 2)*2; 
-
-
   timePot = constrain(timePot, 0, 1023); 
   elapsed = millis() - CHAN_CHANGED_TIME;
 
   if (abs(timePot - timePotOld) > TIME_HYSTERESIS && elapsed > HYSTERESIS){
-
     unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
     unsigned long newTime = ((fileLength/1023) * timePot);
     unsigned long playPosition = playRaw1.fileOffset();
     unsigned long fileStart = (playPosition / fileLength) * fileLength;
     playhead = fileStart + newTime;
     //RESET_CHANGED = true; // THIS LINE = POT CHANGES IMMEDIATELY CAUSE RESET 
-
     timePotOld = timePot;
   }
 
@@ -349,10 +302,8 @@ void checkInterface(){
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
-
     if (!SDsave) EEPROM.write(BANK_SAVE, PLAY_BANK);
     if (SDsave) writeBank(PLAY_BANK);
-
   }
 
   // Bank Button - if separate switch installed 
@@ -365,11 +316,11 @@ void checkInterface(){
       if (SDsave) writeBank(PLAY_BANK);
     }    
   }
-
 }
 
-
-// SCAN SD DIRECTORIES INTO ARRAYS 
+//////////////////////////////////////////
+// SCAN SD DIRECTORIES INTO ARRAYS //////
+/////////////////////////////////////////
 void scanDirectory(File dir, int numTabs) {
   while(true) {
     File entry =  dir.openNextFile();
@@ -386,11 +337,7 @@ void scanDirectory(File dir, int numTabs) {
       FILE_SIZES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.size();
       FILE_DIRECTORIES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = CURRENT_DIRECTORY;
       FILE_COUNT[intCurrentDirectory]++;
-
-      //      ledWrite (FILE_COUNT[intCurrentDirectory]);
-
     };
-
     // Ignore OSX Spotlight and Trash Directories 
     if (entry.isDirectory() && fileName.startsWith("SPOTL") == 0 && fileName.startsWith("TRASH") == 0) {
       CURRENT_DIRECTORY = entry.name();
@@ -408,10 +355,96 @@ char* buildPath (int bank, int channel){
   liveFilename += FILE_NAMES[bank][channel];
   char filename[18];
   liveFilename.toCharArray(filename, 17);
-
   return filename;
 }
 
+
+
+
+
+
+// DISPLAY PEAK METER IN LEDS 
+void peakMeter(){
+  if (peak1.available()) {
+    fps = 0;
+    int monoPeak = peak1.read() * 5.0;
+    ledWrite((pow(2,monoPeak))-1); // 
+  }
+}
+
+
+// WRITE A 4 DIGIT BINARY NUMBER TO LED0-LED3 
+void ledWrite(int n){
+  digitalWrite(LED0, HIGH && (n & B00001000));
+  digitalWrite(LED1, HIGH && (n & B00000100));
+  digitalWrite(LED2, HIGH && (n & B00000010));
+  digitalWrite(LED3, HIGH && (n & B00000001)); 
+}
+
+
+
+
+//////////////////////////////////////
+////////SD CARD SAVING POSITON //////
+//////////////////////////////////////
+
+// READ TWO NUMBER VALUE FROM pos FILE FOR BANK SETTING 
+int readBank(){
+  AudioNoInterrupts();
+  if (SD.exists("pos")){
+    File tempFile;
+    tempFile = SD.open("pos", FILE_READ);
+    int a = tempFile.read() - '0'; 
+    int b = tempFile.read() - '0'; 
+    if (b >= 0){ 
+      a = a*10 + b;
+    };
+    return a;
+    tempFile.close();  
+
+  }
+  else  writeBank(0);
+  AudioInterrupts();
+}
+
+// WRITE 2 NUMBER VALUE TO pos FILE FOR BANK POSITION  
+void writeBank(int bank){
+  AudioNoInterrupts();
+  File tempFile;
+  SD.remove("pos");
+  tempFile = SD.open("pos", FILE_WRITE);
+  tempFile.print(bank);
+  tempFile.close();  
+  AudioInterrupts();
+}
+
+
+
+//////////////////////////////////////////////
+////////VARIOUS DEBUG DISPLAY FUNCTIONS //////
+//////////////////////////////////////////////
+
+// SHOW VISUAL INDICATOR OF TRACK PROGRESS IN SERIAL MONITOR 
+void playDisplay(){
+  int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
+  int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
+  for (int i = 0; i < size; i++){
+    if (i == position) Serial.print("|");
+    else Serial.print("_");
+  }
+  Serial.println("");
+}
+
+
+// SHOW CURRENTLY PLAYING TRACK IN SERIAL MONITOR 
+void whatsPlaying (){
+  Serial.print("Bank:");
+  Serial.print(PLAY_BANK);
+  Serial.print(" Channel:");
+  Serial.print(PLAY_CHANNEL);  
+  Serial.print(" File:");  
+  Serial.println (charFilename); 
+}
 
 
 void printFileList(){
@@ -437,79 +470,6 @@ void printFileList(){
     }
   }
 }
-
-
-// Replacement Map function to deal with very large numbers 
-unsigned long myMap(unsigned long x, unsigned long in_min, unsigned long in_max, unsigned long out_min, unsigned long out_max) {
-
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-// SHOW CURRENTLY PLAYING TRACK IN SERIAL MONITOR 
-
-void whatsPlaying (){
-  Serial.print("Bank:");
-  Serial.print(PLAY_BANK);
-  Serial.print(" Channel:");
-  Serial.print(PLAY_CHANNEL);  
-  Serial.print(" File:");  
-  Serial.println (charFilename); 
-}
-
-
-// SHOW VISUAL INDICATOR OF TRACK PROGRESS IN SERIAL MONITOR 
-void playDisplay(){
-  int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
-  int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
-  for (int i = 0; i < size; i++){
-    if (i == position) Serial.print("|");
-    else Serial.print("_");
-  }
-  Serial.println("");
-}
-
-// DISPLAY PEAK METER IN LEDS 
-void peakMeter(){
-  if (peak1.available()) {
-    fps = 0;
-    int monoPeak = peak1.read() * 5.0;
-    ledWrite((pow(2,monoPeak))-1); // 
-  }
-}
-
-
-// READ TWO NUMBER VALUE FROM pos FILE FOR BANK SETTING 
-int readBank(){
-  AudioNoInterrupts();
-  if (SD.exists("pos")){
-    File tempFile;
-    tempFile = SD.open("pos", FILE_READ);
-    int a = tempFile.read() - '0'; 
-    int b = tempFile.read() - '0'; 
-    if (b >= 0){ 
-      a = a*10 + b;
-    };
-    return a;
-    tempFile.close();  
-
-  }
-  else  writeBank(0);
-AudioInterrupts();
-}
-
-// WRITE 2 NUMBER VALUE TO pos FILE FOR BANK POSITION  
-void writeBank(int bank){
-  AudioNoInterrupts();
-  File tempFile;
-  SD.remove("pos");
-  tempFile = SD.open("pos", FILE_WRITE);
-  tempFile.print(bank);
-  tempFile.close();  
-AudioInterrupts();
-}
-
-
-
 
 
 
