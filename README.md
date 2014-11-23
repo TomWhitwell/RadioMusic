@@ -16,7 +16,7 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 
 ####Progress 
 October 2014: Very early prototyping  
-November 2014: First PCB build: [Video](http://instagram.com/p/vCNc37DmSj/)
+November 2014: First PCB build: [Video](http://instagram.com/p/vCNc37DmSj/) [another Video](http://instagram.com/p/vnv1T-DmUm/)  
 
 ####Features
 - 4hp  
