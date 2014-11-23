@@ -3,11 +3,15 @@ RadioMusic
 
 A virtual Radio module for Eurorack 
 
-- [Documentation](https://github.com/TomWhitwell/RadioMusic/wiki)
-- [Hardware](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusicHardware)
-- [Firmware](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusic)
-- [Parts List](https://github.com/TomWhitwell/RadioMusic/wiki/BOM---Parts-List)
-- [Issues](https://github.com/TomWhitwell/RadioMusic/issues)
+- [Full Documentation](https://github.com/TomWhitwell/RadioMusic/wiki)
+    - [Module manual](https://github.com/TomWhitwell/RadioMusic/wiki/How-to-use-the-Radio-Music-module)  
+    - [Buld documents](https://github.com/TomWhitwell/RadioMusic/wiki/Building-the-Radio-Music-module)  
+    - [Setting up the SD Card](https://github.com/TomWhitwell/RadioMusic/wiki/SD-Card%3A-Format-%26-File-Structure)  
+    - [Suggested sound library](https://github.com/TomWhitwell/RadioMusic/wiki/Audio-for-the-SD-Card)  
+- [Hardware: Eagle CAD files](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusicHardware)
+- [Hardware: Parts List](https://github.com/TomWhitwell/RadioMusic/wiki/BOM---Parts-List)
+- [Firmware: Teensyduino files](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusic)
+- [Report Issues with hardware or firmware](https://github.com/TomWhitwell/RadioMusic/issues)
 
 A digital way to simulate radio-powered compositions by John Cage, Karlheinz Stockhausen and Don Buchla's voltage-controlled radio experiments. 
 
