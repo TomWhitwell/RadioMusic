@@ -46,7 +46,6 @@ boolean V3 = false; // Verbose 3 = Print activity about hot swap system
 boolean MUTE = false; // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
 #define DECLICK 15 // milliseconds of fade in/out on switching 
 
-boolean SDsave = false; // If true, saves bank position on SD card. If false, saves on local EEprom NOT WORKING
 
 // GUItool: begin automatically generated code
 AudioPlaySdRaw           playRaw1;       //xy=131,81
@@ -173,15 +172,13 @@ void setup() {
 
   // CHECK  FOR SAVED BANK POSITION 
   int a = 0;
-  if (!SDsave) a = EEPROM.read(BANK_SAVE);
-  if (SDsave) a = readBank(); 
+a = EEPROM.read(BANK_SAVE);
   if (a >= 0 && a <= ACTIVE_BANKS){
     PLAY_BANK = a;
     CHAN_CHANGED = true;
   }
   else {
-    if(!SDsave)  EEPROM.write(BANK_SAVE,0);
-    if (SDsave) writeBank(0); 
+EEPROM.write(BANK_SAVE,0);
   };
 }
 
@@ -353,8 +350,7 @@ void checkInterface(){
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
-    if (!SDsave) EEPROM.write(BANK_SAVE, PLAY_BANK);
-    if (SDsave) writeBank(PLAY_BANK);
+EEPROM.write(BANK_SAVE, PLAY_BANK);
   }
 
   // Bank Button - if separate switch installed 
@@ -363,8 +359,7 @@ void checkInterface(){
       PLAY_BANK++;
       if (PLAY_BANK >= BANKS) PLAY_BANK = 0; 
       CHAN_CHANGED = true;
-      if (!SDsave) EEPROM.write(BANK_SAVE, PLAY_BANK);
-      if (SDsave) writeBank(PLAY_BANK);
+EEPROM.write(BANK_SAVE, PLAY_BANK);
     }    
   }
 }
@@ -435,42 +430,6 @@ void ledWrite(int n){
   digitalWrite(LED3, HIGH && (n & B00000001)); 
 }
 
-
-
-
-//////////////////////////////////////
-////////SD CARD SAVING POSITON //////
-//////////////////////////////////////
-
-// READ TWO NUMBER VALUE FROM pos FILE FOR BANK SETTING 
-int readBank(){
-  AudioNoInterrupts();
-  if (SD.exists("pos")){
-    File tempFile;
-    tempFile = SD.open("pos", FILE_READ);
-    int a = tempFile.read() - '0'; 
-    int b = tempFile.read() - '0'; 
-    if (b >= 0){ 
-      a = a*10 + b;
-    };
-    return a;
-    tempFile.close();  
-
-  }
-  else  writeBank(0);
-  AudioInterrupts();
-}
-
-// WRITE 2 NUMBER VALUE TO pos FILE FOR BANK POSITION  
-void writeBank(int bank){
-  AudioNoInterrupts();
-  File tempFile;
-  SD.remove("pos");
-  tempFile = SD.open("pos", FILE_WRITE);
-  tempFile.print(bank);
-  tempFile.close();  
-  AudioInterrupts();
-}
 
 
 
