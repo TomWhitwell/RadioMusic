@@ -105,10 +105,10 @@ void printSettings(){
   Serial.println(ShowMeter);
   Serial.print("meterHIDE=");
   Serial.println(meterHIDE);
-  Serial.print("TunePotImmediate=");
-  Serial.println(TunePotImmediate);
-  Serial.print("TuneCVImmediate=");
-  Serial.println(TuneCVImmediate);
+  Serial.print("ChanPotImmediate=");
+  Serial.println(ChanPotImmediate);
+  Serial.print("ChanCVImmediate=");
+  Serial.println(ChanCVImmediate);
   Serial.print("StartPotImmediate=");
   Serial.println(StartPotImmediate);
   Serial.print("StartCVImmediate=");
@@ -216,12 +216,12 @@ void applySetting(String settingName, String settingValue) {
     meterHIDE=settingValue.toInt();
   }
 
-  if(settingName == "TunePotImmediate") {
-    TunePotImmediate=toBoolean(settingValue);
+  if(settingName == "ChanPotImmediate") {
+    ChanPotImmediate=toBoolean(settingValue);
   }
 
-  if(settingName == "TuneCVImmediate") {
-    TuneCVImmediate=toBoolean(settingValue);
+  if(settingName == "ChanCVImmediate") {
+    ChanCVImmediate=toBoolean(settingValue);
   }
 
   if(settingName == "StartPotImmediate") {
@@ -272,10 +272,10 @@ void writeSDSettings() {
   settingsFile.println(ShowMeter);
   settingsFile.print("meterHIDE=");
   settingsFile.println(meterHIDE);
-  settingsFile.print("TunePotImmediate=");
-  settingsFile.println(TunePotImmediate);
-  settingsFile.print("TuneCVImmediate=");
-  settingsFile.println(TuneCVImmediate);
+  settingsFile.print("ChanPotImmediate=");
+  settingsFile.println(ChanPotImmediate);
+  settingsFile.print("ChanCVImmediate=");
+  settingsFile.println(ChanCVImmediate);
   settingsFile.print("StartPotImmediate=");
   settingsFile.println(StartPotImmediate);
   settingsFile.print("StartCVImmediate=");

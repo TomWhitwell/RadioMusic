@@ -3,61 +3,105 @@
 /////////////////////////////////////////
 
 void checkInterface(){
-  unsigned long elapsed;
-  // Channel Pot 
-  if (DEBUG && V1) Serial.print("Channel pot raw=");
-  if (DEBUG && V1)  Serial.print(analogRead(CHAN_POT_PIN));
-  if (DEBUG && V1)  Serial.print(" Channel CV raw=");
-  if (DEBUG && V1)  Serial.print(analogRead(CHAN_CV_PIN));
-  int channel = analogRead(CHAN_POT_PIN) + analogRead(CHAN_CV_PIN);
-  if (DEBUG && V1)   Serial.print(" Combined raw=");
-  if (DEBUG && V1)  Serial.print(channel); 
-  channel = constrain(channel, 0, 1023);
-  if (DEBUG && V1)   Serial.print(" constrained=");
-  if (DEBUG && V1)  Serial.print(channel); 
-  channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
-  if (DEBUG && V1) Serial.print(" file count=");
-  if (DEBUG && V1) Serial.print(FILE_COUNT[PLAY_BANK]);
-  if (DEBUG && V1) Serial.print(" mapped=");
-  if (DEBUG && V1) Serial.println(channel); 
-  elapsed = millis() - CHAN_CHANGED_TIME;
-  if (channel != PLAY_CHANNEL && elapsed > HYSTERESIS) {
-    PLAY_CHANNEL = channel;
-    if (TunePotImmediate) CHAN_CHANGED = true;
-    CHAN_CHANGED_TIME = millis();
-  }
-  // Time pot & CV 
-  int averages = 5; // how many readings to take, to get average
-  int timePot = 0;
-  for(int a = 0; a < averages; a++){
-    timePot += analogRead(TIME_POT_PIN) + analogRead(TIME_CV_PIN);
-  }
-  timePot = timePot / averages; 
-  timePot = (timePot / StartCVDivider)*StartCVDivider; // Quantizes start position 
-  timePot = constrain(timePot, 0, 1023); 
-  elapsed = millis() - CHAN_CHANGED_TIME;
 
-  if (abs(timePot - timePotOld) > TIME_HYSTERESIS && elapsed > HYSTERESIS){
+  int channel; 
+  int time; 
+  int bank; 
+  boolean channelChange = false; 
+  boolean timeChange = false; 
+
+  // READ POTS 
+
+  int chanPot = 0; 
+  int chanCV = 0; 
+  int timPot = 0; 
+  int timCV = 0; 
+
+  for (int i = 0; i < sampleAverage; i++){
+    chanPot += analogRead(CHAN_POT_PIN); 
+    chanCV += analogRead(CHAN_CV_PIN); 
+    timPot += analogRead(TIME_POT_PIN); 
+    timCV += analogRead(TIME_CV_PIN); 
+  }
+
+  chanPot = chanPot / sampleAverage; 
+  chanCV = chanCV / sampleAverage; 
+  timPot = timPot / sampleAverage; 
+  timCV = timCV / sampleAverage; 
+
+  // IDENTIFY CHANGES 
+
+  int chanPotChange = abs(chanPot - chanPotOld); 
+  int chanCVChange = abs(chanCV - chanCVOld);
+  int timPotChange = abs(timPot - timPotOld);
+  int timCVChange = abs(timCV - timCVOld); 
+
+  if ( chanPotChange > chanHyst ){
+    // Channel pot changed  
+    channelChange = true; 
+    CHAN_CHANGED = ChanPotImmediate;
+    chanPotOld = chanPot; 
+
+  }
+
+  if (chanCVChange > chanHyst){
+    // Channel CV Changed 
+    channelChange = true; 
+    CHAN_CHANGED = ChanCVImmediate;
+    chanCVOld = chanCV; 
+
+  }
+
+  if (channelChange && chanChanged > chanHystTime){
+    // Change the channel global variable 
+    channel = chanPot + chanCV; 
+    channel = constrain(channel, 0, 1023);
+    channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
+    if (channel == PLAY_CHANNEL) CHAN_CHANGED = false; // Do not retrigger if channel is unchanged 
+    PLAY_CHANNEL = channel;
+    channelChange = false; 
+    chanChanged = 0;
+  }
+
+  if (timPotChange > timHyst){
+    // Time Pot Changed  
+    timeChange = true;
+    RESET_CHANGED = StartPotImmediate; 
+   timPotOld = timPot; 
+ 
+  }
+
+  if (timCVChange > timHyst){
+    // Time CV Changed  
+    timeChange = true;
+    RESET_CHANGED = StartCVImmediate;  
+    timCVOld = timCV; 
+
+  }
+
+  if (timeChange && timChanged > timHystTime){
+    // Do change the time global variable 
+    time = timPot + timCV;   
+    time = constrain(time, 0, 1023); 
+    time = (time / StartCVDivider) * StartCVDivider; // Quantizes start position 
     unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
-    unsigned long newTime = ((fileLength/1023) * timePot);
+    unsigned long newTime = ((fileLength/1023) * time);
     unsigned long playPosition = playRaw1.fileOffset();
     unsigned long fileStart = (playPosition / fileLength) * fileLength;
     playhead = fileStart + newTime;
-    if (StartPotImmediate) RESET_CHANGED = true;  
-    timePotOld = timePot;
+    timeChange = false; 
+    timChanged = 0;
   }
 
 
-  // Reset Button 
-  if ( resetSwitch.update() ) {
-    RESET_CHANGED = resetSwitch.read();
-  }
 
-  // Reset CV 
+  // Reset Button & CV 
+  if ( resetSwitch.update() )  RESET_CHANGED = resetSwitch.read();
   if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
 
   // Hold Reset Button to Change Bank 
   bankTimer = bankTimer * digitalRead(RESET_BUTTON);
+
   if (bankTimer > HOLDTIME){
     PLAY_BANK++;
     if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;   
@@ -67,14 +111,6 @@ void checkInterface(){
     EEPROM.write(BANK_SAVE, PLAY_BANK);
   }
 
-  // Bank Button - if separate switch installed 
-  if ( bankSwitch.update() ) {
-    if ( bankSwitch.read() == HIGH ) {
-      PLAY_BANK++;
-      if (PLAY_BANK >= BANKS) PLAY_BANK = 0; 
-      CHAN_CHANGED = true;
-      EEPROM.write(BANK_SAVE, PLAY_BANK);
-    }    
-  }
 }
+
 

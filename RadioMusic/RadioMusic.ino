@@ -35,12 +35,6 @@ RADIO MUSIC
 #include <SPI.h>
 #include <SD.h>
 
-// Debug /  Modes
-boolean DEBUG = true; // Must be true if any verbose options are true 
-boolean V1 = true; // Verbose 1 = Print pot positions and calculations for channel selection 
-boolean V2 = false; // Verbose 2 = Print activity during startup cycle 
-boolean V3 = false; // Verbose 3 = Print activity about hot swap system  
-boolean V4 = false; // Verbose 4 = Print activity about SD Settings system 
 
 
 // OPTIONS TO READ FROM THE SD CARD, WITH DEFAULT VALUES 
@@ -48,8 +42,8 @@ boolean MUTE = false;                // Softens clicks when changing channel / p
 int DECLICK= 15;                      // milliseconds of fade in/out on switching 
 boolean ShowMeter = true;            // Does the VU meter appear?  
 int meterHIDE = 2000;                // how long to show the meter after bank change in Milliseconds 
-boolean TunePotImmediate = true;     // Settings for Pot / CV response.
-boolean TuneCVImmediate = true;      // TRUE means it jumps directly when you move or change.
+boolean ChanPotImmediate = true;     // Settings for Pot / CV response.
+boolean ChanCVImmediate = true;      // TRUE means it jumps directly when you move or change.
 boolean StartPotImmediate = false;   // FALSE means it only has an effect when RESET is pushed or triggered 
 boolean StartCVImmediate = false; 
 int StartCVDivider = 2;              // Changes sensitivity of Start control. 1 = most sensitive, 512 = lest sensitive (i.e only two points) 
@@ -96,11 +90,8 @@ File root;
 #define RESET_CV 9 // Reset pulse input 
 boolean CHAN_CHANGED = true; 
 boolean RESET_CHANGED = false; 
-int timePotOld;
 Bounce resetSwitch = Bounce( RESET_BUTTON, 20 ); // Bounce setup for Reset
 Bounce resetCv = Bounce( RESET_CV, 10 ); // Bounce setup for Reset
-
-unsigned long CHAN_CHANGED_TIME; 
 int PLAY_CHANNEL; 
 unsigned long playhead;
 char* charFilename;
@@ -116,8 +107,17 @@ int PLAY_BANK = 0;
 #define BANK_SAVE 0
 
 // CHANGE HOW INTERFACE REACTS 
-#define HYSTERESIS 5 // MINIMUM MILLIS BETWEEN CHANGES
-#define TIME_HYSTERESIS 3 // MINIMUM KNOB POSITIONS MOVED 
+int chanHyst = 3; // how many steps to move before making a change (out of 1024 steps on a reading) 
+int timHyst = 3; 
+int chanHystTime = 10; // How many ms to wait after one change before making another 
+int timHystTime = 10; 
+elapsedMillis chanChanged; 
+elapsedMillis timChanged; 
+int sampleAverage = 20;
+int chanPotOld;
+int chanCVOld;
+int timPotOld;
+int timCVOld;
 #define FLASHTIME 10 // How long do LEDs flash for? 
 #define HOLDTIME 400 // How many millis to hold a button to get 2ndary function? 
 elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
@@ -146,66 +146,42 @@ void setup() {
   ledWrite(PLAY_BANK);
 
   // START SERIAL MONITOR   
-  if (DEBUG)  {
-    Serial.begin(38400); 
-    delay(2000);
-  };
-  if (DEBUG && V2)  Serial.println("Starting up...");
+  Serial.begin(38400); 
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
-  if (DEBUG && V2)    Serial.println("Set memory...");
   // SD CARD SETTINGS FOR AUDIO SHIELD 
   SPI.setMOSI(7);
   SPI.setSCK(14);
-  if (DEBUG && V2)    Serial.println("SD card opening ...");
 
   // OPEN SD CARD 
+  int crashCountdown; 
   if (!(SD.begin(10))) {
     while (!(SD.begin(10))) {
-      if (DEBUG && V2)        Serial.println("Unable to access the SD card");
       ledWrite(15);
       delay(100);
       ledWrite(0);
       delay(100);
+      crashCountdown++;
+      if (crashCountdown > 6)     reBoot();
+
     }
   }
-  if (DEBUG && V2)    Serial.println("SD card is OK ...");
 
   // READ SETTINGS FROM SD CARD 
 
-  if (DEBUG && V4) Serial.println("BEFORE SD READ");
-  if (DEBUG && V4) printSettings();
-root = SD.open("/");  
-  
+  root = SD.open("/");  
+
   if (SD.exists("settings.txt")) {
-    if (DEBUG && V4)  Serial.println ("Settings file found");
     readSDSettings();
   }
 
   else { 
-    if (DEBUG && V4)   Serial.println ("Creating settings file");
     writeSDSettings();
   };
 
-  if (DEBUG && V4) Serial.println(" ");
-  if (DEBUG && V4) Serial.println("AFTER SD READ");
-  if (DEBUG && V4) printSettings();
-
-
-
-
-
-
-
-
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
-//  root = SD.open("/");  
-  
-  if (DEBUG && V2)    Serial.println("Open Root ...");
   scanDirectory(root, 0);
-  if (DEBUG && V2)    Serial.println("Scan directories ...");
-  if (DEBUG && V2)    printFileList();
 
   // CHECK  FOR SAVED BANK POSITION 
   int a = 0;
@@ -220,15 +196,11 @@ root = SD.open("/");
 }
 
 
-
 ////////////////////////////////////////////////////
 ///////////////MAIN LOOP//////////////////////////
 ////////////////////////////////////////////////////
 
 void loop() {
-
-
-
   //////////////////////////////////////////
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   //////////////////////////////////////////
@@ -236,11 +208,9 @@ void loop() {
   if (!playRaw1.isPlaying()){
     playhead = 0;
     RESET_CHANGED = true;
-    if (DEBUG && V3)Serial.println("*File Ended*");
   }
 
   if (playRaw1.failed){
-    if (DEBUG && V3) Serial.print("*****EXPLODE****");
     reBoot();
   }
 
@@ -251,18 +221,6 @@ void loop() {
 
 
   if (CHAN_CHANGED || RESET_CHANGED){
-    if (DEBUG && V3){
-      Serial.print("In change block, Offset = ");
-      Serial.print(playRaw1.fileOffset());
-      Serial.print (" Playhead =");
-      Serial.print (playhead);
-      Serial.print (" Reset =");
-      Serial.print (RESET_CHANGED);
-      Serial.print (" CHANNEL =");
-      Serial.print (CHAN_CHANGED);
-      Serial.print (" failed=");
-      Serial.println(playRaw1.failed);
-    }
     if (MUTE){  
       fade1.fadeOut(DECLICK);      // fade out before change 
       delay(DECLICK);
@@ -274,10 +232,6 @@ void loop() {
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio
     delay(10);
-    if (DEBUG && V3){
-      Serial.print("*File Started:");
-      Serial.println(playhead);
-    }
 
     if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in 
     ledWrite(PLAY_BANK);
@@ -297,13 +251,9 @@ void loop() {
     checkI = 0;  
   }
 
-  if (DEBUG && showDisplay > showFreq){
+  if (showDisplay > showFreq){
     //    playDisplay();
-    //    whatsPlaying();
-    if (DEBUG && V3)Serial.print("In main loop, Offset= ");
-    if (DEBUG && V3)Serial.print(playRaw1.fileOffset());
-    if (DEBUG && V3)Serial.print(" playTime=");
-
+    whatsPlaying();
     showDisplay = 0;
   }
 
@@ -313,5 +263,6 @@ void loop() {
 
 
 }
+
 
 
