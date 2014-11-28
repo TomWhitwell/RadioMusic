@@ -84,15 +84,47 @@ while (countdown*2 < 2000){
 
 }
 
+elapsedMillis update = 0;
+
 // the loop routine runs over and over again forever:
 void loop() {
 
-
+int averagecount = 50;  
+int pot1; 
+int pot2; 
+int cv1; 
+int cv2; 
+for(int i = 0; i< averagecount ; i++){  
   
-analogWrite(LED3,analogRead(CHAN_POT_PIN)/4);
-analogWrite(LED2,analogRead(TIME_POT_PIN)/4);
-analogWrite(LED1,analogRead(CHAN_CV_PIN)/4);
-analogWrite(LED0,analogRead(TIME_CV_PIN)/4);
+ pot1 += analogRead(CHAN_POT_PIN);
+ pot2 +=  analogRead(TIME_POT_PIN);  
+ cv1 += analogRead(CHAN_CV_PIN); 
+ cv2 += analogRead(TIME_CV_PIN); 
+}
+
+pot1 = pot1 / averagecount; 
+pot2 = pot2 / averagecount; 
+cv1 = cv1 / averagecount; 
+cv2 = cv2 / averagecount; 
+
+
+if (update > 50){
+
+Serial.print("Channel pot=");
+Serial.print(pot1);
+Serial.print(" Time pot=");
+Serial.print(pot2);
+Serial.print(" Channel CV=");
+Serial.print(cv1);
+Serial.print(" Time CV=");
+Serial.println(cv2);
+update = 0;
+}
+  
+analogWrite(LED3,pot1 / 4);
+analogWrite(LED2,pot2 / 4);
+analogWrite(LED1,cv1 /4);
+analogWrite(LED0,cv1 /4);
 
       sine1.frequency(analogRead(CHAN_POT_PIN)*2 + analogRead(CHAN_CV_PIN)*2);
       sine1.amplitude(0.9);
