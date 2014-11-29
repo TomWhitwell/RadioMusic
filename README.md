@@ -15,16 +15,26 @@
 A digital way to simulate radio-powered compositions by John Cage, Karlheinz Stockhausen and Don Buchla's voltage-controlled radio experiments. It uses a teensy3.1 to play files from a SD card to simulate a voltage controlled AM/FM/Shortwave/Time Travel radio. 
 
 ####Progress 
-October 2014: Very early prototyping  
-November 2014: First PCB build: [Video 1](http://instagram.com/p/vCNc37DmSj/), [Video 2](http://instagram.com/p/vnv1T-DmUm/)  
+October 2014  
+- Very early prototyping    
+November 2014  
+- First PCB build   
+- [Video 1](http://instagram.com/p/vCNc37DmSj/)  
+- [Video 2](http://instagram.com/p/vnv1T-DmUm/)  
+- [Longer demo video](http://vimeo.com/113050279)  
+- [Audio: Long demo](https://soundcloud.com/musicthing/radio-music-20-minutes-of-madness)  
+- [Audio: Random Drums](https://soundcloud.com/musicthing/radio-music-random-drums)  
+- [Audio: Random Voices](https://soundcloud.com/musicthing/radio-music-random-voices)   
+
 
 ####Features
 - 4hp  
 - 75ma Current Draw   
     - 60ma from 5v regulator  
     - 8ma from -12v  
-- Up to 32gb storage   
-- Files stored as headerless .raw wav files (normal .wav file support in backlog)  
+- Up to 32gb storage, 16 banks of 75 channels each  
+- Files stored as headerless .raw wav files 
+- Customise the module by editing settings.txt on the SD Card 
 
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
 
