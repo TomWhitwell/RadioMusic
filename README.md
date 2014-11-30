@@ -28,7 +28,7 @@ November 2014
 
 
 ####Features
-- 4hp  
+- 4hp x 40mm deep  
 - 75ma Current Draw   
     - 60ma from 5v regulator  
     - 8ma from -12v  
