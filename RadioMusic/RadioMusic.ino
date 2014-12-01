@@ -47,6 +47,7 @@ boolean ChanCVImmediate = true;      // TRUE means it jumps directly when you mo
 boolean StartPotImmediate = false;   // FALSE means it only has an effect when RESET is pushed or triggered 
 boolean StartCVImmediate = false; 
 int StartCVDivider = 2;              // Changes sensitivity of Start control. 1 = most sensitive, 512 = lest sensitive (i.e only two points) 
+boolean Looping = true;              // When a file finishes, start again from the beginning 
 File settingsFile;
 
 
@@ -205,7 +206,7 @@ void loop() {
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   //////////////////////////////////////////
 
-  if (!playRaw1.isPlaying()){
+  if (!playRaw1.isPlaying() && Looping){
     playhead = 0;
     RESET_CHANGED = true;
   }

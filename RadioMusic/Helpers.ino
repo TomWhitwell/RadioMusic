@@ -236,6 +236,9 @@ void applySetting(String settingName, String settingValue) {
     StartCVDivider=settingValue.toInt();;
   }
 
+  if(settingName == "Looping") {
+    Looping=toBoolean(settingValue);
+  }
 
 
 }
@@ -282,7 +285,8 @@ void writeSDSettings() {
   settingsFile.println(StartCVImmediate);
   settingsFile.print("StartCVDivider=");
   settingsFile.println(StartCVDivider);
-
+  settingsFile.print("Looping=");
+  settingsFile.println(Looping);
 
 
 
