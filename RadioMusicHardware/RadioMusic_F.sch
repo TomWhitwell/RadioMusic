@@ -2637,17 +2637,17 @@ Source: http://www.ledtronics.com/ds/smd-0603/Dstr0092.pdf</description>
 <rectangle x1="-0.4" y1="0.175" x2="0" y2="0.4" layer="51"/>
 <rectangle x1="-0.25" y1="0.175" x2="0" y2="0.4" layer="21"/>
 </package>
-<package name="VERT_MICROSD">
+<package name="VERT_MICROSD_REV2">
 <pad name="GND1" x="-4.3" y="-3.17" drill="0.9" shape="square"/>
 <pad name="GND2" x="4.3" y="-3.17" drill="0.9" shape="square"/>
-<pad name="P$1" x="-3.35" y="0" drill="0.7"/>
-<pad name="P$2" x="-2.25" y="1.1" drill="0.7"/>
-<pad name="P$3" x="-1.15" y="0" drill="0.7"/>
-<pad name="P$4" x="-0.05" y="1.1" drill="0.7"/>
-<pad name="P$5" x="1.05" y="0" drill="0.7"/>
-<pad name="P$6" x="2.15" y="1.1" drill="0.7"/>
-<pad name="P$7" x="3.25" y="0" drill="0.7"/>
-<pad name="P$8" x="4.35" y="1.1" drill="0.7"/>
+<pad name="P$1" x="-3.85" y="0" drill="0.7"/>
+<pad name="P$2" x="-2.75" y="1.1" drill="0.7"/>
+<pad name="P$3" x="-1.65" y="0" drill="0.7"/>
+<pad name="P$4" x="-0.55" y="1.1" drill="0.7"/>
+<pad name="P$5" x="0.55" y="0" drill="0.7"/>
+<pad name="P$6" x="1.65" y="1.1" drill="0.7"/>
+<pad name="P$7" x="2.75" y="0" drill="0.7"/>
+<pad name="P$8" x="3.85" y="1.1" drill="0.7"/>
 <wire x1="-6" y1="-0.47" x2="6" y2="-0.47" width="0.08" layer="51"/>
 <wire x1="6" y1="-0.47" x2="6" y2="-2.77" width="0.08" layer="21"/>
 <wire x1="6" y1="-2.77" x2="-6" y2="-2.77" width="0.08" layer="51"/>
@@ -2664,6 +2664,7 @@ Source: http://www.ledtronics.com/ds/smd-0603/Dstr0092.pdf</description>
 <wire x1="4.965" y1="-1.42" x2="4.965" y2="-2.27" width="0.05" layer="51"/>
 <wire x1="4.965" y1="-2.27" x2="-6.265" y2="-2.27" width="0.05" layer="51"/>
 <wire x1="-6.265" y1="-2.27" x2="-6.265" y2="-1.42" width="0.05" layer="51"/>
+<wire x1="0" y1="-5" x2="0" y2="3" width="0.01" layer="51"/>
 </package>
 </packages>
 <symbols>
@@ -3927,12 +3928,12 @@ Source: www.kingbright.com</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="VERT_SD_CARD" prefix="X">
+<deviceset name="VERT_SD_CARD_REV2">
 <gates>
-<gate name="G$1" symbol="USDCARD" x="0" y="0"/>
+<gate name="G$1" symbol="USDCARD" x="-2.54" y="0"/>
 </gates>
 <devices>
-<device name="" package="VERT_MICROSD">
+<device name="" package="VERT_MICROSD_REV2">
 <connects>
 <connect gate="G$1" pin="CLK/SCK" pad="P$5"/>
 <connect gate="G$1" pin="CS/SS" pad="P$2"/>
@@ -4097,50 +4098,34 @@ We've spent an enormous amount of time creating and checking these footprints an
 &lt;b&gt;Licensing:&lt;/b&gt; CC v3.0 Share-Alike You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
 <packages>
 <package name="1X07_LOCK">
-<wire x1="14.605" y1="1.27" x2="15.875" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="15.875" y1="1.27" x2="16.51" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="16.51" y1="-0.635" x2="15.875" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="11.43" y1="0.635" x2="12.065" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="12.065" y1="1.27" x2="13.335" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="13.335" y1="1.27" x2="13.97" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="13.97" y1="-0.635" x2="13.335" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="13.335" y1="-1.27" x2="12.065" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="12.065" y1="-1.27" x2="11.43" y2="-0.635" width="0.2032" layer="21"/>
 <wire x1="14.605" y1="1.27" x2="13.97" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="13.97" y1="-0.635" x2="14.605" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="15.875" y1="-1.27" x2="14.605" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="6.985" y1="1.27" x2="8.255" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="8.255" y1="1.27" x2="8.89" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="8.89" y1="-0.635" x2="8.255" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="8.89" y1="0.635" x2="9.525" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="9.525" y1="1.27" x2="10.795" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="10.795" y1="1.27" x2="11.43" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="11.43" y1="-0.635" x2="10.795" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="10.795" y1="-1.27" x2="9.525" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="9.525" y1="-1.27" x2="8.89" y2="-0.635" width="0.2032" layer="21"/>
 <wire x1="3.81" y1="0.635" x2="4.445" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="4.445" y1="1.27" x2="5.715" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="5.715" y1="1.27" x2="6.35" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="6.35" y1="-0.635" x2="5.715" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="5.715" y1="-1.27" x2="4.445" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="4.445" y1="-1.27" x2="3.81" y2="-0.635" width="0.2032" layer="21"/>
 <wire x1="6.985" y1="1.27" x2="6.35" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="6.35" y1="-0.635" x2="6.985" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="8.255" y1="-1.27" x2="6.985" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="0.635" x2="1.905" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="1.905" y1="1.27" x2="3.175" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="3.175" y1="1.27" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.2032" layer="21"/>
 <wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="16.51" y1="0.635" x2="16.51" y2="-0.635" width="0.2032" layer="21"/>
 <pad name="1" x="0" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="2" x="2.54" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="3" x="5.08" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
@@ -5266,7 +5251,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="R12" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
 <part name="R13" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
 <part name="R14" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
-<part name="X1" library="TomW" deviceset="VERT_SD_CARD" device=""/>
+<part name="X1" library="TomW" deviceset="VERT_SD_CARD_REV2" device=""/>
 <part name="LED5" library="TomW" deviceset="LED" device="3MM"/>
 <part name="R15" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M11" device="LOCK"/>
