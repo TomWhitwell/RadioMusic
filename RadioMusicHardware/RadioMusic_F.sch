@@ -5245,13 +5245,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="CHANNEL-CV" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
 <part name="RESET-CV" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
 <part name="OUTPUT" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
-<part name="R9" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
-<part name="R10" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="200k"/>
+<part name="R9" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
+<part name="R10" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
 <part name="R17" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="220R"/>
 <part name="TIME-POT" library="TomW" deviceset="ALPHA-9MM" device="A" technology="F2" value="50k"/>
 <part name="TIME-CV" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
-<part name="R20" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
-<part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="200k"/>
+<part name="R20" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
+<part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
 <part name="D7" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="D8" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R19" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
@@ -5262,13 +5262,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="LED2" library="TomW" deviceset="LED" device="3MM"/>
 <part name="LED3" library="TomW" deviceset="LED" device="3MM"/>
 <part name="LED4" library="TomW" deviceset="LED" device="3MM"/>
-<part name="R11" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
-<part name="R12" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
-<part name="R13" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
-<part name="R14" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
+<part name="R11" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
+<part name="R12" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
+<part name="R13" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
+<part name="R14" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
 <part name="X1" library="TomW" deviceset="VERT_SD_CARD" device=""/>
 <part name="LED5" library="TomW" deviceset="LED" device="3MM"/>
-<part name="R15" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="2K"/>
+<part name="R15" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M11" device="LOCK"/>
 <part name="JP4" library="SparkFun-Connectors" deviceset="M07" device="LOCK"/>
 </parts>
