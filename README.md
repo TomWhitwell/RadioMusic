@@ -14,9 +14,11 @@
 
 A digital way to simulate radio-powered compositions by John Cage, Karlheinz Stockhausen and Don Buchla's voltage-controlled radio experiments. It uses a teensy3.1 to play files from a SD card to simulate a voltage controlled AM/FM/Shortwave/Time Travel radio. 
 
-####Progress 
-October 2014  
-- Very early prototyping    
+####Progress  
+
+December 2014  
+- [Rev2 PCB files](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusicHardware/Gerbers/Rev%202%20Gerbers%20Dec%202014) published, prototyping in process  
+
 November 2014  
 - First PCB build   
 - [Video 1](http://instagram.com/p/vCNc37DmSj/)  
@@ -25,6 +27,9 @@ November 2014
 - [Audio: Long demo](https://soundcloud.com/musicthing/radio-music-20-minutes-of-madness)  
 - [Audio: Random Drums](https://soundcloud.com/musicthing/radio-music-random-drums)  
 - [Audio: Random Voices](https://soundcloud.com/musicthing/radio-music-random-voices)   
+
+October 2014   
+- Very early prototyping     
 
 
 ####Features
