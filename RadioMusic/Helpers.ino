@@ -30,7 +30,7 @@ void scanDirectory(File dir, int numTabs) {
 
 // TAKE BANK AND CHANNEL AND RETURN PROPERLY FORMATTED PATH TO THE FILE 
 char* buildPath (int bank, int channel){
-  String liveFilename = bank;
+ String liveFilename = bank;  
   liveFilename += "/";
   liveFilename += FILE_NAMES[bank][channel];
   char filename[18];

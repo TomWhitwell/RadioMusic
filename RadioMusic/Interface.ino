@@ -99,12 +99,14 @@ void checkInterface(){
   if ( resetSwitch.update() )  RESET_CHANGED = resetSwitch.read();
   if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
 
+
   // Hold Reset Button to Change Bank 
   bankTimer = bankTimer * digitalRead(RESET_BUTTON);
 
   if (bankTimer > HOLDTIME){
     PLAY_BANK++;
-    if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;   
+    if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;
+    if (PLAY_CHANNEL > FILE_COUNT[PLAY_BANK]) PLAY_CHANNEL = FILE_COUNT[PLAY_BANK];
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
