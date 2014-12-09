@@ -5260,7 +5260,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <sheets>
 <sheet>
 <plain>
-<text x="83.82" y="144.78" size="1.778" layer="91">ie D6R60 F1 LFS (Black, Round)</text>
+<text x="83.82" y="144.78" size="1.778" layer="91">ie D6R90 F1 LFS (Black, Round)</text>
 <text x="152.4" y="142.24" size="1.778" layer="91">PJS008U-3000-0 microSD card holder</text>
 <text x="152.4" y="142.24" size="1.778" layer="91">PJS008U-3000-0 microSD card holder</text>
 </plain>
