@@ -126,7 +126,7 @@ int showFreq = 250; // how many millis between serial Debug updates
 elapsedMillis resetLedTimer = 0;
 elapsedMillis bankTimer = 0;
 elapsedMillis checkI = 0; // check interface 
-int checkFreq = 5; // how often to check the interface in Millis 
+int checkFreq = 0; // how often to check the interface in Millis 
 
 // CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
@@ -247,7 +247,7 @@ void loop() {
   // CHECK INTERFACE  & UPDATE DISPLAYS/////  
   //////////////////////////////////////////
 
-  if (checkI > checkFreq){
+  if (checkI >= checkFreq){
     checkInterface(); 
     checkI = 0;  
   }
