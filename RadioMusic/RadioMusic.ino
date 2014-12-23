@@ -31,7 +31,6 @@ RADIO MUSIC
 #include <EEPROM.h>
 #include <Bounce.h>
 #include <Audio.h>
-#include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
 
