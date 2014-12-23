@@ -62,14 +62,14 @@ bool AudioPlaySdRaw::playFrom(const char *filename, unsigned long startPoint)
 	rawfile = SD.open(filename);
 	__enable_irq();
 	if (!rawfile) {
-		//Serial.println("unable to open file");
+Serial.println("NO: unable to open file");
 		return false;
 	}
 	file_size = rawfile.size();
 	rawfile.seek(startPoint % file_size);
 	file_offset = startPoint;
 
-	//Serial.println("able to open file");
+Serial.println("YES: able to open file");
 	playing = true;
 	return true;
 }
@@ -107,7 +107,22 @@ void AudioPlaySdRaw::update(void)
 	if (rawfile.available()) {
 		// we can read more data from the file...
 		n = rawfile.read(block->data, AUDIO_BLOCK_SAMPLES*2);
+
+// Normal read = 256 bytes, if not normal, return 
+// ADD THIS SECTION TO ENABLE HOT SWAPPING 
+if (n > 256) {
+Serial.print("n =");
+Serial.println(n);
+		rawfile.close();
+		AudioStopUsingSPI();
+		playing = false;
+		failed = true; 
+return;
+};
+// END OF NEW HOT SWAP SECTION
+
 		file_offset += n;
+        failed = false; 
 		for (i=n/2; i < AUDIO_BLOCK_SAMPLES; i++) {
 			block->data[i] = 0;
 		}

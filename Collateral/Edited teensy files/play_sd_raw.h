@@ -42,7 +42,7 @@ public:
 	uint32_t positionMillis(void);
 	uint32_t lengthMillis(void);
 	uint32_t fileOffset(void);
-
+    bool failed;
 	virtual void update(void);
 private:
 	File rawfile;
