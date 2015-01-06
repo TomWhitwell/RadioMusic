@@ -45,4 +45,7 @@ October 2014
 
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
 
-
+####License  
+Radio Music is Open Hardware: All hardware and software design in this project is Creative Commons licensed by Tom Whitwell: [CC-BY-SA: Attribution / ShareAlike](https://creativecommons.org/licenses/by-sa/3.0/)  
+If you use any work in this project, you should credit me, and you must republish any changes you make under the same license. This license does permit commercial use of these designs - why not get in touch before selling anything?  
+This project includes work from the [Teensy](https://www.pjrc.com/teensy/) project, which is not covered by this license. The suggested audio content is not covered by this license.  
