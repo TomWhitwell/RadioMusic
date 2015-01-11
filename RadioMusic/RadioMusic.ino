@@ -33,6 +33,7 @@ RADIO MUSIC
 #include <Audio.h>
 #include <SPI.h>
 #include <SD.h>
+#include <Wire.h>
 
 
 
