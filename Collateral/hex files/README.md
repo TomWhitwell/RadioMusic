@@ -4,6 +4,5 @@
 - Looping option  
 - Tweaks to make module respond faster  
 - Fix glitches after bank changes  
-- Remove calls to unusued Wire library 
 
 28-11-2014: Working Code v1  
