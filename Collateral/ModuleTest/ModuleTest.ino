@@ -124,7 +124,7 @@ update = 0;
 analogWrite(LED3,pot1 / 4);
 analogWrite(LED2,pot2 / 4);
 analogWrite(LED1,cv1 /4);
-analogWrite(LED0,cv1 /4);
+analogWrite(LED0,cv2 /4);
 
       sine1.frequency(analogRead(CHAN_POT_PIN)*2 + analogRead(CHAN_CV_PIN)*2);
       sine1.amplitude(0.9);
