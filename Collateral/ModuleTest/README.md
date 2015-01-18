@@ -1,5 +1,8 @@
 ##Module Hardware Test file  
 
+[![](https://i.vimeocdn.com/video/503708029.webp?mw=600&q=70)](https://vimeo.com/117123053)  
+[CLICK TO WATCH THE VIDEO](https://vimeo.com/117123053)  
+
 ModuleTest.ino is a quick way to check that the hardware in your module is working correctly.  
 
 You'll need to install the full [Teensyduino environment](http://www.pjrc.com/teensy/td_download.html). Once that is installed and working (i.e. you can install Blink and see expected results) download and run the [Module Test Sketch](https://github.com/TomWhitwell/RadioMusic/tree/master/Collateral/ModuleTest).  
