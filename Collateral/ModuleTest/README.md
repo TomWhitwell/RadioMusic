@@ -5,6 +5,8 @@
 
 ModuleTest.ino is a quick way to check that the hardware in your module is working correctly.  
 
+If you cut the power trace, you'll need both +/-12v ribbon cable power and USB power to make it work.  
+
 You'll need to install the full [Teensyduino environment](http://www.pjrc.com/teensy/td_download.html). Once that is installed and working (i.e. you can install Blink and see expected results) download and run the [Module Test Sketch](https://github.com/TomWhitwell/RadioMusic/tree/master/Collateral/ModuleTest).  
 - You'll see all five LEDs flash in sequence   
 - While they're flashing, the module will generate audio - various sine wave tones    
