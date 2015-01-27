@@ -5,9 +5,14 @@
 
 ModuleTest.ino is a quick way to check that the hardware in your module is working correctly.  
 
-If you cut the power trace, you'll need both +/-12v ribbon cable power and USB power to make it work.  
+If you cut the power trace, you'll need both +/-12v ribbon cable power and USB power to upload firmware to the module.  
 
-You'll need to install the full [Teensyduino environment](http://www.pjrc.com/teensy/td_download.html). Once that is installed and working (i.e. you can install Blink and see expected results) download and run the [Module Test Sketch](https://github.com/TomWhitwell/RadioMusic/tree/master/Collateral/ModuleTest).  
+###Method 1: Basic  
+Install the file moduletest.cpp.hex using Teensy Loader in the same way you installed the original firmware ([as explained here](https://github.com/TomWhitwell/RadioMusic/wiki/Preparing-the-Teensy-3.1)) 
+You can see lights flashing on the module, it will produce sounds, those sounds will moduluate as you turn the knobs and apply CV. Knobs and CV are also mapped to the 4 LEDs at the top.  
+
+###Method 2: Advanced 
+To get feedback from the module and see what's going on, you'll need to install the full [Teensyduino environment](http://www.pjrc.com/teensy/td_download.html). Once that is installed and working (i.e. you can install Blink and see expected results) download and run the [Module Test Sketch](https://github.com/TomWhitwell/RadioMusic/tree/master/Collateral/ModuleTest).  
 - You'll see all five LEDs flash in sequence   
 - While they're flashing, the module will generate audio - various sine wave tones    
 - Once the startup routine is finished, the 4 LEDs are linked to 2xknobs and 2xCV inputs  
