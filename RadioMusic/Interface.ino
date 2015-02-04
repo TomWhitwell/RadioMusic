@@ -97,8 +97,6 @@ void checkInterface(){
 
   // Reset Button & CV 
   if ( resetSwitch.update() )  RESET_CHANGED = resetSwitch.read();
-//  if ( resetCv.update() ) RESET_CHANGED = resetCv.read();
-
 
   // Hold Reset Button to Change Bank 
   bankTimer = bankTimer * digitalRead(RESET_BUTTON);
