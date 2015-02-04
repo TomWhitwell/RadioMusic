@@ -92,7 +92,7 @@ File root;
 boolean CHAN_CHANGED = true; 
 boolean RESET_CHANGED = false; 
 Bounce resetSwitch = Bounce( RESET_BUTTON, 20 ); // Bounce setup for Reset
-Bounce resetCv = Bounce( RESET_CV, 10 ); // Bounce setup for Reset
+// Bounce resetCv = Bounce( RESET_CV, 10 ); // Bounce setup for Reset
 int PLAY_CHANNEL; 
 unsigned long playhead;
 char* charFilename;
@@ -194,9 +194,13 @@ void setup() {
   else {
     EEPROM.write(BANK_SAVE,0);
   };
+  
+  attachInterrupt(RESET_CV, resetcv, RISING);
 }
 
-
+void resetcv() {
+  RESET_CHANGED = true;
+}
 ////////////////////////////////////////////////////
 ///////////////MAIN LOOP//////////////////////////
 ////////////////////////////////////////////////////
