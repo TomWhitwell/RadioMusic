@@ -19,6 +19,17 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 
 ####Progress  
 
+February 2015  
+- [Thonk kits shipping](http://www.thonk.co.uk/product-category/music-thing-modular/)  
+- Module being used by:  
+    - [Robin Rimbaud (Scanner)](https://twitter.com/robinrimbaud/status/562663428830289921)   
+    - [Chris Carter](https://twitter.com/chris_carter_/status/562889299621076993)  
+    - [Russell Haswell](https://twitter.com/russellhaswell/status/552213743363690496)  
+- [Big collection of video and audio demos](http://musicthing.co.uk/modular/?p=1087)  
+
+January 2015  
+- Rev2 PCB Files confirmed good  
+
 December 2014  
 - [Rev2 PCB files](https://github.com/TomWhitwell/RadioMusic/tree/master/RadioMusicHardware/Gerbers/Rev%202%20Gerbers%20Dec%202014) published, prototyping in process  
 
