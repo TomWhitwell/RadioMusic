@@ -50,18 +50,27 @@ int StartCVDivider = 2;              // Changes sensitivity of Start control. 1 
 boolean Looping = true;              // When a file finishes, start again from the beginning 
 File settingsFile;
 
+// AUDIO SETUP 
 
+AudioPlaySdRaw playRaw1,playRaw2; 
+AudioPlaySdRaw *raw[2] = {&playRaw1, &playRaw2};
 
+AudioEffectFade fade1, fade2;          
+AudioEffectFade *fade[2] = {&fade1, &fade2};          
 
-// GUItool: begin automatically generated code
-AudioPlaySdRaw           playRaw1;       //xy=131,81
-AudioEffectFade          fade1;          //xy=257,169
-AudioAnalyzePeak         peak1;          //xy=317,123
-AudioOutputAnalog        dac1;           //xy=334,98
-AudioConnection          patchCord1(playRaw1, fade1);
-AudioConnection          patchCord2(fade1, dac1);
-AudioConnection          patchCord3(playRaw1, peak1);
-// GUItool: end automatically generated code
+AudioMixer4  mixer1;         //xy=417,820
+
+AudioAnalyzePeak peak1;          
+AudioOutputAnalog dac1;           
+AudioConnection patchCord1(playRaw1, fade1);
+AudioConnection patchCord2(playRaw2, fade2);
+
+AudioConnection patchCord3(fade1, 0, mixer1, 0);
+AudioConnection patchCord4(fade2, 0, mixer1, 1);
+
+AudioConnection patchCord5(mixer1, peak1);
+AudioConnection patchCord6(mixer1, dac1);
+
 
 // REBOOT CODES 
 #define RESTART_ADDR       0xE000ED0C
@@ -150,6 +159,10 @@ void setup() {
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
+  
+  mixer1.gain(0,1); // set Unity gain on both channels on the mixer 
+  mixer1.gain(1,1);
+  
   // SD CARD SETTINGS FOR AUDIO SHIELD 
   SPI.setMOSI(7);
   SPI.setSCK(14);
