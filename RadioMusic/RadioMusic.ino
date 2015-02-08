@@ -53,10 +53,12 @@ File settingsFile;
 // AUDIO SETUP 
 
 AudioPlaySdRaw playRaw1,playRaw2; 
-AudioPlaySdRaw *raw[2] = {&playRaw1, &playRaw2};
+AudioPlaySdRaw *raw[2] = {
+  &playRaw1, &playRaw2};
 
 AudioEffectFade fade1, fade2;          
-AudioEffectFade *fade[2] = {&fade1, &fade2};          
+AudioEffectFade *fade[2] = {
+  &fade1, &fade2};          
 
 AudioMixer4  mixer1;         //xy=417,820
 
@@ -118,8 +120,8 @@ int PLAY_BANK = 0;
 // CHANGE HOW INTERFACE REACTS 
 int chanHyst = 3; // how many steps to move before making a change (out of 1024 steps on a reading) 
 int timHyst = 3; 
-int chanHystTime = 10; // How many ms to wait after one change before making another 
-int timHystTime = 10; 
+int chanHystTime = 0; // How many ms to wait after one change before making another 
+int timHystTime = 0; 
 elapsedMillis chanChanged; 
 elapsedMillis timChanged; 
 int sampleAverage = 20;
@@ -159,10 +161,10 @@ void setup() {
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
-  
+
   mixer1.gain(0,1); // set Unity gain on both channels on the mixer 
   mixer1.gain(1,1);
-  
+
   // SD CARD SETTINGS FOR AUDIO SHIELD 
   SPI.setMOSI(7);
   SPI.setSCK(14);
@@ -206,7 +208,7 @@ void setup() {
   else {
     EEPROM.write(BANK_SAVE,0);
   };
-  
+
   // Add an interrupt on the RESET_CV pin to catch rising edges
   attachInterrupt(RESET_CV, resetcv, RISING);
 }
@@ -219,6 +221,8 @@ void resetcv() {
 ////////////////////////////////////////////////////
 ///////////////MAIN LOOP//////////////////////////
 ////////////////////////////////////////////////////
+
+int VOICE = 0;
 
 void loop() {
   //////////////////////////////////////////
@@ -241,19 +245,16 @@ void loop() {
 
 
   if (CHAN_CHANGED || RESET_CHANGED){
-    if (MUTE){  
-      fade1.fadeOut(DECLICK);      // fade out before change 
-      delay(DECLICK);
-    }
+    if (MUTE) fade[VOICE]->fadeIn(DECLICK);      // fade in new audio 
+
 
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
 
-    if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
+    if (RESET_CHANGED == false) playhead = raw[VOICE]->fileOffset(); // Carry on from previous position, unless reset pressed
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
-    playRaw1.playFrom(charFilename,playhead);   // change audio
-    delay(10);
-
-    if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in 
+    raw[VOICE]->playFrom(charFilename,playhead);   // change audio
+    VOICE = ~VOICE & 1u; // change voice playing 
+    if (MUTE)    fade[VOICE]->fadeOut(DECLICK); // fade old audio out 
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
@@ -283,6 +284,7 @@ void loop() {
 
 
 }
+
 
 
 
