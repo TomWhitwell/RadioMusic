@@ -52,13 +52,11 @@ File settingsFile;
 
 // AUDIO SETUP 
 
-AudioPlaySdRaw playRaw1,playRaw2; 
-AudioPlaySdRaw *raw[2] = {
-  &playRaw1, &playRaw2};
+AudioPlaySdRaw playRaw1,playRaw2;
+AudioPlaySdRaw *raw[2] = {  &playRaw1, &playRaw2};
 
-AudioEffectFade fade1, fade2;          
-AudioEffectFade *fade[2] = {
-  &fade1, &fade2};          
+AudioEffectFade fade1, fade2;       
+AudioEffectFade *fade[2] = { &fade1, &fade2};          
 
 AudioMixer4  mixer1;         //xy=417,820
 
@@ -245,16 +243,23 @@ void loop() {
 
 
   if (CHAN_CHANGED || RESET_CHANGED){
-    if (MUTE) fade[VOICE]->fadeIn(DECLICK);      // fade in new audio 
 
+    //    if (MUTE) fade[VOICE]->fadeOut(DECLICK);      // fade out old audio 
+    fade[VOICE]->fadeOut(DECLICK);      // fade out old audio 
 
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
 
     if (RESET_CHANGED == false) playhead = raw[VOICE]->fileOffset(); // Carry on from previous position, unless reset pressed
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
-    raw[VOICE]->playFrom(charFilename,playhead);   // change audio
+
     VOICE = ~VOICE & 1u; // change voice playing 
-    if (MUTE)    fade[VOICE]->fadeOut(DECLICK); // fade old audio out 
+
+
+    raw[VOICE]->playFrom(charFilename,playhead);   // change audio
+    
+//    if (MUTE)    fade[VOICE]->fadeIn(DECLICK); // fade in new audio 
+fade[VOICE]->fadeIn(DECLICK); // fade in new audio 
+    
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
@@ -278,7 +283,8 @@ void loop() {
     showDisplay = 0;
   }
 
-  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
+digitalWrite(RESET_LED,VOICE);
+//  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
 
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE && ShowMeter) peakMeter();    // CALL PEAK METER   
 
