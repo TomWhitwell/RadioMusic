@@ -24,6 +24,7 @@ To get feedback from the module and see what's going on, you'll need to install 
 
 ##Bonus 2 
 - stereodelay.hex and stereodelay.ino turn the Radio Music module into a STUPID stereo delay module. With many caveats. 
+    - [Audio demo](https://soundcloud.com/musicthing/radiomusicstereodelay)  
     - Input: The module expects a small (1.25v p-to-p) input signal that is floating at around 2.5v. That is very different from a modular signal, which is bipolar, 10v p-to-p. So, to get a clean (ish) signal, I used the two centre channels on a Maths to add a little offset and attenuate the signal a lot. 
     - Output: To get stereo output, I'm using the Reset Input as an output. I'm also using the Teensy Audio library's PWM output module, which sends signals to pins 3 and 4. So I've run a jumper on the back of the teensy from Pin 5 (ie digital pin 3) to pin 11 (ie Digital pin 9). This may be a bad idea and might blow up your module. Mine is OK so far. LEDs 1 and 2 are on pins 3 & 4, so they flash all the time. 
     - Output levels: The main output via the DAC is much higher than the PWM output, so you'll need to play with the mixer a bit. 
