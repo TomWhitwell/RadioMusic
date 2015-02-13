@@ -48,6 +48,7 @@ October 2014
 
 ####Features
 - 4hp x 40mm deep  
+- On-board 5v regulator, does not need a 5v rail. 
 - 75ma Current Draw   
     - 60ma from 5v regulator  
     - 8ma from -12v  
