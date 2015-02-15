@@ -1,7 +1,7 @@
 ##Radio Music
 
 ### A virtual radio module for Eurorack 
-![Prototypes from @thonk_synth](https://pbs.twimg.com/media/B6bbdRpIQAEqs73.jpg:medium)
+![Image from Matscat, Muffwiggler forum](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/BuildImages/rmpic.jpg)
 
 - [Full Documentation](https://github.com/TomWhitwell/RadioMusic/wiki)
     - [Module manual](https://github.com/TomWhitwell/RadioMusic/wiki/How-to-use-the-Radio-Music-module)  
