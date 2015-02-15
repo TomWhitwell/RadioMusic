@@ -18,3 +18,5 @@ To get feedback from the module and see what's going on, you'll need to install 
 - Once the startup routine is finished, the 4 LEDs are linked to 2xknobs and 2xCV inputs  
 - If you run the serial monitor in Arduino, you'll see the knob / CV input values as 0-1024. 
     - Expect to see some jitter from noise - maybe jumping up and down 10 points (these numbers are smoothed by the firmware later on), but you should be able to move each pot from 0 - 1024 smoothly.  
+
+(The alternative firmwares that were in this folder are now documented here:  https://github.com/TomWhitwell/RadioMusic/wiki/Alternative-firmware-for-Radio-Music ) 
