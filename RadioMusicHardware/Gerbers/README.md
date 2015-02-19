@@ -1,0 +1,1 @@
+##NB These Gerbers may not reflect the latest Eagle updates. For latest version, create your own Gerbers from the eagle files. 
