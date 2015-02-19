@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="25" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="5" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="yes" active="yes"/>
@@ -19,11 +19,11 @@
 <layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="yes"/>
 <layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="no" active="yes"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="yes" active="yes"/>
@@ -208,10 +208,10 @@ type 0207, grid 10 mm</description>
 </package>
 <package name="D6_BUTTON_RND">
 <description>Momentary Pushbutton Switch</description>
-<pad name="P$1" x="-2.5" y="2.5" drill="0.81" shape="square"/>
-<pad name="P$2" x="2.5" y="2.5" drill="0.81" shape="square"/>
-<pad name="P$3" x="2.5" y="-2.5" drill="0.81" shape="square"/>
-<pad name="P$4" x="-2.5" y="-2.5" drill="0.81" shape="square"/>
+<pad name="P$1" x="-2.5" y="2.5" drill="1" shape="square"/>
+<pad name="P$2" x="2.5" y="2.5" drill="1" shape="square"/>
+<pad name="P$3" x="2.5" y="-2.5" drill="1" shape="square"/>
+<pad name="P$4" x="-2.5" y="-2.5" drill="1" shape="square"/>
 <wire x1="-5" y1="3" x2="-5" y2="-3" width="0.127" layer="21"/>
 <wire x1="-5" y1="3" x2="-5" y2="-3" width="0.127" layer="21" curve="-298.072487"/>
 <circle x="0" y="0" radius="4.5" width="0.127" layer="51"/>
@@ -8612,7 +8612,11 @@ design rules under a new name.</description>
 <wire x1="53.6448" y1="3.6576" x2="53.6448" y2="7.40518125" width="0.3048" layer="16"/>
 <wire x1="53.6448" y1="7.40518125" x2="57.00921875" y2="10.7696" width="0.3048" layer="16" curve="-90"/>
 <wire x1="57.00921875" y1="10.7696" x2="61.1632" y2="10.7696" width="0.3048" layer="16"/>
-<wire x1="33.9344" y1="2.8448" x2="52.322625" y2="2.8448" width="0.3048" layer="16"/>
+<wire x1="33.9344" y1="2.8448" x2="40.259" y2="2.8448" width="0.3048" layer="16"/>
+<wire x1="40.259" y1="2.8448" x2="40.894" y2="2.413" width="0.3048" layer="16"/>
+<wire x1="40.894" y1="2.413" x2="48.26" y2="2.413" width="0.3048" layer="16"/>
+<wire x1="48.26" y1="2.413" x2="48.768" y2="2.794" width="0.3048" layer="16"/>
+<wire x1="48.768" y1="2.794" x2="52.322625" y2="2.8448" width="0.3048" layer="16"/>
 <wire x1="52.322625" y1="2.8448" x2="53.19218125" y2="3.20498125" width="0.3048" layer="16" curve="45"/>
 <wire x1="53.19218125" y1="3.20498125" x2="53.6448" y2="3.6576" width="0.3048" layer="16"/>
 <wire x1="32.512" y1="4.2672" x2="33.9344" y2="2.8448" width="0.3048" layer="16" curve="90"/>
@@ -8749,14 +8753,14 @@ design rules under a new name.</description>
 <contactref element="OUTPUT" pad="P$1"/>
 <contactref element="R17" pad="2"/>
 <wire x1="74.3712" y1="8.3312" x2="74.3712" y2="14.4272" width="0.3048" layer="16"/>
-<wire x1="47.5488" y1="9.9568" x2="48.72004375" y2="8.78555625" width="0.3048" layer="1"/>
+<wire x1="48.0568" y1="9.9568" x2="48.72004375" y2="8.78555625" width="0.3048" layer="1"/>
 <wire x1="48.72004375" y1="8.78555625" x2="49.816959375" y2="8.3312" width="0.3048" layer="1" curve="45"/>
 <wire x1="49.816959375" y1="8.3312" x2="74.3712" y2="8.3312" width="0.3048" layer="1"/>
 <wire x1="1.4224" y1="4.4704" x2="1.4224" y2="4.99381875" width="0.3048" layer="1"/>
 <wire x1="1.4224" y1="4.99381875" x2="1.77070625" y2="5.83470625" width="0.3048" layer="1" curve="-44.999894"/>
 <wire x1="1.77070625" y1="5.83470625" x2="5.30053125" y2="9.36453125" width="0.3048" layer="1"/>
 <wire x1="5.30053125" y1="9.36453125" x2="6.73039375" y2="9.9568" width="0.3048" layer="1" curve="-45"/>
-<wire x1="6.73039375" y1="9.9568" x2="47.5488" y2="9.9568" width="0.3048" layer="1"/>
+<wire x1="6.73039375" y1="9.9568" x2="48.0568" y2="9.9568" width="0.3048" layer="1"/>
 <wire x1="74.3712" y1="14.4272" x2="74.295" y2="14.605" width="0.3048" layer="16"/>
 <wire x1="1.4224" y1="4.4704" x2="1.35" y2="4.445" width="0.3048" layer="1"/>
 <via x="74.3712" y="8.3312" extent="1-16" drill="0.3048"/>
