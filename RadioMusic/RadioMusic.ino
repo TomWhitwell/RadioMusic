@@ -131,7 +131,7 @@ int checkFreq = 10; // how often to check the interface in Millis
 // CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
 elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
-#define peakFPS 24 //  FRAMERATE FOR PEAK METER 
+#define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
 void setup() {
 
@@ -214,8 +214,10 @@ void loop() {
   //////////////////////////////////////////
 
   if (!playRaw1.isPlaying() && Looping){
-    playhead = 0;
-    RESET_CHANGED = true;
+    charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
+    playRaw1.playFrom(charFilename,0);   // change audio
+    resetLedTimer = 0; // turn on Reset LED 
+
   }
 
   if (playRaw1.failed){
@@ -236,12 +238,12 @@ void loop() {
 
     charFilename = buildPath(PLAY_BANK,NEXT_CHANNEL);
     PLAY_CHANNEL = NEXT_CHANNEL;
-    
-    
+
+
     if (RESET_CHANGED == false && Looping) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed or time selected
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio
-    delay(10);
+//    delay(10);
 
     if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in   
     ledWrite(PLAY_BANK);
@@ -273,6 +275,7 @@ void loop() {
 
 
 }
+
 
 
 

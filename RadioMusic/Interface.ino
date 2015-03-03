@@ -51,13 +51,13 @@ void checkInterface(){
 
   if (channel != PLAY_CHANNEL && chanPotChange) {
     NEXT_CHANNEL = channel; 
-    CHAN_CHANGED = StartPotImmediate;
+    CHAN_CHANGED = ChanPotImmediate;
     chanPotOld = chanPot;
   };
 
   if (channel != PLAY_CHANNEL && chanCVChange) {
     NEXT_CHANNEL = channel; 
-    CHAN_CHANGED = StartCVImmediate;
+    CHAN_CHANGED = ChanCVImmediate;
     chanCVOld = chanCV;
   };
 
@@ -90,7 +90,7 @@ void checkInterface(){
   if (bankTimer > HOLDTIME){
     PLAY_BANK++;
     if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;
-    if (PLAY_CHANNEL >= FILE_COUNT[PLAY_BANK]) PLAY_CHANNEL = FILE_COUNT[PLAY_BANK]-1;
+    if (NEXT_CHANNEL >= FILE_COUNT[PLAY_BANK]) NEXT_CHANNEL = FILE_COUNT[PLAY_BANK]-1;
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
