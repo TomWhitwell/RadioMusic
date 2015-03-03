@@ -34,11 +34,6 @@ void checkInterface(){
   boolean timPotChange = (abs(timPot - timPotOld) > timHyst);
   boolean timCVChange = (abs(timCV - timCVOld) > timHyst); 
 
-Serial.print("changes:");
-Serial.print(chanPotChange);
-Serial.print(chanCVChange);
-Serial.print(timPotChange);
-Serial.println(timCVChange);
 
   // MAP INPUTS TO CURRENT SITUATION 
 
