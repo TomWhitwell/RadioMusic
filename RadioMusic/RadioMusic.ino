@@ -94,6 +94,7 @@ boolean CHAN_CHANGED = true;
 boolean RESET_CHANGED = false; 
 Bounce resetSwitch = Bounce( RESET_BUTTON, 20 ); // Bounce setup for Reset
 int PLAY_CHANNEL; 
+int NEXT_CHANNEL; 
 unsigned long playhead;
 char* charFilename;
 
@@ -109,12 +110,11 @@ int PLAY_BANK = 0;
 
 // CHANGE HOW INTERFACE REACTS 
 int chanHyst = 3; // how many steps to move before making a change (out of 1024 steps on a reading) 
-int timHyst = 3; 
-int chanHystTime = 10; // How many ms to wait after one change before making another 
-int timHystTime = 10; 
+int timHyst = 6; 
+
 elapsedMillis chanChanged; 
 elapsedMillis timChanged; 
-int sampleAverage = 20;
+int sampleAverage = 40;
 int chanPotOld;
 int chanCVOld;
 int timPotOld;
@@ -126,7 +126,7 @@ int showFreq = 250; // how many millis between serial Debug updates
 elapsedMillis resetLedTimer = 0;
 elapsedMillis bankTimer = 0;
 elapsedMillis checkI = 0; // check interface 
-int checkFreq = 0; // how often to check the interface in Millis 
+int checkFreq = 10; // how often to check the interface in Millis 
 
 // CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
@@ -194,7 +194,7 @@ void setup() {
   else {
     EEPROM.write(BANK_SAVE,0);
   };
-  
+
   // Add an interrupt on the RESET_CV pin to catch rising edges
   attachInterrupt(RESET_CV, resetcv, RISING);
 }
@@ -234,14 +234,16 @@ void loop() {
       delay(DECLICK);
     }
 
-    charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-
-    if (RESET_CHANGED == false) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed
+    charFilename = buildPath(PLAY_BANK,NEXT_CHANNEL);
+    PLAY_CHANNEL = NEXT_CHANNEL;
+    
+    
+    if (RESET_CHANGED == false && Looping) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed or time selected
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio
     delay(10);
 
-    if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in 
+    if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in   
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
@@ -271,6 +273,7 @@ void loop() {
 
 
 }
+
 
 
 
