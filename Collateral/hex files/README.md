@@ -2,7 +2,7 @@
 
 3-3-2015: Rev 1.2 BETA 
 - Rewritten code around channel / time selection
-    - Fewer audio glitches
+    - Fewer audio glitches while changing channels 
     - Faster, more responsive 
     - More consistent response to reset triggers 
     - Non-Looping one shot mode should be more useful for drum triggering, removes radio-like channel switching completely in this mode. 
