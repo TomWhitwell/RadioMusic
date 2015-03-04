@@ -5,12 +5,9 @@
 void checkInterface(){
 
   int channel; 
-  int time; 
-  int bank; 
-  boolean channelChange = false; 
-  boolean timeChange = false; 
+  unsigned long time; 
 
-  // READ POTS 
+  // READ & AVERAGE POTS 
 
   int chanPot = 0; 
   int chanCV = 0; 
@@ -29,69 +26,58 @@ void checkInterface(){
   timPot = timPot / sampleAverage; 
   timCV = timCV / sampleAverage; 
 
-  // IDENTIFY CHANGES 
 
-  int chanPotChange = abs(chanPot - chanPotOld); 
-  int chanCVChange = abs(chanCV - chanCVOld);
-  int timPotChange = abs(timPot - timPotOld);
-  int timCVChange = abs(timCV - timCVOld); 
+  // IDENTIFY POT / CV CHANGES 
 
-  if ( chanPotChange > chanHyst ){
-    // Channel pot changed  
-    channelChange = true; 
+  boolean chanPotChange = (abs(chanPot - chanPotOld) > chanHyst); 
+  boolean chanCVChange = (abs(chanCV - chanCVOld) > chanHyst);
+  boolean timPotChange = (abs(timPot - timPotOld) > timHyst);
+  boolean timCVChange = (abs(timCV - timCVOld) > timHyst); 
+
+
+  // MAP INPUTS TO CURRENT SITUATION 
+
+  channel = chanPot + chanCV; 
+  channel = constrain(channel, 0, 1023);
+  channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
+
+  time = timPot + timCV;   
+  time = constrain(time, 0, 1023); 
+  time = (time / StartCVDivider) * StartCVDivider; // Quantizes start position 
+  time  = time * (FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]/1023);
+
+
+  // IDENTIFY AND DEPLOY RELEVANT CHANGES  
+
+  if (channel != PLAY_CHANNEL && chanPotChange) {
+    NEXT_CHANNEL = channel; 
     CHAN_CHANGED = ChanPotImmediate;
-    chanPotOld = chanPot; 
+    chanPotOld = chanPot;
+  };
 
-  }
-
-  if (chanCVChange > chanHyst){
-    // Channel CV Changed 
-    channelChange = true; 
+  if (channel != PLAY_CHANNEL && chanCVChange) {
+    NEXT_CHANNEL = channel; 
     CHAN_CHANGED = ChanCVImmediate;
-    chanCVOld = chanCV; 
+    chanCVOld = chanCV;
+  };
 
+  if (timPotChange){
+    playhead = time;
+    RESET_CHANGED =  StartPotImmediate;
+    timPotOld = timPot;
   }
 
-  if (channelChange && chanChanged > chanHystTime){
-    // Change the channel global variable 
-    channel = chanPot + chanCV; 
-    channel = constrain(channel, 0, 1023);
-    channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
-    if (channel == PLAY_CHANNEL) CHAN_CHANGED = false; // Do not retrigger if channel is unchanged 
-    PLAY_CHANNEL = channel;
-    channelChange = false; 
-    chanChanged = 0;
+  if (timCVChange){
+    playhead = time;
+    RESET_CHANGED =  StartCVImmediate;
+    timCVOld = timCV;
   }
 
-  if (timPotChange > timHyst){
-    // Time Pot Changed  
-    timeChange = true;
-    RESET_CHANGED = StartPotImmediate; 
-   timPotOld = timPot; 
- 
-  }
 
-  if (timCVChange > timHyst){
-    // Time CV Changed  
-    timeChange = true;
-    RESET_CHANGED = StartCVImmediate;  
-    timCVOld = timCV; 
 
-  }
 
-  if (timeChange && timChanged > timHystTime){
-    // Do change the time global variable 
-    time = timPot + timCV;   
-    time = constrain(time, 0, 1023); 
-    time = (time / StartCVDivider) * StartCVDivider; // Quantizes start position 
-    unsigned long fileLength = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL];
-    unsigned long newTime = ((fileLength/1023) * time);
-    unsigned long playPosition = playRaw1.fileOffset();
-    unsigned long fileStart = (playPosition / fileLength) * fileLength;
-    playhead = fileStart + newTime;
-    timeChange = false; 
-    timChanged = 0;
-  }
+
+
 
 
 
@@ -104,7 +90,7 @@ void checkInterface(){
   if (bankTimer > HOLDTIME){
     PLAY_BANK++;
     if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;
-    if (PLAY_CHANNEL >= FILE_COUNT[PLAY_BANK]) PLAY_CHANNEL = FILE_COUNT[PLAY_BANK]-1;
+    if (NEXT_CHANNEL >= FILE_COUNT[PLAY_BANK]) NEXT_CHANNEL = FILE_COUNT[PLAY_BANK]-1;
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;
@@ -112,5 +98,8 @@ void checkInterface(){
   }
 
 }
+
+
+
 
 

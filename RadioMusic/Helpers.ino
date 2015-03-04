@@ -127,8 +127,10 @@ void printSettings(){
 void peakMeter(){
   if (peak1.available()) {
     fps = 0;
-    int monoPeak = peak1.read() * 5.0;
-    ledWrite((pow(2,monoPeak))-1); // 
+    float peakReading = peak1.read();
+    int monoPeak = round ( peakReading * 4);
+    monoPeak = round (pow(2,monoPeak));
+    ledWrite(monoPeak-1); // 
   }
 }
 
