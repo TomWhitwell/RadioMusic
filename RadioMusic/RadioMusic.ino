@@ -69,13 +69,13 @@ AudioConnection          patchCord3(playRaw1, peak1);
 #define WRITE_RESTART(val) ((*(volatile uint32_t *)RESTART_ADDR) = (val))
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
-#define MAX_FILES 75 // Maximum number of files per bank 
-#define MAX_BANKS 16 // Maximum number of banks 
+#define MAX_FILES 150 // Maximum number of files per bank 
+#define MAX_BANKS 32 // Maximum number of banks 
 int ACTIVE_BANKS = 0; // How many directories are accessible. Directory structure must start at "0" and be sequential 0, 1, 2, 3 etc 
 String FILE_TYPE = "RAW"; // only looking for .raw files 
 File root;
-String FILE_NAMES[MAX_FILES]; // Array to hold the file names in the active bank 
-unsigned long FILE_SIZES[MAX_FILES]; // Array to hold file sizes in the active bank 
+String FILE_NAMES[MAX_FILES+1]; // Array to hold the file names in the active bank 
+unsigned long FILE_SIZES[MAX_FILES+1]; // Array to hold file sizes in the active bank 
 int FILE_COUNT;
 #define BLOCK_SIZE 2 // size of blocks to read - must be more than 1, performance might improve with 16?
 
@@ -288,8 +288,15 @@ void loop() {
     showDisplay = 0;
   }
 
+  if (PLAY_BANK < 16){
+  
   digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
-
+  }
+  else{
+  digitalWrite(RESET_LED, resetLedTimer > FLASHTIME); // flash reset LED 
+    
+  }
+  
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE && ShowMeter) peakMeter();    // CALL PEAK METER   
 
 

@@ -43,10 +43,11 @@ AudioNoInterrupts();
     File entry = root.openNextFile();
     if (! entry) break;
     String fileName = entry.name();
-    if (fileName.endsWith(FILE_TYPE) && !fileName.startsWith("_")){
+    if (fileName.endsWith(FILE_TYPE) && !fileName.startsWith("_") && f < MAX_FILES){
       FILE_NAMES[f] = entry.name();
       FILE_SIZES[f] = entry.size();
       f++;
+      
     }
     entry.close();
   }
@@ -160,6 +161,7 @@ void ledWrite(int n){
   digitalWrite(LED1, HIGH && (n & B00000100));
   digitalWrite(LED2, HIGH && (n & B00000010));
   digitalWrite(LED3, HIGH && (n & B00000001)); 
+  digitalWrite(RESET_LED,HIGH && (n & B00010000));
 }
 
 
