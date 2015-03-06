@@ -1,41 +1,83 @@
 //////////////////////////////////////////
 // SCAN SD DIRECTORIES INTO ARRAYS //////
 /////////////////////////////////////////
-void scanDirectory(File dir, int numTabs) {
-  while(true) {
-    File entry =  dir.openNextFile();
-    if (! entry) {
-      // no more files
-      break;
-    }
-    String fileName = entry.name();
 
-    if (fileName.endsWith(FILE_TYPE) && fileName.startsWith("_") == 0){
-      int intCurrentDirectory = CURRENT_DIRECTORY.toInt();
-      if (intCurrentDirectory > ACTIVE_BANKS) ACTIVE_BANKS = intCurrentDirectory; 
-      FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.name();
-      FILE_SIZES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.size();
-      FILE_DIRECTORIES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = CURRENT_DIRECTORY;
-      FILE_COUNT[intCurrentDirectory]++;
-    };
-    // Ignore OSX Spotlight and Trash Directories 
-    if (entry.isDirectory() && fileName.startsWith("SPOTL") == 0 && fileName.startsWith("TRASH") == 0) {
-      CURRENT_DIRECTORY = entry.name();
-      scanDirectory(entry, numTabs+1);
-    } 
+
+int countDirectory(){ // returns number of number-labelled directories, assuming directories named 0,1,2,3,4,5 etc 
+  AudioNoInterrupts();
+  int d = 0;
+    root = SD.open("/");
+    root.rewindDirectory();
+  while(true){
+    File entry = root.openNextFile();
+    if (! entry) break;
+    String fileName = entry.name();
+    if (entry.isDirectory()){
+      if (fileName.toInt() != 0 || fileName == "0") d++;
+    }
     entry.close();
   }
+ AudioInterrupts();
+ return d;
 }
 
 
-// TAKE BANK AND CHANNEL AND RETURN PROPERLY FORMATTED PATH TO THE FILE 
-char* buildPath (int bank, int channel){
- String liveFilename = bank;  
+int loadFiles(int directory){ // returns number of files in the specified directory + loads FILE_NAMES[n] and FILE_SIZES[n]
+AudioNoInterrupts();
+   int f = 0;
+  String liveFilename = "/";
+  liveFilename += directory;
   liveFilename += "/";
-  liveFilename += FILE_NAMES[bank][channel];
-  char filename[18];
-  liveFilename.toCharArray(filename, 17);
+  char name[5];
+  liveFilename.toCharArray(name,4);
+  if (!SD.exists(name)) {
+    Serial.println("directory not found") ;
+    return 0;
+ 
+  };
+  
+  root = SD.open(name);
+  root.rewindDirectory();
+  
+  while(true){
+    File entry = root.openNextFile();
+    if (! entry) break;
+    String fileName = entry.name();
+    if (fileName.endsWith(FILE_TYPE) && !fileName.startsWith("_")){
+      FILE_NAMES[f] = entry.name();
+      FILE_SIZES[f] = entry.size();
+      f++;
+    }
+    entry.close();
+  }
+ AudioInterrupts();
+  return f;
+}
+
+
+
+
+
+// TAKE BANK AND CHANNEL AND RETURN PROPERLY FORMATTED PATH TO THE FILE 
+// = /1/FILENAME.RAW 
+char* buildPath (int bank, int channel){
+
+  // String liveFilename = bank;  
+//  liveFilename += "/";
+  
+   
+  String liveFilename = "/";
+  liveFilename += bank;  
+  liveFilename += "/";
+  
+  
+  liveFilename += FILE_NAMES[channel];
+  char filename[19];
+  liveFilename.toCharArray(filename, 18);
+//  Serial.print("Built filename: ");
+//  Serial.println(filename);
   return filename;
+ 
 }
 
 void reBoot(){
@@ -50,8 +92,8 @@ void reBoot(){
 
 // SHOW VISUAL INDICATOR OF TRACK PROGRESS IN SERIAL MONITOR 
 void playDisplay(){
-  int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
-  int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
+  int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_CHANNEL]) >> 21;
+  int size = FILE_SIZES[PLAY_CHANNEL] >> 21;
   for (int i = 0; i < size; i++){
     if (i == position) Serial.print("|");
     else Serial.print("_");
@@ -71,29 +113,6 @@ void whatsPlaying (){
 }
 
 
-void printFileList(){
-
-  for (int x = 0; x < BANKS; x++){ 
-    Serial.print("Bank: ");
-    Serial.println(x);
-
-    Serial.print (FILE_COUNT[x]);
-    Serial.print(" ");
-    Serial.print (FILE_TYPE);
-    Serial.println(" Files found"); 
-
-    for (int i = 0; i < FILE_COUNT[x]; i++){
-      Serial.print (i);
-      Serial.print (") ");
-      Serial.print (FILE_DIRECTORIES[x][i]);
-      Serial.print(" | ");
-      Serial.print(FILE_NAMES[x][i]);
-      Serial.print(" | ");
-      Serial.print(FILE_SIZES[x][i]);
-      Serial.println(" | ");
-    }
-  }
-}
 
 
 void printSettings(){

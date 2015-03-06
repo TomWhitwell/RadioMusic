@@ -39,12 +39,12 @@ void checkInterface(){
 
   channel = chanPot + chanCV; 
   channel = constrain(channel, 0, 1023);
-  channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
+  channel = map(channel,0,1024,0,FILE_COUNT); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
 
   time = timPot + timCV;   
   time = constrain(time, 0, 1023); 
   time = (time / StartCVDivider) * StartCVDivider; // Quantizes start position 
-  time  = time * (FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]/1023);
+  time  = time * (FILE_SIZES[PLAY_CHANNEL] / 1023);
 
 
   // IDENTIFY AND DEPLOY RELEVANT CHANGES  
@@ -89,8 +89,29 @@ void checkInterface(){
 
   if (bankTimer > HOLDTIME){
     PLAY_BANK++;
-    if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;
-    if (NEXT_CHANNEL >= FILE_COUNT[PLAY_BANK]) NEXT_CHANNEL = FILE_COUNT[PLAY_BANK]-1;
+    if (PLAY_BANK > ACTIVE_BANKS-1) PLAY_BANK = 0;
+    
+    Serial.print("Switching to bank ");
+   Serial.println(PLAY_BANK); 
+
+
+    FILE_COUNT = loadFiles(PLAY_BANK);
+if (FILE_COUNT < 1) {
+Serial.println("NO FILES ERROR");
+}  
+    
+    Serial.print (FILE_COUNT);
+Serial.print(" files found in bank ");
+Serial.println (PLAY_BANK);
+    Serial.print("attempting to play file ");
+    Serial.println(NEXT_CHANNEL);
+    
+    if (NEXT_CHANNEL > FILE_COUNT-1) NEXT_CHANNEL = FILE_COUNT-1;
+    if (NEXT_CHANNEL < 0) NEXT_CHANNEL = 0; 
+    Serial.print("or maybe ");
+    Serial.println(NEXT_CHANNEL);
+    
+    
     CHAN_CHANGED = true;
     bankTimer = 0;  
     meterDisplay = 0;

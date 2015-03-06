@@ -37,7 +37,6 @@ RADIO MUSIC
 #include <Wire.h>
 
 
-
 // OPTIONS TO READ FROM THE SD CARD, WITH DEFAULT VALUES 
 boolean MUTE = false;                // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
 int DECLICK= 15;                      // milliseconds of fade in/out on switching 
@@ -70,17 +69,16 @@ AudioConnection          patchCord3(playRaw1, peak1);
 #define WRITE_RESTART(val) ((*(volatile uint32_t *)RESTART_ADDR) = (val))
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
-#define MAX_FILES 75
-#define BANKS 16
-int ACTIVE_BANKS; 
-String FILE_TYPE = "RAW";
-String FILE_NAMES [BANKS][MAX_FILES];
-String FILE_DIRECTORIES[BANKS][MAX_FILES];
-unsigned long FILE_SIZES[BANKS][MAX_FILES];
-int FILE_COUNT[BANKS];
-String CURRENT_DIRECTORY = "0";
+#define MAX_FILES 75 // Maximum number of files per bank 
+#define MAX_BANKS 16 // Maximum number of banks 
+int ACTIVE_BANKS = 0; // How many directories are accessible. Directory structure must start at "0" and be sequential 0, 1, 2, 3 etc 
+String FILE_TYPE = "RAW"; // only looking for .raw files 
 File root;
+String FILE_NAMES[MAX_FILES]; // Array to hold the file names in the active bank 
+unsigned long FILE_SIZES[MAX_FILES]; // Array to hold file sizes in the active bank 
+int FILE_COUNT;
 #define BLOCK_SIZE 2 // size of blocks to read - must be more than 1, performance might improve with 16?
+
 
 // SETUP VARS TO STORE CONTROLS 
 #define CHAN_POT_PIN A9 // pin for Channel pot
@@ -133,9 +131,15 @@ elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change
 elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
+
+////////////////////////////////////////////////////
+///////////////SETUP////////////////////////////////
+////////////////////////////////////////////////////
+
+
 void setup() {
 
-  //PINS FOR BANK SWITCH AND LEDS 
+  //DEFINE PINS FOR BANK SWITCH AND LEDS 
   pinMode(BANK_BUTTON,INPUT);
   pinMode(RESET_BUTTON, INPUT);
   pinMode(RESET_CV, INPUT);
@@ -148,6 +152,7 @@ void setup() {
 
   // START SERIAL MONITOR   
   Serial.begin(38400); 
+  delay(1000);
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
@@ -181,19 +186,33 @@ void setup() {
     writeSDSettings();
   };
 
-  // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
-  scanDirectory(root, 0);
+
+  // OPEN SD CARD AND COUNT THE NUMBER OF AVAILABLE BANKS  
+ ACTIVE_BANKS = countDirectory();
+  Serial.print (ACTIVE_BANKS);
+  Serial.println(" banks found");
 
   // CHECK  FOR SAVED BANK POSITION 
   int a = 0;
   a = EEPROM.read(BANK_SAVE);
-  if (a >= 0 && a <= ACTIVE_BANKS){
+  if (a >= 0 && a < ACTIVE_BANKS-1){
     PLAY_BANK = a;
     CHAN_CHANGED = true;
   }
   else {
     EEPROM.write(BANK_SAVE,0);
   };
+
+  Serial.print("Open bank");
+  Serial.println (PLAY_BANK);
+
+
+  FILE_COUNT = loadFiles(PLAY_BANK);
+
+  Serial.print (FILE_COUNT);
+  Serial.print(" files found in bank ");
+  Serial.println (PLAY_BANK);
+
 
   // Add an interrupt on the RESET_CV pin to catch rising edges
   attachInterrupt(RESET_CV, resetcv, RISING);
@@ -243,7 +262,7 @@ void loop() {
     if (RESET_CHANGED == false && Looping) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed or time selected
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio
-//    delay(10);
+    //    delay(10);
 
     if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in   
     ledWrite(PLAY_BANK);
@@ -265,7 +284,7 @@ void loop() {
 
   if (showDisplay > showFreq){
     //    playDisplay();
-    whatsPlaying();
+    //    whatsPlaying();
     showDisplay = 0;
   }
 
@@ -275,6 +294,8 @@ void loop() {
 
 
 }
+
+
 
 
 
