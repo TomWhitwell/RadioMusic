@@ -1,5 +1,7 @@
 ##Radio Music
 
+[![Join the chat at https://gitter.im/TomWhitwell/RadioMusic](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/TomWhitwell/RadioMusic?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ### A virtual radio module for Eurorack 
 ![Image from matcsat, Muffwiggler forum](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/BuildImages/rmpic.jpg)
 
