@@ -130,10 +130,10 @@ elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
 //PULSE OUT SYSTEM 
-elapsedMillis pulseFlash; 
-elapsedMillis pulseTime; 
-int pFlash = 10; 
-int pTime = 500; 
+elapsedMillis pulseFlash; // counter for the length of each pulse 
+elapsedMillis pulseTime; // counter for the gaps between pulses 
+int pFlash = 10; // how long are the pulses? 
+int pTime = 500; // how long are gaps between pulses? 
 
 
 ////////////////////////////////////////////////////
@@ -192,7 +192,7 @@ void setup() {
 
 
   // OPEN SD CARD AND COUNT THE NUMBER OF AVAILABLE BANKS  
- ACTIVE_BANKS = countDirectory();
+  ACTIVE_BANKS = countDirectory();
   Serial.print (ACTIVE_BANKS);
   Serial.println(" banks found");
 
@@ -219,7 +219,7 @@ void setup() {
 
 
   // Add an interrupt on the RESET_CV pin to catch rising edges
-//  attachInterrupt(RESET_CV, resetcv, RISING);
+  //  attachInterrupt(RESET_CV, resetcv, RISING);
 }
 
 //// Called by interrupt on rising edge, for RESET_CV pin
@@ -235,7 +235,7 @@ void loop() {
   //////////////////////////////////////////
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   //////////////////////////////////////////
-Serial.println (resetLedTimer);
+  Serial.println (resetLedTimer);
   if (!playRaw1.isPlaying() && Looping){
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     playRaw1.playFrom(charFilename,0);   // change audio
@@ -277,8 +277,8 @@ Serial.println (resetLedTimer);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
     resetLedTimer = 0; // turn on Reset LED 
-     pulseTime = 0; 
-pulseFlash = 0; 
+    pulseTime = 0; 
+    pulseFlash = 0; 
   }
 
 
@@ -299,14 +299,14 @@ pulseFlash = 0;
   }
 
   if (PLAY_BANK < 16){
-  
-  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
+
+    digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
   }
   else{
-  digitalWrite(RESET_LED, resetLedTimer > FLASHTIME); // flash reset LED 
-    
+    digitalWrite(RESET_LED, resetLedTimer > FLASHTIME); // flash reset LED 
+
   }
-  
+
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE && ShowMeter) peakMeter();    // CALL PEAK METER   
 
 
@@ -314,15 +314,16 @@ pulseFlash = 0;
   //////////// LOOP DIVIDER SYSTEM /////////  
   //////////////////////////////////////////
 
-digitalWrite(RESET_CV, pulseFlash < pFlash);
-if (pulseTime > pTime){
- pulseTime = 0; 
-pulseFlash = 0; 
-}
+  digitalWrite(RESET_CV, pulseFlash < pFlash);
+  if (pulseTime > pTime){
+    pulseTime = 0; 
+    pulseFlash = 0; 
+  }
 
 
 
 }
+
 
 
 
