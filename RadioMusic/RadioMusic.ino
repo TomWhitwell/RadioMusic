@@ -1,18 +1,16 @@
 /*
-RADIO MUSIC 
- https://github.com/TomWhitwell/RadioMusic
- 
+Loop Divider  
  Audio out: Onboard DAC, teensy3.1 pin A14/DAC
  
  Bank Button: 2
  Bank LEDs 3,4,5,6
  Reset Button: 8  
  Reset LED 11 
- Reset CV input: 9 
+ Pulse CV output: 9 
  Channel Pot: A9 
  Channel CV: A8 // check 
- Time Pot: A7 
- Time CV: A6 // check 
+ Divider Pot: A7 
+ Divider CV: A6 // check 
  SD Card Connections: 
  SCLK 14
  MISO 12
