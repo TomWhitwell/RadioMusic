@@ -164,8 +164,8 @@ void setup() {
 
   ledWrite(PLAY_BANK);
 
-  // START SERIAL MONITOR   
-  //  Serial.begin(38400); 
+// START SERIAL MONITOR   
+Serial.begin(38400); 
 
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
@@ -252,6 +252,7 @@ void loop() {
   }
 
   if (playRaw1.failed){
+    Serial.println("ABOUT TO REBOOT");
     reBoot();
   }
 
@@ -274,7 +275,7 @@ void loop() {
     if (RESET_CHANGED == false && Looping) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed or time selected
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
     playRaw1.playFrom(charFilename,playhead);   // change audio
-    //    delay(10);
+//    delay(10);
 
     if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in   
     ledWrite(PLAY_BANK);
@@ -300,6 +301,8 @@ void loop() {
   if (showDisplay > showFreq){
     //    playDisplay();
     //    whatsPlaying();
+    Serial.print("failed=");
+    Serial.println(playRaw1.failed);
     showDisplay = 0;
   }
 
