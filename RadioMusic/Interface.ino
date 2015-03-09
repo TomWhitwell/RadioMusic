@@ -91,25 +91,15 @@ void checkInterface(){
     PLAY_BANK++;
     if (PLAY_BANK > ACTIVE_BANKS-1) PLAY_BANK = 0;
     
-    Serial.print("Switching to bank ");
-   Serial.println(PLAY_BANK); 
 
 
     FILE_COUNT = loadFiles(PLAY_BANK);
 if (FILE_COUNT < 1) {
-Serial.println("NO FILES ERROR");
 }  
     
-    Serial.print (FILE_COUNT);
-Serial.print(" files found in bank ");
-Serial.println (PLAY_BANK);
-    Serial.print("attempting to play file ");
-    Serial.println(NEXT_CHANNEL);
     
     if (NEXT_CHANNEL > FILE_COUNT-1) NEXT_CHANNEL = FILE_COUNT-1;
     if (NEXT_CHANNEL < 0) NEXT_CHANNEL = 0; 
-    Serial.print("or maybe ");
-    Serial.println(NEXT_CHANNEL);
     
     
     CHAN_CHANGED = true;

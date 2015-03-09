@@ -25,13 +25,13 @@ int countDirectory(){ // returns number of number-labelled directories, assuming
 int loadFiles(int directory){ // returns number of files in the specified directory + loads FILE_NAMES[n] and FILE_SIZES[n]
 AudioNoInterrupts();
    int f = 0;
+   boolean flasher; 
   String liveFilename = "/";
   liveFilename += directory;
   liveFilename += "/";
   char name[5];
   liveFilename.toCharArray(name,4);
   if (!SD.exists(name)) {
-    Serial.println("directory not found") ;
     return 0;
  
   };
@@ -47,6 +47,8 @@ AudioNoInterrupts();
       FILE_NAMES[f] = entry.name();
       FILE_SIZES[f] = entry.size();
       f++;
+      digitalWrite(RESET_LED, flasher);
+      flasher = !flasher; 
       
     }
     entry.close();
@@ -87,53 +89,6 @@ void reBoot(){
 }
 
 
-//////////////////////////////////////////////
-////////VARIOUS DEBUG DISPLAY FUNCTIONS //////
-//////////////////////////////////////////////
-
-// SHOW VISUAL INDICATOR OF TRACK PROGRESS IN SERIAL MONITOR 
-void playDisplay(){
-  int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_CHANNEL]) >> 21;
-  int size = FILE_SIZES[PLAY_CHANNEL] >> 21;
-  for (int i = 0; i < size; i++){
-    if (i == position) Serial.print("|");
-    else Serial.print("_");
-  }
-  Serial.println("");
-}
-
-
-// SHOW CURRENTLY PLAYING TRACK IN SERIAL MONITOR 
-void whatsPlaying (){
-  Serial.print("Bank:");
-  Serial.print(PLAY_BANK);
-  Serial.print(" Channel:");
-  Serial.print(PLAY_CHANNEL);  
-  Serial.print(" File:");  
-  Serial.println (charFilename); 
-}
-
-
-
-
-void printSettings(){
-  Serial.print("MUTE=");
-  Serial.println(MUTE);
-  Serial.print("DECLICK=");
-  Serial.println(DECLICK);
-  Serial.print("ShowMeter=");
-  Serial.println(ShowMeter);
-  Serial.print("meterHIDE=");
-  Serial.println(meterHIDE);
-  Serial.print("ChanPotImmediate=");
-  Serial.println(ChanPotImmediate);
-  Serial.print("ChanCVImmediate=");
-  Serial.println(ChanCVImmediate);
-  Serial.print("StartPotImmediate=");
-  Serial.println(StartPotImmediate);
-  Serial.print("StartCVImmediate=");
-  Serial.println(StartCVImmediate);
-}
 
 
 
@@ -212,8 +167,6 @@ void readSDSettings(){
     settingsFile.close();
   } 
   else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening settings.txt");
   }
 }
 /* Apply the value to the parameter by searching for the parameter name
@@ -322,6 +275,35 @@ void writeSDSettings() {
 
 
 
+void osFlashFill(){
+  osFlashCount = 0;
+  for (int i = 0; i<version ; i++){
+    osFlash [osFlashCount] = 1; 
+    osFlash [osFlashCount+1] = 1; 
+    osFlash [osFlashCount+2] = 1; 
+    osFlash [osFlashCount+3] = 0; 
+    osFlashCount = osFlashCount + 4; 
+  }
+  osFlashCount++;
+  for (int i = 0; i<point ; i++){
+    osFlash [osFlashCount] = 1; 
+    osFlash [osFlashCount+1] = 0; 
+    osFlashCount = osFlashCount + 2; 
+  }
+  osFlashCount = osFlashCount + 10; 
+}
+
+void osFlasher(){
+  if (osFlashTimes < osFlashRepeats && osFlashClock > 400){
+    digitalWrite (tLED, osFlash[osFlashTick]);
+    osFlashClock = 0;
+    osFlashTick ++;
+    if (osFlashTick > osFlashCount) {
+      osFlashTick = 0;
+      osFlashTimes ++;
+    }
+  }  
+}
 
 
 

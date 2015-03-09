@@ -1,3 +1,6 @@
+#define version 1
+#define point 3
+
 /*
 RADIO MUSIC 
  https://github.com/TomWhitwell/RadioMusic
@@ -69,7 +72,7 @@ AudioConnection          patchCord3(playRaw1, peak1);
 #define WRITE_RESTART(val) ((*(volatile uint32_t *)RESTART_ADDR) = (val))
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
-#define MAX_FILES 150 // Maximum number of files per bank 
+#define MAX_FILES 500 // Maximum number of files per bank 
 #define MAX_BANKS 32 // Maximum number of banks 
 int ACTIVE_BANKS = 0; // How many directories are accessible. Directory structure must start at "0" and be sequential 0, 1, 2, 3 etc 
 String FILE_TYPE = "RAW"; // only looking for .raw files 
@@ -109,7 +112,6 @@ int PLAY_BANK = 0;
 // CHANGE HOW INTERFACE REACTS 
 int chanHyst = 3; // how many steps to move before making a change (out of 1024 steps on a reading) 
 int timHyst = 6; 
-
 elapsedMillis chanChanged; 
 elapsedMillis timChanged; 
 int sampleAverage = 40;
@@ -131,6 +133,16 @@ elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change
 elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
+// OPERATING SYSTEM BLINKER ON STARTUP 
+#define tLED 13
+#define osFlashRepeats 2
+boolean osFlash[50];
+int osFlashCount; 
+elapsedMillis osFlashClock; 
+int osFlashTick; 
+int osFlashTimes; 
+
+
 
 ////////////////////////////////////////////////////
 ///////////////SETUP////////////////////////////////
@@ -148,11 +160,13 @@ void setup() {
   pinMode(LED1,OUTPUT);
   pinMode(LED2,OUTPUT);
   pinMode(LED3,OUTPUT);
+  pinMode(tLED, OUTPUT);  
+
   ledWrite(PLAY_BANK);
 
   // START SERIAL MONITOR   
-  Serial.begin(38400); 
-  delay(1000);
+  //  Serial.begin(38400); 
+
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
   AudioMemory(5);
@@ -188,9 +202,7 @@ void setup() {
 
 
   // OPEN SD CARD AND COUNT THE NUMBER OF AVAILABLE BANKS  
- ACTIVE_BANKS = countDirectory();
-  Serial.print (ACTIVE_BANKS);
-  Serial.println(" banks found");
+  ACTIVE_BANKS = countDirectory();
 
   // CHECK  FOR SAVED BANK POSITION 
   int a = 0;
@@ -203,24 +215,24 @@ void setup() {
     EEPROM.write(BANK_SAVE,0);
   };
 
-  Serial.print("Open bank");
-  Serial.println (PLAY_BANK);
 
 
   FILE_COUNT = loadFiles(PLAY_BANK);
 
-  Serial.print (FILE_COUNT);
-  Serial.print(" files found in bank ");
-  Serial.println (PLAY_BANK);
 
 
   // Add an interrupt on the RESET_CV pin to catch rising edges
   attachInterrupt(RESET_CV, resetcv, RISING);
+  
+    osFlashFill();
 }
 
 // Called by interrupt on rising edge, for RESET_CV pin
 void resetcv() {
   RESET_CHANGED = true;
+
+  // Write osFlash array 
+
 }
 
 ////////////////////////////////////////////////////
@@ -277,6 +289,9 @@ void loop() {
   // CHECK INTERFACE  & UPDATE DISPLAYS/////  
   //////////////////////////////////////////
 
+  osFlasher(); // FLASH OS NUMBER ON STARTUP 
+
+
   if (checkI >= checkFreq){
     checkInterface(); 
     checkI = 0;  
@@ -289,18 +304,19 @@ void loop() {
   }
 
   if (PLAY_BANK < 16){
-  
-  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
+
+    digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
   }
   else{
-  digitalWrite(RESET_LED, resetLedTimer > FLASHTIME); // flash reset LED 
-    
+    digitalWrite(RESET_LED, resetLedTimer > FLASHTIME); // flash reset LED 
+
   }
-  
+
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE && ShowMeter) peakMeter();    // CALL PEAK METER   
 
-
 }
+
+
 
 
 
