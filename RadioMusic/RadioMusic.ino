@@ -1,5 +1,5 @@
-#define version 1
-#define point 3
+#define fwVersion 1
+#define fwPoint 3
 
 /*
 RADIO MUSIC 
@@ -127,6 +127,7 @@ elapsedMillis resetLedTimer = 0;
 elapsedMillis bankTimer = 0;
 elapsedMillis checkI = 0; // check interface 
 int checkFreq = 10; // how often to check the interface in Millis 
+
 
 // CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
@@ -316,6 +317,7 @@ void loop() {
   }
 
   if (fps > 1000/peakFPS && meterDisplay > meterHIDE && ShowMeter) peakMeter();    // CALL PEAK METER   
+
 
 }
 

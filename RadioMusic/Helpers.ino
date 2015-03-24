@@ -277,7 +277,7 @@ void writeSDSettings() {
 
 void osFlashFill(){
   osFlashCount = 0;
-  for (int i = 0; i<version ; i++){
+  for (int i = 0; i<fwVersion ; i++){
     osFlash [osFlashCount] = 1; 
     osFlash [osFlashCount+1] = 1; 
     osFlash [osFlashCount+2] = 1; 
@@ -285,7 +285,7 @@ void osFlashFill(){
     osFlashCount = osFlashCount + 4; 
   }
   osFlashCount++;
-  for (int i = 0; i<point ; i++){
+  for (int i = 0; i<fwPoint ; i++){
     osFlash [osFlashCount] = 1; 
     osFlash [osFlashCount+1] = 0; 
     osFlashCount = osFlashCount + 2; 
