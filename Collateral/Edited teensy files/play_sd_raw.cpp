@@ -109,7 +109,7 @@ void AudioPlaySdRaw::update(void)
 		n = rawfile.read(block->data, AUDIO_BLOCK_SAMPLES*2);
 
 // Normal read = 256 bytes, if not normal, return 
-// ADD THIS SECTION TO ENABLE HOT SWAPPING 
+// ADD THIS SECTION TO ENABLE HOT SWAP SYSTEM
 if (n > 256) {
 Serial.print("n =");
 Serial.println(n);
