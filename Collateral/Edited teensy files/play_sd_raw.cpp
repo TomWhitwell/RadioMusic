@@ -30,6 +30,7 @@
 
 void AudioPlaySdRaw::begin(void)
 {
+// Serial.print("0");
 	playing = false;
 	file_offset = 0;
 	file_size = 0;
@@ -38,6 +39,8 @@ void AudioPlaySdRaw::begin(void)
 
 bool AudioPlaySdRaw::play(const char *filename)
 {
+Serial.print("1|");
+
 	stop();
 	AudioStartUsingSPI();
 	__disable_irq();
@@ -56,20 +59,22 @@ bool AudioPlaySdRaw::play(const char *filename)
 
 bool AudioPlaySdRaw::playFrom(const char *filename, unsigned long startPoint)
 {
+Serial.print("2|");
+
 	stop();
 	AudioStartUsingSPI();
 	__disable_irq();
 	rawfile = SD.open(filename);
 	__enable_irq();
 	if (!rawfile) {
-Serial.println("NO: unable to open file");
+Serial.print("2a|");
 		return false;
 	}
 	file_size = rawfile.size();
 	rawfile.seek(startPoint % file_size);
 	file_offset = startPoint;
 
-Serial.println("YES: able to open file");
+Serial.print("2b|");
 	playing = true;
 	return true;
 }
@@ -80,20 +85,28 @@ Serial.println("YES: able to open file");
 
 void AudioPlaySdRaw::stop(void)
 {
+Serial.print("3|");
+
 	__disable_irq();
 	if (playing) {
+	Serial.print("3a|");
+
 		playing = false;
 		__enable_irq();
 		rawfile.close();
 		AudioStopUsingSPI();
 	} else {
+	Serial.print("3b|");
 		__enable_irq();
+
 	}
 }
 
 
 void AudioPlaySdRaw::update(void)
 {
+// Serial.print("4");
+
 	unsigned int i, n;
 	audio_block_t *block;
 
@@ -111,8 +124,8 @@ void AudioPlaySdRaw::update(void)
 // Normal read = 256 bytes, if not normal, return 
 // ADD THIS SECTION TO ENABLE HOT SWAP SYSTEM
 if (n > 256) {
-Serial.print("n =");
-Serial.println(n);
+// Serial.print("n =");
+// Serial.println(n);
 		rawfile.close();
 		AudioStopUsingSPI();
 		playing = false;
@@ -120,6 +133,10 @@ Serial.println(n);
 return;
 };
 // END OF NEW HOT SWAP SECTION
+
+if (!rawfile.available()){
+Serial.print("9|");
+}
 
 		file_offset += n;
         failed = false; 
@@ -139,16 +156,22 @@ return;
 
 uint32_t AudioPlaySdRaw::positionMillis(void)
 {
+// Serial.print("5");
+
 	return ((uint64_t)file_offset * B2M) >> 32;
 }
 
 uint32_t AudioPlaySdRaw::lengthMillis(void)
 {
+// Serial.print("6");
+
 	return ((uint64_t)file_size * B2M) >> 32;
 }
 
 uint32_t AudioPlaySdRaw::fileOffset(void)
 {
+// Serial.print("7");
+
 	return file_offset;
 }
 

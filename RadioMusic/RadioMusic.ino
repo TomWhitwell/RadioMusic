@@ -70,6 +70,7 @@ AudioConnection          patchCord3(playRaw1, peak1);
 #define RESTART_ADDR       0xE000ED0C
 #define READ_RESTART()     (*(volatile uint32_t *)RESTART_ADDR)
 #define WRITE_RESTART(val) ((*(volatile uint32_t *)RESTART_ADDR) = (val))
+boolean startup = true; 
 
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 500 // Maximum number of files per bank 
@@ -151,7 +152,7 @@ int osFlashTimes;
 
 
 void setup() {
-
+  
   //DEFINE PINS FOR BANK SWITCH AND LEDS 
   pinMode(BANK_BUTTON,INPUT);
   pinMode(RESET_BUTTON, INPUT);
@@ -166,7 +167,8 @@ void setup() {
   ledWrite(PLAY_BANK);
 
 // START SERIAL MONITOR   
-Serial.begin(38400); 
+//Serial.begin(38400); 
+Serial.begin(115200); 
 
 
   // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
@@ -241,11 +243,14 @@ void resetcv() {
 ////////////////////////////////////////////////////
 
 void loop() {
+  
+
   //////////////////////////////////////////
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   //////////////////////////////////////////
 
   if (!playRaw1.isPlaying() && Looping){
+    Serial.print("8|");
     charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
     playRaw1.playFrom(charFilename,0);   // change audio
     resetLedTimer = 0; // turn on Reset LED 
@@ -302,8 +307,8 @@ void loop() {
   if (showDisplay > showFreq){
     //    playDisplay();
     //    whatsPlaying();
-    Serial.print("failed=");
-    Serial.println(playRaw1.failed);
+      Serial.println("Update start");
+
     showDisplay = 0;
   }
 
