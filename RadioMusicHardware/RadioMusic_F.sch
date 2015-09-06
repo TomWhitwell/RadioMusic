@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.6.0">
+<eagle version="7.2.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -2655,8 +2655,8 @@ type 0207, grid 7.5 mm</description>
 <wire x1="3.429" y1="0" x2="3.81" y2="0" width="0.6096" layer="51"/>
 <pad name="1" x="-3.81" y="0" drill="0.8128" shape="octagon"/>
 <pad name="2" x="3.81" y="0" drill="0.8128" shape="octagon"/>
-<text x="-2.420771875" y="1.146115625" size="0.889" layer="25" ratio="10" align="top-left">&gt;NAME</text>
-<text x="3.055590625" y="-1.002128125" size="1.143" layer="27" ratio="10" align="bottom-right">&gt;VALUE</text>
+<text x="-2.420771875" y="1.146115625" size="1.016" layer="25" ratio="10" align="top-left">&gt;NAME</text>
+<text x="3.055590625" y="-1.002128125" size="1.016" layer="27" ratio="10" align="bottom-right">&gt;VALUE</text>
 <rectangle x1="-3.429" y1="-0.3048" x2="-3.175" y2="0.3048" layer="51"/>
 <rectangle x1="3.175" y1="-0.3048" x2="3.429" y2="0.3048" layer="51"/>
 </package>
@@ -3995,8 +3995,6 @@ diameter 1.8 mm, horizontal, grid 7.62 mm</description>
 <text x="2.54" y="-2.3114" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="A" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
 <pin name="C" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
-<text x="-2.54" y="0" size="0.4064" layer="99" align="center">SpiceOrder 1</text>
-<text x="2.54" y="0" size="0.4064" layer="99" align="center">SpiceOrder 2</text>
 </symbol>
 </symbols>
 <devicesets>
