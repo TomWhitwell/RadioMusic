@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="7.4.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -4018,70 +4018,6 @@ diameter 1.8 mm, horizontal, grid 7.62 mm</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="thonkiconn">
-<packages>
-<package name="WQP-PJ301M-12_JACK">
-<wire x1="-4.5" y1="6" x2="-1.5" y2="6" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="6" x2="1.5" y2="6" width="0.127" layer="21"/>
-<wire x1="1.5" y1="6" x2="4.5" y2="6" width="0.127" layer="21"/>
-<wire x1="-4.5" y1="6" x2="-4.5" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="-4.5" y1="-4.5" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="0.2" y1="-4.5" x2="4.5" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="4.5" y1="-4.5" x2="4.5" y2="6" width="0.127" layer="21"/>
-<circle x="0" y="0" radius="3.162275" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="6" x2="-1.5" y2="4" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="4" x2="1.5" y2="4" width="0.127" layer="21"/>
-<wire x1="1.5" y1="4" x2="1.5" y2="6" width="0.127" layer="21"/>
-<pad name="P$1" x="0" y="5" drill="1.1" thermals="no"/>
-<pad name="P$2" x="0" y="-3.5" drill="1.1"/>
-<pad name="P$3" x="0" y="-6.5" drill="1.1"/>
-<circle x="0" y="0" radius="2.690721875" width="0.127" layer="21"/>
-<wire x1="-0.2" y1="-4.6" x2="-0.2" y2="-6.7" width="0.127" layer="21"/>
-<wire x1="-0.2" y1="-6.7" x2="0.2" y2="-6.7" width="0.127" layer="21"/>
-<wire x1="0.2" y1="-6.7" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
-<rectangle x1="-2.8" y1="-2.8" x2="2.8" y2="2.8" layer="41"/>
-<text x="-4.7498" y="-4.4704" size="1.27" layer="21" rot="R90">&gt;NAME</text>
-</package>
-</packages>
-<symbols>
-<symbol name="JACK">
-<wire x1="-2.54" y1="2.54" x2="0" y2="2.54" width="0.1524" layer="94"/>
-<wire x1="0" y1="2.54" x2="1.524" y2="1.016" width="0.1524" layer="94"/>
-<wire x1="1.524" y1="1.016" x2="2.286" y2="1.778" width="0.1524" layer="94"/>
-<wire x1="-2.54" y1="0" x2="-0.762" y2="0" width="0.1524" layer="94"/>
-<wire x1="-0.762" y1="0" x2="-0.762" y2="2.286" width="0.1524" layer="94"/>
-<wire x1="-0.762" y1="2.286" x2="-1.016" y2="1.524" width="0.254" layer="94"/>
-<wire x1="-1.016" y1="1.524" x2="-0.508" y2="1.524" width="0.254" layer="94"/>
-<wire x1="-0.508" y1="1.524" x2="-0.762" y2="2.286" width="0.254" layer="94"/>
-<wire x1="-2.54" y1="-2.54" x2="4.572" y2="-2.54" width="0.1524" layer="94"/>
-<text x="-2.54" y="4.064" size="1.778" layer="95">&gt;NAME</text>
-<text x="-2.54" y="-6.096" size="1.778" layer="96">&gt;VALUE</text>
-<rectangle x1="2.286" y1="-0.508" x2="7.874" y2="0.508" layer="94" rot="R90"/>
-<pin name="1" x="-5.08" y="-2.54" visible="pad" length="short" direction="pas"/>
-<pin name="2" x="-5.08" y="2.54" visible="pad" length="short" direction="pas"/>
-<pin name="3" x="-5.08" y="0" visible="pad" length="short" direction="pas"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="WQP-PJ301M-12_JACK" prefix="J">
-<gates>
-<gate name="G$1" symbol="JACK" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="WQP-PJ301M-12_JACK">
-<connects>
-<connect gate="G$1" pin="1" pad="P$3"/>
-<connect gate="G$1" pin="2" pad="P$1"/>
-<connect gate="G$1" pin="3" pad="P$2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="SparkFun-Connectors">
 <description>&lt;h3&gt;SparkFun Electronics' preferred foot prints&lt;/h3&gt;
 In this library you'll find connectors and sockets- basically anything that can be plugged into or onto.&lt;br&gt;&lt;br&gt;
@@ -5204,13 +5140,105 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </deviceset>
 </devicesets>
 </library>
+<library name="MusicThingModular">
+<description>&lt;B&gt;Music Thing Modular parts library &lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;Components for Eurorack modular synths 
+&lt;/ul&gt;</description>
+<packages>
+<package name="WQP-PJ301M-12_JACK">
+<wire x1="-4.5" y1="6" x2="-1.5" y2="6" width="0.127" layer="21"/>
+<wire x1="-1.5" y1="6" x2="1.5" y2="6" width="0.127" layer="21"/>
+<wire x1="1.5" y1="6" x2="4.5" y2="6" width="0.127" layer="21"/>
+<wire x1="-4.5" y1="6" x2="-4.5" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="-4.5" y1="-4.5" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="0.2" y1="-4.5" x2="4.5" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="4.5" y1="-4.5" x2="4.5" y2="6" width="0.127" layer="21"/>
+<circle x="0" y="0" radius="3.162275" width="0.127" layer="21"/>
+<wire x1="-1.5" y1="6" x2="-1.5" y2="4" width="0.127" layer="21"/>
+<wire x1="-1.5" y1="4" x2="1.5" y2="4" width="0.127" layer="21"/>
+<wire x1="1.5" y1="4" x2="1.5" y2="6" width="0.127" layer="21"/>
+<pad name="P$1_TIP" x="0" y="5" drill="1.1" thermals="no"/>
+<pad name="P$2_SWITCH" x="0" y="-3.5" drill="1.1"/>
+<pad name="P$3_SLEEVE" x="0" y="-6.5" drill="1.1"/>
+<circle x="0" y="0" radius="2.690721875" width="0.127" layer="21"/>
+<wire x1="-0.2" y1="-4.6" x2="-0.2" y2="-6.7" width="0.127" layer="21"/>
+<wire x1="-0.2" y1="-6.7" x2="0.2" y2="-6.7" width="0.127" layer="21"/>
+<wire x1="0.2" y1="-6.7" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
+<rectangle x1="-2.8" y1="-2.8" x2="2.8" y2="2.8" layer="41"/>
+<text x="-4.7498" y="-4.4704" size="1.27" layer="21" rot="R90">&gt;NAME</text>
+</package>
+<package name="THONKICONN">
+<description>3.5mm socket for Eurorack modular synths</description>
+<pad name="P$3_TIP" x="0" y="4.84" drill="1.55" shape="square"/>
+<pad name="P$2_SWITCH" x="0" y="-3.38" drill="1.55" shape="square"/>
+<pad name="P$1_SLEEVE" x="0" y="-6.48" drill="1.35" shape="square"/>
+<wire x1="-4.5" y1="6" x2="4.5" y2="6" width="0.127" layer="21"/>
+<wire x1="4.5" y1="6" x2="4.5" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="4.5" y1="-4.5" x2="-4.5" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="-4.5" y1="-4.5" x2="-4.5" y2="6" width="0.127" layer="21"/>
+<text x="-3.8" y="1.5" size="1" layer="21" font="vector">&gt;NAME</text>
+<wire x1="-0.5" y1="0" x2="0.5" y2="0" width="0.08" layer="21"/>
+<wire x1="0" y1="0.5" x2="0" y2="-0.5" width="0.08" layer="21"/>
+</package>
+</packages>
+<symbols>
+<symbol name="THONKICONN">
+<description>pj301-b vertical 3.5mm jack socket</description>
+<wire x1="-2.54" y1="2.54" x2="0" y2="2.54" width="0.1524" layer="94"/>
+<wire x1="0" y1="2.54" x2="1.524" y2="1.016" width="0.1524" layer="94"/>
+<wire x1="1.524" y1="1.016" x2="2.286" y2="1.778" width="0.1524" layer="94"/>
+<wire x1="-2.54" y1="0" x2="-0.762" y2="0" width="0.1524" layer="94"/>
+<wire x1="-0.762" y1="0" x2="-0.762" y2="2.286" width="0.1524" layer="94"/>
+<wire x1="-0.762" y1="2.286" x2="-1.016" y2="1.524" width="0.254" layer="94"/>
+<wire x1="-1.016" y1="1.524" x2="-0.508" y2="1.524" width="0.254" layer="94"/>
+<wire x1="-0.508" y1="1.524" x2="-0.762" y2="2.286" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="-2.54" x2="4.572" y2="-2.54" width="0.1524" layer="94"/>
+<text x="-2.54" y="4.064" size="1.778" layer="95">&gt;NAME</text>
+<rectangle x1="2.286" y1="-0.508" x2="7.874" y2="0.508" layer="94" rot="R90"/>
+<pin name="SLEEVE" x="-5.08" y="-2.54" visible="off" length="short" direction="pas"/>
+<pin name="TIP" x="-5.08" y="2.54" visible="off" length="short" direction="pas"/>
+<pin name="SWITCH" x="-5.08" y="0" visible="off" length="short" direction="pas"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="THONKICONN">
+<description>3.5mm socket for Eurorack modular synths</description>
+<gates>
+<gate name="G$1" symbol="THONKICONN" x="0" y="0"/>
+</gates>
+<devices>
+<device name="OLD" package="THONKICONN">
+<connects>
+<connect gate="G$1" pin="SLEEVE" pad="P$1_SLEEVE"/>
+<connect gate="G$1" pin="SWITCH" pad="P$2_SWITCH"/>
+<connect gate="G$1" pin="TIP" pad="P$3_TIP"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="NEW" package="WQP-PJ301M-12_JACK">
+<connects>
+<connect gate="G$1" pin="SLEEVE" pad="P$3_SLEEVE"/>
+<connect gate="G$1" pin="SWITCH" pad="P$2_SWITCH"/>
+<connect gate="G$1" pin="TIP" pad="P$1_TIP"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
 <variantdefs>
 </variantdefs>
 <classes>
-<class number="0" name="default" width="0.3048" drill="0">
+<class number="0" name="default" width="0.2032" drill="0">
 </class>
 <class number="1" name="power" width="0.4572" drill="0">
 </class>
@@ -5219,14 +5247,14 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </classes>
 <parts>
 <part name="CHANNEL-POT" library="TomW" deviceset="ALPHA-9MM" device="A" technology="F2" value="50k"/>
-<part name="CHANNEL-CV" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
-<part name="RESET-CV" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
-<part name="OUTPUT" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
+<part name="CHANNEL-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
+<part name="RESET-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
+<part name="OUTPUT" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="R9" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
 <part name="R10" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
 <part name="R17" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="220R"/>
 <part name="TIME-POT" library="TomW" deviceset="ALPHA-9MM" device="A" technology="F2" value="50k"/>
-<part name="TIME-CV" library="thonkiconn" deviceset="WQP-PJ301M-12_JACK" device="" value=""/>
+<part name="TIME-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="R20" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
 <part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
 <part name="D7" library="diode" deviceset="BAT81" device="" value="BAT42"/>
@@ -5294,7 +5322,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <net name="N$14" class="0">
 <segment>
 <pinref part="R18" gate="G$1" pin="2"/>
-<pinref part="RESET-CV" gate="G$1" pin="2"/>
+<pinref part="RESET-CV" gate="G$1" pin="TIP"/>
 <wire x1="91.44" y1="43.18" x2="86.36" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -5482,7 +5510,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="149.86" y="104.14" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<pinref part="CHANNEL-CV" gate="G$1" pin="1"/>
+<pinref part="CHANNEL-CV" gate="G$1" pin="SLEEVE"/>
 <wire x1="35.56" y1="109.22" x2="35.56" y2="111.76" width="0.1524" layer="91"/>
 <label x="35.56" y="109.22" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
@@ -5492,7 +5520,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="25.4" y="71.12" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<pinref part="TIME-CV" gate="G$1" pin="1"/>
+<pinref part="TIME-CV" gate="G$1" pin="SLEEVE"/>
 <wire x1="35.56" y1="48.26" x2="35.56" y2="50.8" width="0.1524" layer="91"/>
 <label x="35.56" y="48.26" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
@@ -5502,7 +5530,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="30.48" y="10.16" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<pinref part="RESET-CV" gate="G$1" pin="1"/>
+<pinref part="RESET-CV" gate="G$1" pin="SLEEVE"/>
 <wire x1="86.36" y1="38.1" x2="86.36" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="R19" gate="G$1" pin="2"/>
 <wire x1="119.38" y1="27.94" x2="119.38" y2="25.4" width="0.1524" layer="91"/>
@@ -5532,7 +5560,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="139.7" y="7.62" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<pinref part="OUTPUT" gate="G$1" pin="1"/>
+<pinref part="OUTPUT" gate="G$1" pin="SLEEVE"/>
 <wire x1="144.78" y1="63.5" x2="144.78" y2="68.58" width="0.1524" layer="91"/>
 <label x="144.78" y="63.5" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
@@ -5671,13 +5699,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <wire x1="43.18" y1="55.88" x2="35.56" y2="55.88" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="50.8" x2="43.18" y2="55.88" width="0.1524" layer="91"/>
 <junction x="43.18" y="55.88"/>
-<pinref part="TIME-CV" gate="G$1" pin="2"/>
+<pinref part="TIME-CV" gate="G$1" pin="TIP"/>
 </segment>
 </net>
 <net name="N$9" class="0">
 <segment>
 <pinref part="R9" gate="G$1" pin="2"/>
-<pinref part="CHANNEL-CV" gate="G$1" pin="2"/>
+<pinref part="CHANNEL-CV" gate="G$1" pin="TIP"/>
 <wire x1="45.72" y1="116.84" x2="43.18" y2="116.84" width="0.1524" layer="91"/>
 <pinref part="R10" gate="G$1" pin="2"/>
 <wire x1="43.18" y1="116.84" x2="35.56" y2="116.84" width="0.1524" layer="91"/>
@@ -5687,7 +5715,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </net>
 <net name="N$3" class="0">
 <segment>
-<pinref part="OUTPUT" gate="G$1" pin="2"/>
+<pinref part="OUTPUT" gate="G$1" pin="TIP"/>
 <pinref part="R17" gate="G$1" pin="2"/>
 <wire x1="142.24" y1="73.66" x2="144.78" y2="73.66" width="0.1524" layer="91"/>
 </segment>
