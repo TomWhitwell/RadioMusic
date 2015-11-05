@@ -5250,13 +5250,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="CHANNEL-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="RESET-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="OUTPUT" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
-<part name="R9" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
-<part name="R10" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
+<part name="R9" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
+<part name="R10" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
 <part name="R17" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="220R"/>
 <part name="TIME-POT" library="TomW" deviceset="ALPHA-9MM" device="A" technology="F2" value="50k"/>
 <part name="TIME-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
-<part name="R20" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
-<part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
+<part name="R20" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
+<part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
 <part name="D7" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="D8" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R19" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
@@ -5274,8 +5274,8 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="X1" library="TomW" deviceset="VERT_SD_CARD_REV2" device=""/>
 <part name="LED5" library="TomW" deviceset="LED" device="3MM"/>
 <part name="R15" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
-<part name="JP2" library="SparkFun-Connectors" deviceset="M11" device="LOCK"/>
-<part name="JP4" library="SparkFun-Connectors" deviceset="M07" device="LOCK"/>
+<part name="JP2" library="SparkFun-Connectors" deviceset="M11" device="PTH" value="M11PTH"/>
+<part name="JP4" library="SparkFun-Connectors" deviceset="M07" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5286,16 +5286,16 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </plain>
 <instances>
 <instance part="CHANNEL-POT" gate="G$1" x="25.4" y="81.28"/>
-<instance part="CHANNEL-CV" gate="G$1" x="30.48" y="114.3" rot="MR0"/>
+<instance part="CHANNEL-CV" gate="G$1" x="30.48" y="129.54" rot="MR0"/>
 <instance part="RESET-CV" gate="G$1" x="81.28" y="40.64" rot="MR0"/>
 <instance part="OUTPUT" gate="G$1" x="149.86" y="71.12"/>
-<instance part="R9" gate="G$1" x="50.8" y="116.84" rot="R180"/>
-<instance part="R10" gate="G$1" x="43.18" y="106.68" rot="R90"/>
+<instance part="R9" gate="G$1" x="53.34" y="121.92" rot="R270"/>
+<instance part="R10" gate="G$1" x="45.72" y="132.08" rot="R180"/>
 <instance part="R17" gate="G$1" x="137.16" y="73.66"/>
 <instance part="TIME-POT" gate="G$1" x="30.48" y="22.86"/>
-<instance part="TIME-CV" gate="G$1" x="30.48" y="53.34" rot="MR0"/>
-<instance part="R20" gate="G$1" x="50.8" y="55.88" rot="R180"/>
-<instance part="R21" gate="G$1" x="43.18" y="45.72" rot="R90"/>
+<instance part="TIME-CV" gate="G$1" x="50.8" y="86.36" rot="MR0"/>
+<instance part="R20" gate="G$1" x="76.2" y="76.2" rot="R90"/>
+<instance part="R21" gate="G$1" x="66.04" y="88.9"/>
 <instance part="D7" gate="1" x="109.22" y="53.34" rot="R90"/>
 <instance part="D8" gate="1" x="109.22" y="33.02" rot="R90"/>
 <instance part="R19" gate="G$1" x="119.38" y="33.02" rot="R270"/>
@@ -5513,6 +5513,11 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <pinref part="CHANNEL-CV" gate="G$1" pin="SLEEVE"/>
 <wire x1="35.56" y1="109.22" x2="35.56" y2="111.76" width="0.1524" layer="91"/>
 <label x="35.56" y="109.22" size="1.016" layer="95" rot="R270" xref="yes"/>
+<pinref part="R9" gate="G$1" pin="2"/>
+<wire x1="35.56" y1="111.76" x2="35.56" y2="127" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="116.84" x2="53.34" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="111.76" x2="35.56" y2="111.76" width="0.1524" layer="91"/>
+<junction x="35.56" y="111.76"/>
 </segment>
 <segment>
 <pinref part="CHANNEL-POT" gate="G$1" pin="A"/>
@@ -5521,8 +5526,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </segment>
 <segment>
 <pinref part="TIME-CV" gate="G$1" pin="SLEEVE"/>
-<wire x1="35.56" y1="48.26" x2="35.56" y2="50.8" width="0.1524" layer="91"/>
-<label x="35.56" y="48.26" size="1.016" layer="95" rot="R270" xref="yes"/>
+<wire x1="55.88" y1="58.42" x2="55.88" y2="66.04" width="0.1524" layer="91"/>
+<label x="55.88" y="58.42" size="1.016" layer="95" rot="R270" xref="yes"/>
+<pinref part="R20" gate="G$1" pin="1"/>
+<wire x1="55.88" y1="66.04" x2="55.88" y2="83.82" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="71.12" x2="76.2" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="66.04" x2="55.88" y2="66.04" width="0.1524" layer="91"/>
+<junction x="55.88" y="66.04"/>
 </segment>
 <segment>
 <pinref part="TIME-POT" gate="G$1" pin="A"/>
@@ -5574,16 +5584,6 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <wire x1="205.74" y1="63.5" x2="203.2" y2="63.5" width="0.1524" layer="91"/>
 <label x="205.74" y="63.5" size="1.27" layer="95" xref="yes"/>
 </segment>
-<segment>
-<pinref part="R10" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="99.06" x2="43.18" y2="101.6" width="0.1524" layer="91"/>
-<label x="43.18" y="99.06" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
-<pinref part="R21" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="38.1" x2="43.18" y2="40.64" width="0.1524" layer="91"/>
-<label x="43.18" y="38.1" size="1.778" layer="95" xref="yes"/>
-</segment>
 </net>
 <net name="CHANNEL_CV_F" class="0">
 <segment>
@@ -5592,9 +5592,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="205.74" y="50.8" size="1.016" layer="95" xref="yes"/>
 </segment>
 <segment>
+<pinref part="R10" gate="G$1" pin="2"/>
+<wire x1="40.64" y1="132.08" x2="53.34" y2="132.08" width="0.1524" layer="91"/>
 <pinref part="R9" gate="G$1" pin="1"/>
-<wire x1="58.42" y1="116.84" x2="55.88" y2="116.84" width="0.1524" layer="91"/>
-<label x="58.42" y="116.84" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="53.34" y1="132.08" x2="60.96" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="127" x2="53.34" y2="132.08" width="0.1524" layer="91"/>
+<junction x="53.34" y="132.08"/>
+<label x="60.96" y="132.08" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="TIME_CV_F" class="0">
@@ -5604,9 +5608,13 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="205.74" y="53.34" size="1.016" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="R20" gate="G$1" pin="1"/>
-<wire x1="58.42" y1="55.88" x2="55.88" y2="55.88" width="0.1524" layer="91"/>
-<label x="58.42" y="55.88" size="1.778" layer="95" rot="R90" xref="yes"/>
+<pinref part="R21" gate="G$1" pin="1"/>
+<wire x1="60.96" y1="88.9" x2="76.2" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="R20" gate="G$1" pin="2"/>
+<wire x1="76.2" y1="88.9" x2="86.36" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="81.28" x2="76.2" y2="88.9" width="0.1524" layer="91"/>
+<junction x="76.2" y="88.9"/>
+<label x="86.36" y="88.9" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="RESET_CV_F" class="0">
@@ -5691,33 +5699,25 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="205.74" y="40.64" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="TEMP" class="0">
-<segment>
-<pinref part="R20" gate="G$1" pin="2"/>
-<wire x1="45.72" y1="55.88" x2="43.18" y2="55.88" width="0.1524" layer="91"/>
-<pinref part="R21" gate="G$1" pin="2"/>
-<wire x1="43.18" y1="55.88" x2="35.56" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="50.8" x2="43.18" y2="55.88" width="0.1524" layer="91"/>
-<junction x="43.18" y="55.88"/>
-<pinref part="TIME-CV" gate="G$1" pin="TIP"/>
-</segment>
-</net>
-<net name="N$9" class="0">
-<segment>
-<pinref part="R9" gate="G$1" pin="2"/>
-<pinref part="CHANNEL-CV" gate="G$1" pin="TIP"/>
-<wire x1="45.72" y1="116.84" x2="43.18" y2="116.84" width="0.1524" layer="91"/>
-<pinref part="R10" gate="G$1" pin="2"/>
-<wire x1="43.18" y1="116.84" x2="35.56" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="111.76" x2="43.18" y2="116.84" width="0.1524" layer="91"/>
-<junction x="43.18" y="116.84"/>
-</segment>
-</net>
 <net name="N$3" class="0">
 <segment>
 <pinref part="OUTPUT" gate="G$1" pin="TIP"/>
 <pinref part="R17" gate="G$1" pin="2"/>
 <wire x1="142.24" y1="73.66" x2="144.78" y2="73.66" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="CHANNEL-CV" gate="G$1" pin="TIP"/>
+<pinref part="R10" gate="G$1" pin="1"/>
+<wire x1="50.8" y1="132.08" x2="35.56" y2="132.08" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$2" class="0">
+<segment>
+<pinref part="TIME-CV" gate="G$1" pin="TIP"/>
+<pinref part="R21" gate="G$1" pin="2"/>
+<wire x1="71.12" y1="88.9" x2="55.88" y2="88.9" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
