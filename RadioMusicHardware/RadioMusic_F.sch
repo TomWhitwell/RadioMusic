@@ -5181,6 +5181,55 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <wire x1="-0.5" y1="0" x2="0.5" y2="0" width="0.08" layer="21"/>
 <wire x1="0" y1="0.5" x2="0" y2="-0.5" width="0.08" layer="21"/>
 </package>
+<package name="VERTICAL_RESISTOR">
+<description>Vertical resistor</description>
+<pad name="1" x="-1.27" y="0" drill="0.8128" shape="octagon" rot="R90"/>
+<pad name="2" x="1.27" y="0" drill="0.8128" shape="octagon"/>
+<text x="-1.67831875" y="0.78730625" size="0.6096" layer="27" ratio="10">&gt;VALUE</text>
+<text x="-1.905" y="-1.27" size="0.6096" layer="25" ratio="10">&gt;NAME</text>
+<wire x1="-1.905" y1="1.27" x2="-2.54" y2="0.635" width="0.127" layer="21" curve="90"/>
+<wire x1="-1.905" y1="-1.27" x2="-2.54" y2="-0.635" width="0.127" layer="21" curve="-90"/>
+<wire x1="-2.54" y1="-0.635" x2="-2.54" y2="0.635" width="0.127" layer="21"/>
+<wire x1="2.54" y1="-0.635" x2="2.54" y2="0.635" width="0.127" layer="21"/>
+<wire x1="2.54" y1="0.635" x2="1.905" y2="1.27" width="0.127" layer="21" curve="90"/>
+<wire x1="1.905" y1="-1.27" x2="2.54" y2="-0.635" width="0.127" layer="21" curve="90"/>
+</package>
+<package name="7MM_RESISTOR">
+<description>Standard resistor on 7mm grid</description>
+<wire x1="-3.81" y1="0" x2="-3.429" y2="0" width="0.6096" layer="51"/>
+<wire x1="-3.175" y1="0.889" x2="-2.921" y2="1.143" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-3.175" y1="-0.889" x2="-2.921" y2="-1.143" width="0.1524" layer="21" curve="90"/>
+<wire x1="2.921" y1="-1.143" x2="3.175" y2="-0.889" width="0.1524" layer="21" curve="90"/>
+<wire x1="2.921" y1="1.143" x2="3.175" y2="0.889" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-3.175" y1="-0.889" x2="-3.175" y2="0.889" width="0.1524" layer="51"/>
+<wire x1="-2.921" y1="1.143" x2="-2.54" y2="1.143" width="0.1524" layer="21"/>
+<wire x1="-2.921" y1="-1.143" x2="-2.54" y2="-1.143" width="0.1524" layer="21"/>
+<wire x1="2.921" y1="1.143" x2="2.54" y2="1.143" width="0.1524" layer="21"/>
+<wire x1="2.921" y1="-1.143" x2="2.54" y2="-1.143" width="0.1524" layer="21"/>
+<wire x1="3.175" y1="-0.889" x2="3.175" y2="0.889" width="0.1524" layer="51"/>
+<wire x1="3.429" y1="0" x2="3.81" y2="0" width="0.6096" layer="51"/>
+<pad name="1" x="-3.81" y="0" drill="0.8128" shape="octagon"/>
+<pad name="2" x="3.81" y="0" drill="0.8128" shape="octagon"/>
+<text x="-2.420771875" y="1.146115625" size="0.889" layer="25" ratio="10" align="top-left">&gt;NAME</text>
+<text x="3.055590625" y="-1.002128125" size="1.143" layer="27" ratio="10" align="bottom-right">&gt;VALUE</text>
+<rectangle x1="-3.429" y1="-0.3048" x2="-3.175" y2="0.3048" layer="51"/>
+<rectangle x1="3.175" y1="-0.3048" x2="3.429" y2="0.3048" layer="51"/>
+</package>
+<package name="10MM_RESISTOR">
+<description>Standard resistor on 10mm grid</description>
+<wire x1="5.08" y1="0" x2="4.064" y2="0" width="0.6096" layer="51"/>
+<wire x1="-5.08" y1="0" x2="-5.334" y2="0" width="0.6096" layer="51"/>
+<wire x1="-4.21" y1="0.889" x2="-3.956" y2="1.143" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-4.21" y1="-0.889" x2="-3.956" y2="-1.143" width="0.1524" layer="21" curve="90"/>
+<wire x1="4.021" y1="-1.143" x2="4.275" y2="-0.889" width="0.1524" layer="21" curve="90"/>
+<wire x1="4.021" y1="1.043" x2="4.275" y2="0.789" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-4.21" y1="-0.889" x2="-4.21" y2="0.889" width="0.1524" layer="21"/>
+<wire x1="4.275" y1="-0.889" x2="4.275" y2="0.789" width="0.1524" layer="21"/>
+<pad name="1" x="-5.08" y="0" drill="0.8128" shape="octagon"/>
+<pad name="2" x="5.08" y="0" drill="0.8128" shape="octagon"/>
+<text x="-3.74836875" y="0.4290125" size="0.8128" layer="25" ratio="10">&gt;NAME</text>
+<text x="-3.284790625" y="-1.227290625" size="1.4224" layer="27" ratio="10">&gt;VALUE</text>
+</package>
 </packages>
 <symbols>
 <symbol name="THONKICONN">
@@ -5199,6 +5248,16 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <pin name="SLEEVE" x="-5.08" y="-2.54" visible="off" length="short" direction="pas"/>
 <pin name="TIP" x="-5.08" y="2.54" visible="off" length="short" direction="pas"/>
 <pin name="SWITCH" x="-5.08" y="0" visible="off" length="short" direction="pas"/>
+</symbol>
+<symbol name="RESISTORS">
+<wire x1="-2.54" y1="-0.889" x2="2.54" y2="-0.889" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
+<wire x1="2.54" y1="-0.889" x2="2.54" y2="0.889" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="-0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
+<text x="-3.81" y="1.4986" size="1.778" layer="95">&gt;NAME</text>
+<text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -5230,6 +5289,41 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </device>
 </devices>
 </deviceset>
+<deviceset name="RESISTOR" prefix="R" uservalue="yes">
+<description>Standard resistor, various versions</description>
+<gates>
+<gate name="G$1" symbol="RESISTORS" x="0" y="0"/>
+</gates>
+<devices>
+<device name="VERTICAL" package="VERTICAL_RESISTOR">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="7MM" package="7MM_RESISTOR">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="10MM_RESISTOR" package="10MM_RESISTOR">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -5251,12 +5345,12 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="RESET-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="OUTPUT" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="R9" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
-<part name="R10" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
+<part name="R10" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="22k"/>
 <part name="R17" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="220R"/>
 <part name="TIME-POT" library="TomW" deviceset="ALPHA-9MM" device="A" technology="F2" value="50k"/>
 <part name="TIME-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
-<part name="R20" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47k"/>
-<part name="R21" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="22k"/>
+<part name="R20" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="47k"/>
+<part name="R21" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="22k"/>
 <part name="D7" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="D8" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R19" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="100k"/>
@@ -5269,7 +5363,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="LED4" library="TomW" deviceset="LED" device="3MM"/>
 <part name="R11" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
 <part name="R12" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
-<part name="R13" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
+<part name="R13" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="1.5k"/>
 <part name="R14" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1.5k"/>
 <part name="X1" library="TomW" deviceset="VERT_SD_CARD_REV2" device=""/>
 <part name="LED5" library="TomW" deviceset="LED" device="3MM"/>
@@ -5343,8 +5437,8 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <net name="N$20" class="0">
 <segment>
 <pinref part="LED3" gate="G$1" pin="C"/>
-<pinref part="R13" gate="G$1" pin="2"/>
-<wire x1="149.86" y1="30.48" x2="152.4" y2="30.48" width="0.1524" layer="91"/>
+<pinref part="R13" gate="G$1" pin="1"/>
+<wire x1="139.7" y1="30.48" x2="152.4" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$21" class="0">
@@ -5528,9 +5622,9 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <pinref part="TIME-CV" gate="G$1" pin="SLEEVE"/>
 <wire x1="55.88" y1="58.42" x2="55.88" y2="66.04" width="0.1524" layer="91"/>
 <label x="55.88" y="58.42" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="R20" gate="G$1" pin="1"/>
+<pinref part="R20" gate="G$1" pin="2"/>
 <wire x1="55.88" y1="66.04" x2="55.88" y2="83.82" width="0.1524" layer="91"/>
-<wire x1="76.2" y1="71.12" x2="76.2" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="81.28" x2="76.2" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="76.2" y1="66.04" x2="55.88" y2="66.04" width="0.1524" layer="91"/>
 <junction x="55.88" y="66.04"/>
 </segment>
@@ -5556,11 +5650,11 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <wire x1="139.7" y1="45.72" x2="139.7" y2="38.1" width="0.1524" layer="91"/>
 <pinref part="R11" gate="G$1" pin="1"/>
 <pinref part="R12" gate="G$1" pin="1"/>
-<wire x1="139.7" y1="38.1" x2="139.7" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="139.7" y1="38.1" x2="149.86" y2="30.48" width="0.1524" layer="91"/>
 <junction x="139.7" y="38.1"/>
-<pinref part="R13" gate="G$1" pin="1"/>
-<wire x1="139.7" y1="30.48" x2="139.7" y2="22.86" width="0.1524" layer="91"/>
-<junction x="139.7" y="30.48"/>
+<pinref part="R13" gate="G$1" pin="2"/>
+<wire x1="149.86" y1="30.48" x2="139.7" y2="22.86" width="0.1524" layer="91"/>
+<junction x="149.86" y="30.48"/>
 <pinref part="R14" gate="G$1" pin="1"/>
 <wire x1="139.7" y1="22.86" x2="139.7" y2="15.24" width="0.1524" layer="91"/>
 <junction x="139.7" y="22.86"/>
@@ -5592,8 +5686,8 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="205.74" y="50.8" size="1.016" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="R10" gate="G$1" pin="2"/>
-<wire x1="40.64" y1="132.08" x2="53.34" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="R10" gate="G$1" pin="1"/>
+<wire x1="50.8" y1="132.08" x2="53.34" y2="132.08" width="0.1524" layer="91"/>
 <pinref part="R9" gate="G$1" pin="1"/>
 <wire x1="53.34" y1="132.08" x2="60.96" y2="132.08" width="0.1524" layer="91"/>
 <wire x1="53.34" y1="127" x2="53.34" y2="132.08" width="0.1524" layer="91"/>
@@ -5610,9 +5704,9 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <segment>
 <pinref part="R21" gate="G$1" pin="1"/>
 <wire x1="60.96" y1="88.9" x2="76.2" y2="88.9" width="0.1524" layer="91"/>
-<pinref part="R20" gate="G$1" pin="2"/>
+<pinref part="R20" gate="G$1" pin="1"/>
 <wire x1="76.2" y1="88.9" x2="86.36" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="76.2" y1="81.28" x2="76.2" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="71.12" x2="76.2" y2="88.9" width="0.1524" layer="91"/>
 <junction x="76.2" y="88.9"/>
 <label x="86.36" y="88.9" size="1.778" layer="95" xref="yes"/>
 </segment>
@@ -5709,8 +5803,8 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <net name="N$1" class="0">
 <segment>
 <pinref part="CHANNEL-CV" gate="G$1" pin="TIP"/>
-<pinref part="R10" gate="G$1" pin="1"/>
-<wire x1="50.8" y1="132.08" x2="35.56" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="R10" gate="G$1" pin="2"/>
+<wire x1="40.64" y1="132.08" x2="35.56" y2="132.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$2" class="0">
