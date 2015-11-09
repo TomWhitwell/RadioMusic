@@ -27,6 +27,7 @@ February 2015
     - [Robin Rimbaud (Scanner)](https://twitter.com/robinrimbaud/status/562663428830289921)   
     - [Chris Carter](https://twitter.com/chris_carter_/status/562889299621076993)  
     - [Russell Haswell](https://twitter.com/russellhaswell/status/552213743363690496)  
+    - [Richard Devine](https://instagram.com/p/900BnMjQjw/)  
 - [Big collection of video and audio demos](http://musicthing.co.uk/modular/?p=1087)  
 
 January 2015  
