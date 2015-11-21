@@ -26,6 +26,8 @@ November 2015
 - Prototype feedback:
 - test with 1k resistors at r1, r2 to ease current strain on IC4 
 - Look at rerouting with bigger resistor pads 
+- replace 11mm resistors with 7mm?
+- Needs 11mm hex spacer 
 
 February 2015  
 - [Thonk kits shipping](http://www.thonk.co.uk/product-category/music-thing-modular/)  
