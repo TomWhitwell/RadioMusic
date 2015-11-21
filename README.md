@@ -21,6 +21,12 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 
 ####Progress  
 
+November 2015 
+- Small hardware revision
+- Prototype feedback:
+- test with 1k resistors at r1, r2 to ease current strain on IC4 
+- Look at rerouting with bigger resistor pads 
+
 February 2015  
 - [Thonk kits shipping](http://www.thonk.co.uk/product-category/music-thing-modular/)  
 - Module being used by:  
