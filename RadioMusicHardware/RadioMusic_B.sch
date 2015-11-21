@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.4.0">
+<eagle version="7.2.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -7121,10 +7121,10 @@ Variants with fatter pads for easier soldering, and the LOCK variant which has 5
 <part name="R5" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="330K"/>
 <part name="R7" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="1k"/>
 <part name="C2" library="TomW" deviceset="C-EU" device="050-025X075" value="100n"/>
-<part name="R1" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47R"/>
+<part name="R1" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
 <part name="D3" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="D4" library="diode" deviceset="BAT81" device="" value="BAT42"/>
-<part name="R2" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="47R"/>
+<part name="R2" library="TomW" deviceset="R-EU_" device="STANDARD_RESISTOR" value="1k"/>
 <part name="L1" library="inductors" deviceset="BL0" device="1RN1A"/>
 <part name="L2" library="inductors" deviceset="BL0" device="1RN1A"/>
 <part name="JP1" library="SparkFun-Connectors" deviceset="M11" device="PTH" value="M11PTH"/>
@@ -7177,7 +7177,7 @@ SD-SS
 <instance part="SUPPLY1" gate="+12V" x="63.5" y="45.72"/>
 <instance part="C6" gate="G$1" x="63.5" y="33.02"/>
 <instance part="GND1" gate="1" x="68.58" y="22.86"/>
-<instance part="C5" gate="G$1" x="76.2" y="33.02" rot="R180"/>
+<instance part="C5" gate="G$1" x="76.2" y="33.02"/>
 <instance part="C8" gate="G$1" x="76.2" y="20.32"/>
 <instance part="C7" gate="G$1" x="63.5" y="22.86"/>
 <instance part="D5" gate="1" x="127" y="27.94" rot="R90"/>
@@ -7298,7 +7298,6 @@ SD-SS
 <pinref part="C5" gate="G$1" pin="2"/>
 <pinref part="C8" gate="G$1" pin="1"/>
 <wire x1="76.2" y1="22.86" x2="76.2" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="76.2" y1="27.94" x2="76.2" y2="38.1" width="0.1524" layer="91"/>
 <wire x1="101.6" y1="27.94" x2="91.44" y2="27.94" width="0.1524" layer="91"/>
 <junction x="76.2" y="27.94"/>
 <label x="101.6" y="27.94" size="1.778" layer="95" xref="yes"/>
@@ -7329,11 +7328,11 @@ SD-SS
 <pinref part="SUPPLY1" gate="+12V" pin="+12V"/>
 <wire x1="63.5" y1="43.18" x2="63.5" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="C5" gate="G$1" pin="1"/>
-<wire x1="76.2" y1="30.48" x2="76.2" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="35.56" x2="76.2" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="76.2" y1="43.18" x2="63.5" y2="43.18" width="0.1524" layer="91"/>
 <junction x="63.5" y="43.18"/>
-<wire x1="83.82" y1="38.1" x2="76.2" y2="30.48" width="0.1524" layer="91"/>
-<junction x="76.2" y="30.48"/>
+<wire x1="83.82" y1="38.1" x2="76.2" y2="35.56" width="0.1524" layer="91"/>
+<junction x="76.2" y="35.56"/>
 <wire x1="55.88" y1="35.56" x2="55.88" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="43.18" x2="63.5" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="IC4" gate="P" pin="V+"/>
