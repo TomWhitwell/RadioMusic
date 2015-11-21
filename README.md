@@ -22,12 +22,16 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 ####Progress  
 
 November 2015 
-- Small hardware revision
-- Prototype feedback:
-- test with 1k resistors at r1, r2 to ease current strain on IC4 
-- Look at rerouting with bigger resistor pads 
-- replace 11mm resistors with 7mm?
-- Needs 11mm hex spacer 
+- Rev 3.1 Hardware Revision 
+    - 1k Resistors to reduce strain on IC4 when +5v or -0v 
+    - Larger resistor pads for easier soldering
+    - Neater 7mm resistor outlines on Front board 
+- Rev 3 Hardware Revision
+    - Completely rerouted for improved grounding, slightly reduced noise 
+    - 11m hex spacer connects back and front PCBs together, stronger physical module
+    - Reworked CV input circuits
+    - Fixes distortion after module playing for hours
+    - Straight header outlines for cleaner routing 
 
 February 2015  
 - [Thonk kits shipping](http://www.thonk.co.uk/product-category/music-thing-modular/)  
