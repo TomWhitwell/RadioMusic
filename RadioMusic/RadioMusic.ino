@@ -134,7 +134,10 @@ elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
 void setup() {
-delay(1000);
+delay(1000); 
+pinMode(10,OUTPUT); 
+digitalWrite(10, HIGH); 
+  
   
   //PINS FOR BANK SWITCH AND LEDS 
   pinMode(BANK_BUTTON,INPUT);
