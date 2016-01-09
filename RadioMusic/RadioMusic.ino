@@ -134,7 +134,8 @@ elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
 void setup() {
-
+delay(1000);
+  
   //PINS FOR BANK SWITCH AND LEDS 
   pinMode(BANK_BUTTON,INPUT);
   pinMode(RESET_BUTTON, INPUT);
@@ -172,7 +173,7 @@ void setup() {
   // READ SETTINGS FROM SD CARD 
 
   root = SD.open("/");  
-
+delay(500);
   if (SD.exists("settings.txt")) {
     readSDSettings();
   }
