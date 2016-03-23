@@ -6,6 +6,9 @@ void checkInterface(){
 
   int channel; 
   unsigned long time; 
+  // This is set to true when chan changes and back to false
+  // when reset is performed the next time.
+  static boolean chanHasChanged = false;
 
   // READ & AVERAGE POTS 
 
@@ -26,13 +29,18 @@ void checkInterface(){
   timPot = timPot / sampleAverage; 
   timCV = timCV / sampleAverage; 
 
+  // Snap small values to zero.
+  if (timPot < timHyst)
+    timPot = 0;
+  if (timCV < timHyst)
+    timCV = 0;
 
   // IDENTIFY POT / CV CHANGES 
 
   boolean chanPotChange = (abs(chanPot - chanPotOld) > chanHyst); 
   boolean chanCVChange = (abs(chanCV - chanCVOld) > chanHyst);
-  boolean timPotChange = (abs(timPot - timPotOld) > timHyst);
-  boolean timCVChange = (abs(timCV - timCVOld) > timHyst); 
+  boolean timPotChange = (abs(timPot - timPotOld) >= timHyst);
+  boolean timCVChange = (abs(timCV - timCVOld) >= timHyst); 
 
 
   // MAP INPUTS TO CURRENT SITUATION 
@@ -44,8 +52,7 @@ void checkInterface(){
   time = timPot + timCV;   
   time = constrain(time, 0, 1023); 
   time = (time / StartCVDivider) * StartCVDivider; // Quantizes start position 
-  time  = time * (FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]/1023);
-
+  time  = time * (FILE_NAMES[PLAY_BANK][PLAY_CHANNEL].size / 1023);
 
   // IDENTIFY AND DEPLOY RELEVANT CHANGES  
 
@@ -61,6 +68,13 @@ void checkInterface(){
     chanCVOld = chanCV;
   };
 
+  // chanHasChanged status has different lifespan from CHAN_CHANGED,
+  // it is set back to false when reset is performed next time.
+  if (CHAN_CHANGED)
+    chanHasChanged = true;
+
+  // time pot or cv changes may cause reset if 
+  // enabled in settings.txt
   if (timPotChange){
     playhead = time;
     RESET_CHANGED =  StartPotImmediate;
@@ -73,16 +87,23 @@ void checkInterface(){
     timCVOld = timCV;
   }
 
-
-
-
-
-
-
-
-
+  bool resetButton = false;
   // Reset Button & CV 
-  if ( resetSwitch.update() )  RESET_CHANGED = resetSwitch.read();
+  if ( resetSwitch.update() )  
+    resetButton = resetSwitch.read();
+
+  if (resetButton || resetCVHigh) 
+  {
+    // We must set the playhead on reset if we previously have changed the channel.
+    // But only once so that the further resets will guarantee to reset to the same spot again.
+    if (chanHasChanged) {
+      playhead = time;
+      chanHasChanged = false;
+    }
+    RESET_CHANGED = true;
+  }
+  resetCVHigh = false;
+
 
   // Hold Reset Button to Change Bank 
   bankTimer = bankTimer * digitalRead(RESET_BUTTON);
@@ -98,8 +119,3 @@ void checkInterface(){
   }
 
 }
-
-
-
-
-

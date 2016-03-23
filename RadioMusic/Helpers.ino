@@ -1,7 +1,10 @@
 //////////////////////////////////////////
 // SCAN SD DIRECTORIES INTO ARRAYS //////
 /////////////////////////////////////////
+
+
 void scanDirectory(File dir, int numTabs) {
+ 
   while(true) {
     File entry =  dir.openNextFile();
     if (! entry) {
@@ -13,13 +16,13 @@ void scanDirectory(File dir, int numTabs) {
     if (fileName.endsWith(FILE_TYPE) && fileName.startsWith("_") == 0){
       int intCurrentDirectory = CURRENT_DIRECTORY.toInt();
       if (intCurrentDirectory > ACTIVE_BANKS) ACTIVE_BANKS = intCurrentDirectory; 
-      FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.name();
-      FILE_SIZES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = entry.size();
-      FILE_DIRECTORIES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]] = CURRENT_DIRECTORY;
+      FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]].name = entry.name();
+      FILE_NAMES[intCurrentDirectory][FILE_COUNT[intCurrentDirectory]].size = entry.size();
       FILE_COUNT[intCurrentDirectory]++;
     };
     // Ignore OSX Spotlight and Trash Directories 
-    if (entry.isDirectory() && fileName.startsWith("SPOTL") == 0 && fileName.startsWith("TRASH") == 0) {
+    if (entry.isDirectory() && fileName.startsWith("SPOTL") == 0 && 
+	fileName.startsWith("TRASH") == 0) {
       CURRENT_DIRECTORY = entry.name();
       scanDirectory(entry, numTabs+1);
     } 
@@ -28,18 +31,19 @@ void scanDirectory(File dir, int numTabs) {
 }
 
 
+char filename[18];
 // TAKE BANK AND CHANNEL AND RETURN PROPERLY FORMATTED PATH TO THE FILE 
 char* buildPath (int bank, int channel){
  String liveFilename = bank;  
   liveFilename += "/";
-  liveFilename += FILE_NAMES[bank][channel];
-  char filename[18];
+  liveFilename += FILE_NAMES[bank][channel].name;
   liveFilename.toCharArray(filename, 17);
   return filename;
 }
 
-void reBoot(){
-  delay (500);
+void reBoot(int delayTime){
+  if (delayTime > 0)
+      delay (delayTime);
   WRITE_RESTART(0x5FA0004);
 }
 
@@ -50,8 +54,8 @@ void reBoot(){
 
 // SHOW VISUAL INDICATOR OF TRACK PROGRESS IN SERIAL MONITOR 
 void playDisplay(){
-  int position = (playRaw1.fileOffset() %  FILE_SIZES[PLAY_BANK][PLAY_CHANNEL]) >> 21;
-  int size = FILE_SIZES[PLAY_BANK][PLAY_CHANNEL] >> 21;
+  int position = (playRaw1.fileOffset() %  FILE_NAMES[PLAY_BANK][PLAY_CHANNEL].size) >> 21;
+  int size = FILE_NAMES[PLAY_BANK][PLAY_CHANNEL].size >> 21;
   for (int i = 0; i < size; i++){
     if (i == position) Serial.print("|");
     else Serial.print("_");
@@ -85,11 +89,11 @@ void printFileList(){
     for (int i = 0; i < FILE_COUNT[x]; i++){
       Serial.print (i);
       Serial.print (") ");
-      Serial.print (FILE_DIRECTORIES[x][i]);
+//      Serial.print (FILE_DIRECTORIES[x][i]);
+//      Serial.print(" | ");
+      Serial.print(FILE_NAMES[x][i].name);
       Serial.print(" | ");
-      Serial.print(FILE_NAMES[x][i]);
-      Serial.print(" | ");
-      Serial.print(FILE_SIZES[x][i]);
+      Serial.print(FILE_NAMES[x][i].size);
       Serial.println(" | ");
     }
   }
@@ -242,6 +246,11 @@ void applySetting(String settingName, String settingValue) {
     Looping=toBoolean(settingValue);
   }
 
+  if (settingName == "Sort") {
+    SortFiles = toBoolean(settingValue);
+    gotSort = true;
+  }
+
 
 }
 // converting string to Float
@@ -289,7 +298,8 @@ void writeSDSettings() {
   settingsFile.println(StartCVDivider);
   settingsFile.print("Looping=");
   settingsFile.println(Looping);
-
+  settingsFile.print("Sort=");
+  settingsFile.println(SortFiles);
 
 
 
@@ -297,15 +307,4 @@ void writeSDSettings() {
   settingsFile.close();
   //Serial.println("Writing done.");
 }
-
-
-
-
-
-
-
-
-
-
-
 

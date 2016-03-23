@@ -27,7 +27,6 @@
 #include "play_sd_raw.h"
 #include "spi_interrupt.h"
 
-
 void AudioPlaySdRaw::begin(void)
 {
 	playing = false;
@@ -94,45 +93,42 @@ void AudioPlaySdRaw::stop(void)
 
 void AudioPlaySdRaw::update(void)
 {
-	unsigned int i, n;
-	audio_block_t *block;
+    unsigned int i;
+    int n;
+    audio_block_t *block;
 
-	// only update if we're playing
-	if (!playing) return;
+    // only update if we're playing
+    if (!playing) return;
 
-	// allocate the audio blocks to transmit
-	block = allocate();
-	if (block == NULL) return;
+    // allocate the audio blocks to transmit
+    block = allocate();
+    if (block == NULL) 
+	return;
 
-	if (rawfile.available()) {
-		// we can read more data from the file...
-		n = rawfile.read(block->data, AUDIO_BLOCK_SAMPLES*2);
-
-// Normal read = 256 bytes, if not normal, return 
-// ADD THIS SECTION TO ENABLE HOT SWAPPING 
-if (n > 256) {
-Serial.print("n =");
-Serial.println(n);
-		rawfile.close();
-		AudioStopUsingSPI();
-		playing = false;
-		failed = true; 
-return;
-};
-// END OF NEW HOT SWAP SECTION
-
-		file_offset += n;
-        failed = false; 
-		for (i=n/2; i < AUDIO_BLOCK_SAMPLES; i++) {
-			block->data[i] = 0;
-		}
-		transmit(block);
-	} else {
-		rawfile.close();
-		AudioStopUsingSPI();
-		playing = false;
+    if (rawfile.available()) {
+	// we can read more data from the file...
+	n = rawfile.read(block->data, AUDIO_BLOCK_SAMPLES*2);
+	
+	// ADD THIS SECTION TO ENABLE HOT SWAPPING 
+	// read returns -1 on error.
+	if (n < 0) {
+	    if (hotswap_cb)
+		hotswap_cb();
+	    return;
 	}
-	release(block);
+	// END OF NEW HOT SWAP SECTION
+
+	file_offset += n;
+	for (i=n/2; i < AUDIO_BLOCK_SAMPLES; i++) {
+	    block->data[i] = 0;
+	}
+	transmit(block);
+    } else {
+	rawfile.close();
+	AudioStopUsingSPI();
+	playing = false;
+    }
+    release(block);
 }
 
 #define B2M (uint32_t)((double)4294967296000.0 / AUDIO_SAMPLE_RATE_EXACT / 2.0) // 97352592

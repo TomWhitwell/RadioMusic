@@ -37,7 +37,6 @@ RADIO MUSIC
 #include <Wire.h>
 
 
-
 // OPTIONS TO READ FROM THE SD CARD, WITH DEFAULT VALUES 
 boolean MUTE = false;                // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
 int DECLICK= 15;                      // milliseconds of fade in/out on switching 
@@ -51,7 +50,11 @@ int StartCVDivider = 2;              // Changes sensitivity of Start control. 1 
 boolean Looping = true;              // When a file finishes, start again from the beginning 
 File settingsFile;
 
-
+boolean SortFiles = true;	     // By default we sort the directory contents.
+boolean gotSort = false; 	     // true if settings.txt exists and contains Sort setting.
+				     // We don't want to turn on sorting on disks that
+				     // already have settings.txt, the user might have
+				     // done efforts to do fat sorting on it.
 
 
 // GUItool: begin automatically generated code
@@ -72,11 +75,15 @@ AudioConnection          patchCord3(playRaw1, peak1);
 // SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
 #define MAX_FILES 75
 #define BANKS 16
+
+typedef struct FileInfo_s {
+    String name;
+    unsigned long size;
+} FileInfo_t;
+
 int ACTIVE_BANKS; 
 String FILE_TYPE = "RAW";
-String FILE_NAMES [BANKS][MAX_FILES];
-String FILE_DIRECTORIES[BANKS][MAX_FILES];
-unsigned long FILE_SIZES[BANKS][MAX_FILES];
+FileInfo_t FILE_NAMES [BANKS][MAX_FILES];
 int FILE_COUNT[BANKS];
 String CURRENT_DIRECTORY = "0";
 File root;
@@ -92,6 +99,9 @@ File root;
 #define RESET_CV 9 // Reset pulse input 
 boolean CHAN_CHANGED = true; 
 boolean RESET_CHANGED = false; 
+// A separate variable for tracking reset CV only
+volatile boolean resetCVHigh = false;
+
 Bounce resetSwitch = Bounce( RESET_BUTTON, 20 ); // Bounce setup for Reset
 int PLAY_CHANNEL; 
 int NEXT_CHANNEL; 
@@ -120,7 +130,7 @@ int chanCVOld;
 int timPotOld;
 int timCVOld;
 #define FLASHTIME 10 // How long do LEDs flash for? 
-#define HOLDTIME 400 // How many millis to hold a button to get 2ndary function? 
+#define HOLDTIME 600 // How many millis to hold a button to get 2ndary function? 
 elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
 int showFreq = 250; // how many millis between serial Debug updates 
 elapsedMillis resetLedTimer = 0;
@@ -132,6 +142,16 @@ int checkFreq = 10; // how often to check the interface in Millis
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
 elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
+
+void hotswap_callback();
+
+// File name compare routine for qsort
+int fileNameCompare(const void *a, const void *b) {
+    FileInfo_t *sa = (FileInfo_t *)a;
+    FileInfo_t *sb = (FileInfo_t *)b;
+
+    return sa->name.compareTo(sb->name);
+}
 
 void setup() {
 
@@ -156,7 +176,8 @@ void setup() {
   SPI.setSCK(14);
 
   // OPEN SD CARD 
-  int crashCountdown; 
+  int crashCountdown = 0; 
+
   if (!(SD.begin(10))) {
     while (!(SD.begin(10))) {
       ledWrite(15);
@@ -164,7 +185,8 @@ void setup() {
       ledWrite(0);
       delay(100);
       crashCountdown++;
-      if (crashCountdown > 6)     reBoot();
+      if (crashCountdown > 6)     
+	reBoot(500);
 
     }
   }
@@ -175,14 +197,26 @@ void setup() {
 
   if (SD.exists("settings.txt")) {
     readSDSettings();
+    // There was a settings.txt but no Sort parameter in it.
+    // Let's turn sorting off.
+    if (gotSort == false)
+      SortFiles = false;
   }
-
   else { 
     writeSDSettings();
   };
 
   // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
   scanDirectory(root, 0);
+
+  // Sort files alphabetically in each bank.
+  if (SortFiles) {
+    for (int i = 0; i < BANKS; i++) {
+      if (FILE_COUNT[i] > 0)
+	qsort(&(FILE_NAMES[i][0]), FILE_COUNT[i], sizeof(FileInfo_t), fileNameCompare);
+    }
+  }
+
 
   // CHECK  FOR SAVED BANK POSITION 
   int a = 0;
@@ -194,14 +228,23 @@ void setup() {
   else {
     EEPROM.write(BANK_SAVE,0);
   };
-
+  playRaw1.hotswap_cb = hotswap_callback;
   // Add an interrupt on the RESET_CV pin to catch rising edges
   attachInterrupt(RESET_CV, resetcv, RISING);
+  Serial.print("Free ram: ");
+  Serial.println(FreeRam());
 }
 
 // Called by interrupt on rising edge, for RESET_CV pin
 void resetcv() {
-  RESET_CHANGED = true;
+  resetCVHigh = true;
+}
+
+// Called from play_sd_raw hotswap code.
+void hotswap_callback()
+{
+    Serial.println("Hotswap called");
+    reBoot(0);
 }
 
 ////////////////////////////////////////////////////
@@ -220,17 +263,13 @@ void loop() {
 
   }
 
-  if (playRaw1.failed){
-    reBoot();
-  }
-
-
   //////////////////////////////////////////
   ////////REACT TO ANY CHANGES /////////////
   //////////////////////////////////////////
 
 
   if (CHAN_CHANGED || RESET_CHANGED){
+    whatsPlaying();
     if (MUTE){  
       fade1.fadeOut(DECLICK);      // fade out before change 
       delay(DECLICK);
@@ -240,8 +279,13 @@ void loop() {
     PLAY_CHANNEL = NEXT_CHANNEL;
 
 
-    if (RESET_CHANGED == false && Looping) playhead = playRaw1.fileOffset(); // Carry on from previous position, unless reset pressed or time selected
+    if (RESET_CHANGED == false && Looping) {
+	 // Carry on from previous position, unless reset pressed or time selected
+	playhead = playRaw1.fileOffset();
+    }
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
+    Serial.print("Playhead: ");
+    Serial.println(playhead);
     playRaw1.playFrom(charFilename,playhead);   // change audio
 //    delay(10);
 
@@ -258,25 +302,19 @@ void loop() {
   // CHECK INTERFACE  & UPDATE DISPLAYS/////  
   //////////////////////////////////////////
 
-  if (checkI >= checkFreq){
+  if (checkI >= (unsigned int)checkFreq){
     checkInterface(); 
     checkI = 0;  
   }
 
-  if (showDisplay > showFreq){
+  if (showDisplay > (unsigned int)showFreq){
     //    playDisplay();
-    whatsPlaying();
+    //whatsPlaying();
     showDisplay = 0;
   }
 
   digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
 
-  if (fps > 1000/peakFPS && meterDisplay > meterHIDE && ShowMeter) peakMeter();    // CALL PEAK METER   
-
-
+  if (fps > 1000/peakFPS && meterDisplay > (unsigned int)meterHIDE && ShowMeter) 
+    peakMeter();    // CALL PEAK METER   
 }
-
-
-
-
-
