@@ -30,17 +30,17 @@ void checkInterface(){
   timCV = timCV / sampleAverage; 
 
   // Snap small values to zero.
-  if (timPot < timHyst)
+  if (timPot <= timHyst)
     timPot = 0;
-  if (timCV < timHyst)
+  if (timCV <= timHyst)
     timCV = 0;
 
   // IDENTIFY POT / CV CHANGES 
 
   boolean chanPotChange = (abs(chanPot - chanPotOld) > chanHyst); 
   boolean chanCVChange = (abs(chanCV - chanCVOld) > chanHyst);
-  boolean timPotChange = (abs(timPot - timPotOld) >= timHyst);
-  boolean timCVChange = (abs(timCV - timCVOld) >= timHyst); 
+  boolean timPotChange = (abs(timPot - timPotOld) > timHyst);
+  boolean timCVChange = (abs(timCV - timCVOld) > timHyst); 
 
 
   // MAP INPUTS TO CURRENT SITUATION 
