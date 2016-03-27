@@ -5,7 +5,7 @@
     - Fixed hotswap, file limit, reset and added sort  
     - [Details here](https://www.muffwiggler.com/forum/viewtopic.php?p=2184098#2184098)  
     - Currently being developed [in this branch](https://github.com/jstenroos/RadioMusic/tree/dev_200).
-    - Direct link to the hex file:   
+    - [Direct link to the hex file here](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/hex%20files/Beta/RadioMusic_Beta_2.hex). Save from the browser and rename .txt into .hex  
     
 1-3-2016: RM_Beta_Delay.hex  
 - As Rev1.1 with longer startup delay as suggested by mxmxmx to fix startup issues seen by some users.  
