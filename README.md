@@ -21,6 +21,9 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 
 ####Progress  
 
+March 2015  
+- Updated firmware Beta produced by Jouni Stenroos, fixing several long-term issues including file count limit, hot swapping and resets.  
+
 February 2015  
 - [Thonk kits shipping](http://www.thonk.co.uk/product-category/music-thing-modular/)  
 - Module being used by:  
