@@ -21,7 +21,7 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 
 ####Progress  
 
-March 2015  
+March 2016  
 - Updated firmware Beta produced by Jouni Stenroos, fixing several long-term issues including file count limit, hot swapping and resets.  
 
 February 2015  
