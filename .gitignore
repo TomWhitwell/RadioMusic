@@ -37,3 +37,7 @@ eagle.epf
 *.info
 
 *.eps
+
+*.swp
+
+RadioMusic/RadioMusic.ino.TEENSY31.hex
