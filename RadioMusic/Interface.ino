@@ -9,6 +9,8 @@ void checkInterface(){
   // This is set to true when chan changes and back to false
   // when reset is performed the next time.
   static boolean chanHasChanged = false;
+  boolean buttonUp = false;
+  boolean buttonDown = false;
 
   // READ & AVERAGE POTS 
 
@@ -30,18 +32,18 @@ void checkInterface(){
   timCV = timCV / sampleAverage; 
 
   // Snap small values to zero.
-  if (timPot < timHyst)
+  if (timPot <= timHyst)
     timPot = 0;
-  if (timCV < timHyst)
+  if (timCV <= timHyst)
     timCV = 0;
 
   // IDENTIFY POT / CV CHANGES 
 
   boolean chanPotChange = (abs(chanPot - chanPotOld) > chanHyst); 
   boolean chanCVChange = (abs(chanCV - chanCVOld) > chanHyst);
-  boolean timPotChange = (abs(timPot - timPotOld) >= timHyst);
-  boolean timCVChange = (abs(timCV - timCVOld) >= timHyst); 
-
+  boolean timPotChange = (abs(timPot - timPotOld) > timHyst);
+  boolean timCVChange = (abs(timCV - timCVOld) > timHyst); 
+  
 
   // MAP INPUTS TO CURRENT SITUATION 
 
@@ -50,7 +52,7 @@ void checkInterface(){
   channel = map(channel,0,1024,0,FILE_COUNT[PLAY_BANK]); // Highest pot value = 1 above what's possible (ie 1023+1) and file count is one above the number of the last file (zero indexed)  
 
   time = timPot + timCV;   
-  time = constrain(time, 0, 1023); 
+  time = constrain(time, 0U, 1023U); 
   time = (time / StartCVDivider) * StartCVDivider; // Quantizes start position 
   time  = time * (FILE_NAMES[PLAY_BANK][PLAY_CHANNEL].size / 1023);
 
@@ -87,12 +89,21 @@ void checkInterface(){
     timCVOld = timCV;
   }
 
-  bool resetButton = false;
   // Reset Button & CV 
-  if ( resetSwitch.update() )  
+  if ( resetSwitch.update() ) {
     resetButton = resetSwitch.read();
+    Serial.println(resetButton);
+  }
+  // If button is up and was previously down, it's a button up event
+  if (!resetButton && prevResetButton) {
+    buttonUp = true;
+  } else if (resetButton && !prevResetButton) {
+    buttonDown = true;	
+    bankTimer = 0;
+  }
+  prevResetButton = resetButton;	
 
-  if (resetButton || resetCVHigh) 
+  if ((buttonDown || resetCVHigh) && !bankChangeMode) 
   {
     // We must set the playhead on reset if we previously have changed the channel.
     // But only once so that the further resets will guarantee to reset to the same spot again.
@@ -101,21 +112,35 @@ void checkInterface(){
       chanHasChanged = false;
     }
     RESET_CHANGED = true;
+    buttonDown = false;
+    Serial.print("Timpot value: ");
+    Serial.println(timPot);
   }
   resetCVHigh = false;
 
-
   // Hold Reset Button to Change Bank 
-  bankTimer = bankTimer * digitalRead(RESET_BUTTON);
+//  bankTimer = bankTimer * digitalRead(RESET_BUTTON);
 
-  if (bankTimer > HOLDTIME){
-    PLAY_BANK++;
-    if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;
-    if (NEXT_CHANNEL >= FILE_COUNT[PLAY_BANK]) NEXT_CHANNEL = FILE_COUNT[PLAY_BANK]-1;
-    CHAN_CHANGED = true;
-    bankTimer = 0;  
-    meterDisplay = 0;
-    EEPROM.write(BANK_SAVE, PLAY_BANK);
+  if (buttonUp) {
+//    Serial.print("Button released, time = ");
+//    Serial.println(bankTimer);
+
+    if (bankTimer > SPECOPSTIME) {
+      Serial.println("SPECOPS time!");
+    } else if (bankTimer > HOLDTIME){
+      bankChangeMode = !bankChangeMode;
+      Serial.print("bankChangeMode = ");
+      Serial.println(bankChangeMode);
+    } else if (bankChangeMode) { // Bankchange is executed on button up to prevent the extra change once you want out of this mode.
+      PLAY_BANK++;
+      if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;
+      if (NEXT_CHANNEL >= FILE_COUNT[PLAY_BANK]) NEXT_CHANNEL = FILE_COUNT[PLAY_BANK]-1;
+      CHAN_CHANGED = true;
+      bankTimer = 0;  
+      meterDisplay = 0;
+      EEPROM.write(BANK_SAVE, PLAY_BANK);
+    }
+    buttonUp = false;
+    bankTimer = 0;
   }
-
 }

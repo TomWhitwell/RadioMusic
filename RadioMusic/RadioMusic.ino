@@ -25,7 +25,12 @@ RADIO MUSIC
  play_sc_raw.h    - In Teensy Audio Library 
  
  from:https://github.com/TomWhitwell/RadioMusic/tree/master/Collateral/Edited%20teensy%20files
- 
+
+ - New bank change mode
+ - Removing 330 file limit
+ - Improving reset
+ - File sorting
+ by Jouni Stenroos.
  
  */
 
@@ -130,13 +135,21 @@ int chanCVOld;
 int timPotOld;
 int timCVOld;
 #define FLASHTIME 10 // How long do LEDs flash for? 
-#define HOLDTIME 600 // How many millis to hold a button to get 2ndary function? 
+#define HOLDTIME 1300 // How many millis to hold a button to get bank change mode? 
+// Special ops undefined at the moment. Maybe changing the whole program functionality
+#define SPECOPSTIME 5000 // How many millis to hold a button to get specops function
 elapsedMillis showDisplay; // elapsedMillis is a special variable in Teensy - increments every millisecond 
 int showFreq = 250; // how many millis between serial Debug updates 
 elapsedMillis resetLedTimer = 0;
 elapsedMillis bankTimer = 0;
+elapsedMillis ledFlashTimer = 0;
+boolean flashLeds = false;
+int prevBankTimer = 0;
 elapsedMillis checkI = 0; // check interface 
 int checkFreq = 10; // how often to check the interface in Millis 
+boolean resetButton = false;
+boolean prevResetButton = false;
+boolean bankChangeMode = false;
 
 // CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
@@ -294,6 +307,8 @@ void loop() {
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
     resetLedTimer = 0; // turn on Reset LED 
+  } else if (bankChangeMode && !resetButton) {
+    ledWrite(PLAY_BANK);
   }
 
 
@@ -312,9 +327,30 @@ void loop() {
     //whatsPlaying();
     showDisplay = 0;
   }
+  if (bankChangeMode)
+    digitalWrite(RESET_LED, 1); // Reset led continuosly on when bank change mode..
+  else
+    digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
 
-  digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
-
-  if (fps > 1000/peakFPS && meterDisplay > (unsigned int)meterHIDE && ShowMeter) 
+  // Flashing of top leds has priority. It's executed when reset button is held and 
+  // certain time has passed. 
+  if (flashLeds) {
+    if (ledFlashTimer < FLASHTIME * 4)
+      ledWrite(0x0F);
+    else
+      flashLeds = false;
+  // Next in priority is checking is the reset button is held.
+  // If holdtime has just exceeded, the top row of leds must be flashed.
+  // See above.
+  } else if (resetButton) { // The button is currently pressed
+    if (prevBankTimer < HOLDTIME && bankTimer >= HOLDTIME) { // We reached the hold time
+      flashLeds = true;		    
+      ledFlashTimer = 0;
+    }
+    prevBankTimer = bankTimer;
+    ledWrite(0x00);
+  // Finally if above conditions are not met, we check if peak meter should be displayed.
+  } else if (fps > 1000/peakFPS && meterDisplay > (unsigned int)meterHIDE && ShowMeter && !bankChangeMode) {
     peakMeter();    // CALL PEAK METER   
+  }
 }
