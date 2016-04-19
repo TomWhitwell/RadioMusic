@@ -33,7 +33,8 @@ RADIO MUSIC
  by Jouni Stenroos.
  
  */
-
+#include <RMPlaySDRaw.h>
+#include <MovingAverage.h>
 #include <EEPROM.h>
 #include <Bounce.h>
 #include <Audio.h>
@@ -41,10 +42,11 @@ RADIO MUSIC
 #include <SD.h>
 #include <Wire.h>
 
+int nChanChanges = 0;
 
 // OPTIONS TO READ FROM THE SD CARD, WITH DEFAULT VALUES 
 boolean MUTE = false;                // Softens clicks when changing channel / position, at cost of speed. Fade speed is set by DECLICK 
-int DECLICK= 15;                      // milliseconds of fade in/out on switching 
+unsigned int DECLICK= 15;                      // milliseconds of fade in/out on switching 
 boolean ShowMeter = true;            // Does the VU meter appear?  
 int meterHIDE = 2000;                // how long to show the meter after bank change in Milliseconds 
 boolean ChanPotImmediate = true;     // Settings for Pot / CV response.
@@ -63,13 +65,24 @@ boolean gotSort = false; 	     // true if settings.txt exists and contains Sort 
 
 
 // GUItool: begin automatically generated code
-AudioPlaySdRaw           playRaw1;       //xy=131,81
+RMPlaySDRaw           	 playRaw1;       //xy=131,81
+RMPlaySDRaw		 playRaw2;       
 AudioEffectFade          fade1;          //xy=257,169
+AudioEffectFade		 fade2;		
+AudioMixer4		 mixer;
 AudioAnalyzePeak         peak1;          //xy=317,123
 AudioOutputAnalog        dac1;           //xy=334,98
 AudioConnection          patchCord1(playRaw1, fade1);
-AudioConnection          patchCord2(fade1, dac1);
-AudioConnection          patchCord3(playRaw1, peak1);
+AudioConnection		 patchCord2(playRaw2, fade2);
+AudioConnection		 patchCord3(fade1, 0, mixer, 0);
+AudioConnection		 patchCord4(fade2, 0, mixer, 1);
+AudioConnection          patchCord5(mixer, 0, dac1, 0);
+AudioConnection          patchCord6(mixer, 0, peak1, 0);
+
+RMPlaySDRaw		*pRawPlayer = &playRaw1;
+RMPlaySDRaw		*pPrevRawPlayer = &playRaw2;
+AudioEffectFade		*pFadeOut = &fade1;
+AudioEffectFade		*pFadeIn = &fade2;
 // GUItool: end automatically generated code
 
 // REBOOT CODES 
@@ -104,6 +117,7 @@ File root;
 #define RESET_CV 9 // Reset pulse input 
 boolean CHAN_CHANGED = true; 
 boolean RESET_CHANGED = false; 
+boolean EOF_REACHED = false;
 // A separate variable for tracking reset CV only
 volatile boolean resetCVHigh = false;
 
@@ -125,11 +139,11 @@ int PLAY_BANK = 0;
 
 // CHANGE HOW INTERFACE REACTS 
 int chanHyst = 3; // how many steps to move before making a change (out of 1024 steps on a reading) 
-int timHyst = 6; 
+int timHyst = 7; 
 
 elapsedMillis chanChanged; 
 elapsedMillis timChanged; 
-int sampleAverage = 40;
+int sampleAverage = 10;
 int chanPotOld;
 int chanCVOld;
 int timPotOld;
@@ -146,7 +160,7 @@ elapsedMillis ledFlashTimer = 0;
 boolean flashLeds = false;
 int prevBankTimer = 0;
 elapsedMillis checkI = 0; // check interface 
-int checkFreq = 10; // how often to check the interface in Millis 
+int checkFreq = 5; // how often to check the interface in Millis 
 boolean resetButton = false;
 boolean prevResetButton = false;
 boolean bankChangeMode = false;
@@ -154,6 +168,7 @@ boolean bankChangeMode = false;
 // CONTROL THE PEAK METER DISPLAY 
 elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
 elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
+elapsedMillis prevAudioElapsed;
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
 void hotswap_callback();
@@ -242,6 +257,9 @@ void setup() {
     EEPROM.write(BANK_SAVE,0);
   };
   playRaw1.hotswap_cb = hotswap_callback;
+  playRaw2.hotswap_cb = hotswap_callback;
+  mixer.gain(0, 1.0);
+  mixer.gain(1, 1.0);
   // Add an interrupt on the RESET_CV pin to catch rising edges
   attachInterrupt(RESET_CV, resetcv, RISING);
   Serial.print("Free ram: ");
@@ -269,44 +287,74 @@ void loop() {
   // IF FILE ENDS, RESTART FROM THE BEGINNING 
   //////////////////////////////////////////
 
-  if (!playRaw1.isPlaying() && Looping){
-    charFilename = buildPath(PLAY_BANK,PLAY_CHANNEL);
-    playRaw1.playFrom(charFilename,0);   // change audio
-    resetLedTimer = 0; // turn on Reset LED 
-
+  if (!pRawPlayer->isPlaying() && Looping){
+    EOF_REACHED = true;
   }
 
   //////////////////////////////////////////
   ////////REACT TO ANY CHANGES /////////////
   //////////////////////////////////////////
 
+  if (prevAudioElapsed > DECLICK && pPrevRawPlayer->isPlaying()) {
+    pPrevRawPlayer->pause();
+    AudioNoInterrupts();
+    pPrevRawPlayer->preparePlayFrom(charFilename);
+    AudioInterrupts();
+  }
 
-  if (CHAN_CHANGED || RESET_CHANGED){
-    whatsPlaying();
-    if (MUTE){  
-      fade1.fadeOut(DECLICK);      // fade out before change 
-      delay(DECLICK);
+  if (CHAN_CHANGED)
+  {
+    nChanChanges++;
+    if (nChanChanges % 100 == 0)
+    {
+      Serial.print("                      FREE RAM: ");
+      Serial.println(FreeRam());
     }
+  }
+  if (CHAN_CHANGED || RESET_CHANGED || EOF_REACHED){
 
     charFilename = buildPath(PLAY_BANK,NEXT_CHANNEL);
     PLAY_CHANNEL = NEXT_CHANNEL;
 
-
-    if (RESET_CHANGED == false && Looping) {
+    if (!EOF_REACHED && RESET_CHANGED == false && Looping) {
 	 // Carry on from previous position, unless reset pressed or time selected
-	playhead = playRaw1.fileOffset();
+	playhead = pRawPlayer->fileOffset();
     }
     playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
-    Serial.print("Playhead: ");
-    Serial.println(playhead);
-    playRaw1.playFrom(charFilename,playhead);   // change audio
-//    delay(10);
+//    Serial.print("Playhead: ");
+//    Serial.println(playhead);
 
-    if (MUTE)    fade1.fadeIn(DECLICK);                          // fade back in   
+    // Swap players and fades.
+    if (pRawPlayer == &playRaw1) {
+	pRawPlayer = &playRaw2;
+	pPrevRawPlayer = &playRaw1;
+	pFadeOut = &fade1;
+	pFadeIn = &fade2;
+	Serial.println("Playing through player 1");
+    } else  {
+	pRawPlayer = &playRaw1;
+	pPrevRawPlayer = &playRaw2;
+	pFadeOut = &fade2;
+	pFadeIn = &fade1;
+	Serial.println("Playing through player 2");
+    }
+    AudioNoInterrupts();
+    if (EOF_REACHED)
+      pRawPlayer->playFrom(charFilename, 0);   // change audio
+    else
+      pRawPlayer->playFrom(charFilename,playhead);   // change audio
+    AudioInterrupts();
+    if (MUTE) {
+      pFadeOut->fadeOut(DECLICK);
+      pFadeIn->fadeIn(DECLICK);                          // fade back in   
+    }
+    prevAudioElapsed = 0;
     ledWrite(PLAY_BANK);
     CHAN_CHANGED = false;
     RESET_CHANGED = false; 
+    EOF_REACHED = false;
     resetLedTimer = 0; // turn on Reset LED 
+    //whatsPlaying();
   } else if (bankChangeMode && !resetButton) {
     ledWrite(PLAY_BANK);
   }

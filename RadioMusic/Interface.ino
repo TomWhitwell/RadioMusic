@@ -2,6 +2,11 @@
 // CHECK INTERFACE POTS BUTTONS ETC //////
 /////////////////////////////////////////
 
+// A moving average of previous 5 values
+MovingAverage chanPotMA(5);
+MovingAverage chanCVMA(5);
+MovingAverage timPotMA(5);
+MovingAverage timCVMA(5);
 void checkInterface(){
 
   int channel; 
@@ -30,6 +35,13 @@ void checkInterface(){
   chanCV = chanCV / sampleAverage; 
   timPot = timPot / sampleAverage; 
   timCV = timCV / sampleAverage; 
+
+  // The moving average adds to the above averaging,
+  // adding a slight lag to the values, but only 5 * checkI (25ms)
+  chanPot = chanPotMA.average(chanPot);
+  chanCV = chanCVMA.average(chanCV);
+  timPot = timPotMA.average(timPot);
+  timCV = timCVMA.average(timCV);
 
   // Snap small values to zero.
   if (timPot <= timHyst)
@@ -115,6 +127,8 @@ void checkInterface(){
     buttonDown = false;
     Serial.print("Timpot value: ");
     Serial.println(timPot);
+    Serial.print("TimCV value: ");
+    Serial.println(timCV);
   }
   resetCVHigh = false;
 
