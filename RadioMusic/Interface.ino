@@ -3,10 +3,6 @@
 /////////////////////////////////////////
 
 // A moving average of previous 5 values
-MovingAverage chanPotMA(5);
-MovingAverage chanCVMA(5);
-MovingAverage timPotMA(5);
-MovingAverage timCVMA(5);
 void checkInterface(){
 
   int channel; 
@@ -24,24 +20,17 @@ void checkInterface(){
   int timPot = 0; 
   int timCV = 0; 
 
-  for (int i = 0; i < sampleAverage; i++){
+  for (int i = 0; i < SAMPLEAVERAGE; i++){
     chanPot += analogRead(CHAN_POT_PIN); 
     chanCV += analogRead(CHAN_CV_PIN); 
     timPot += analogRead(TIME_POT_PIN); 
     timCV += analogRead(TIME_CV_PIN); 
   }
 
-  chanPot = chanPot / sampleAverage; 
-  chanCV = chanCV / sampleAverage; 
-  timPot = timPot / sampleAverage; 
-  timCV = timCV / sampleAverage; 
-
-  // The moving average adds to the above averaging,
-  // adding a slight lag to the values, but only 5 * checkI (25ms)
-  chanPot = chanPotMA.average(chanPot);
-  chanCV = chanCVMA.average(chanCV);
-  timPot = timPotMA.average(timPot);
-  timCV = timCVMA.average(timCV);
+  chanPot = chanPot / SAMPLEAVERAGE; 
+  chanCV = chanCV / SAMPLEAVERAGE; 
+  timPot = timPot / SAMPLEAVERAGE; 
+  timCV = timCV / SAMPLEAVERAGE; 
 
   // Snap small values to zero.
   if (timPot <= timHyst)
@@ -104,7 +93,7 @@ void checkInterface(){
   // Reset Button & CV 
   if ( resetSwitch.update() ) {
     resetButton = resetSwitch.read();
-    Serial.println(resetButton);
+//    Serial.println(resetButton);
   }
   // If button is up and was previously down, it's a button up event
   if (!resetButton && prevResetButton) {
@@ -125,10 +114,12 @@ void checkInterface(){
     }
     RESET_CHANGED = true;
     buttonDown = false;
+#if DEBUG
     Serial.print("Timpot value: ");
     Serial.println(timPot);
     Serial.print("TimCV value: ");
     Serial.println(timCV);
+#endif
   }
   resetCVHigh = false;
 
@@ -143,8 +134,10 @@ void checkInterface(){
       Serial.println("SPECOPS time!");
     } else if (bankTimer > HOLDTIME){
       bankChangeMode = !bankChangeMode;
+#if DEBUG
       Serial.print("bankChangeMode = ");
       Serial.println(bankChangeMode);
+#endif
     } else if (bankChangeMode) { // Bankchange is executed on button up to prevent the extra change once you want out of this mode.
       PLAY_BANK++;
       if (PLAY_BANK > ACTIVE_BANKS) PLAY_BANK = 0;
