@@ -24,20 +24,22 @@
  * THE SOFTWARE.
  */
 
-#include "play_sd_raw.h"
+#include "RMPlaySDRaw.h"
 #include "spi_interrupt.h"
 
-void AudioPlaySdRaw::begin(void)
+void RMPlaySDRaw::begin(void)
 {
 	playing = false;
 	file_offset = 0;
 	file_size = 0;
+	_filePath[0] = 0;
 }
 
 
-bool AudioPlaySdRaw::play(const char *filename)
+bool RMPlaySDRaw::play(const char *filename)
 {
 	stop();
+	strcpy(_filePath, filename);
 	AudioStartUsingSPI();
 	__disable_irq();
 	rawfile = SD.open(filename);
@@ -53,45 +55,82 @@ bool AudioPlaySdRaw::play(const char *filename)
 	return true;
 }
 
-bool AudioPlaySdRaw::playFrom(const char *filename, unsigned long startPoint)
+bool RMPlaySDRaw::preparePlayFrom(const char *filename)
 {
-	stop();
-	AudioStartUsingSPI();
-	__disable_irq();
-	rawfile = SD.open(filename);
-	__enable_irq();
-	if (!rawfile) {
-Serial.println("NO: unable to open file");
-		return false;
-	}
-	file_size = rawfile.size();
+    if (strcmp(_filePath, filename) == 0)
+	return true; // Already prepared for this file.
+    strcpy(_filePath, filename);
+    __disable_irq();
+    //Serial.println("pause() - Closing file.");
+    rawfile.close();
+    rawfile = SD.open(filename);
+    __enable_irq();
+    if (!rawfile) {
+	return false;
+    }
+    file_size = rawfile.size();
+    file_offset = 0;
+    return true;
+}
+
+bool RMPlaySDRaw::playFrom(const char *filename, unsigned long startPoint)
+{
+    // We use the same file, just seek inside it.
+    if (strcmp(_filePath, filename) == 0) {
+	Serial.print("Continuing on file ");
+	Serial.println(filename);
 	rawfile.seek(startPoint % file_size);
 	file_offset = startPoint;
-
-Serial.println("YES: able to open file");
+//	    AudioStartUsingSPI();
 	playing = true;
 	return true;
+    }
+    stop();
+    strcpy(_filePath, filename);
+    AudioStartUsingSPI();
+    __disable_irq();
+    rawfile = SD.open(filename);
+    __enable_irq();
+    if (!rawfile) {
+	Serial.println("NO: unable to open file");
+	return false;
+    }
+    file_size = rawfile.size();
+    rawfile.seek(startPoint % file_size);
+    file_offset = startPoint;
+
+    Serial.println("YES: able to open file");
+    playing = true;
+    return true;
 }
 
 
 
+void RMPlaySDRaw::pause(void) {
+    __disable_irq();
+    if (playing) {
+	playing = false;
+//	AudioStopUsingSPI();
+    } 
+    __enable_irq();
+}
 
-
-void AudioPlaySdRaw::stop(void)
+void RMPlaySDRaw::stop(void)
 {
-	__disable_irq();
-	if (playing) {
-		playing = false;
-		__enable_irq();
-		rawfile.close();
-		AudioStopUsingSPI();
-	} else {
-		__enable_irq();
-	}
+    __disable_irq();
+    //Serial.println("stop() - Closing file.");
+    rawfile.close();
+    if (playing) {
+	playing = false;
+	__enable_irq();
+	AudioStopUsingSPI();
+    } else {
+	__enable_irq();
+    }
 }
 
 
-void AudioPlaySdRaw::update(void)
+void RMPlaySDRaw::update(void)
 {
     unsigned int i;
     int n;
@@ -107,15 +146,21 @@ void AudioPlaySdRaw::update(void)
 
     if (rawfile.available()) {
 	// we can read more data from the file...
-	n = rawfile.read(block->data, AUDIO_BLOCK_SAMPLES*2);
-	
+	if (bufAvail == 0) {
+	    bufAvail = rawfile.read(audioBuffer, AUDIOBUFSIZE);
+	    bufPos = 0;
+	    if (bufAvail < 0) {
+		if (hotswap_cb)
+		    hotswap_cb();
+		return;
+	    }
+	}
+	n = min(AUDIO_BLOCK_SAMPLES * 2, bufAvail);
+	memcpy(block->data, &(audioBuffer[bufPos]), n);
+	bufAvail -= n;
+	bufPos += n;
 	// ADD THIS SECTION TO ENABLE HOT SWAPPING 
 	// read returns -1 on error.
-	if (n < 0) {
-	    if (hotswap_cb)
-		hotswap_cb();
-	    return;
-	}
 	// END OF NEW HOT SWAP SECTION
 
 	file_offset += n;
@@ -124,8 +169,8 @@ void AudioPlaySdRaw::update(void)
 	}
 	transmit(block);
     } else {
-	rawfile.close();
-	AudioStopUsingSPI();
+//	rawfile.close();
+//	AudioStopUsingSPI();
 	playing = false;
     }
     release(block);
@@ -133,17 +178,17 @@ void AudioPlaySdRaw::update(void)
 
 #define B2M (uint32_t)((double)4294967296000.0 / AUDIO_SAMPLE_RATE_EXACT / 2.0) // 97352592
 
-uint32_t AudioPlaySdRaw::positionMillis(void)
+uint32_t RMPlaySDRaw::positionMillis(void)
 {
 	return ((uint64_t)file_offset * B2M) >> 32;
 }
 
-uint32_t AudioPlaySdRaw::lengthMillis(void)
+uint32_t RMPlaySDRaw::lengthMillis(void)
 {
 	return ((uint64_t)file_size * B2M) >> 32;
 }
 
-uint32_t AudioPlaySdRaw::fileOffset(void)
+uint32_t RMPlaySDRaw::fileOffset(void)
 {
 	return file_offset;
 }

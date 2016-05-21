@@ -34,10 +34,9 @@ void scanDirectory(File dir, int numTabs) {
 char filename[18];
 // TAKE BANK AND CHANNEL AND RETURN PROPERLY FORMATTED PATH TO THE FILE 
 char* buildPath (int bank, int channel){
- String liveFilename = bank;  
-  liveFilename += "/";
-  liveFilename += FILE_NAMES[bank][channel].name;
-  liveFilename.toCharArray(filename, 17);
+  sprintf(filename, "%d", bank);
+  strcat(filename, "/");
+  strcat(filename, FILE_NAMES[bank][channel].name.c_str());
   return filename;
 }
 

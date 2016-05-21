@@ -38,8 +38,14 @@ eagle.epf
 
 *.eps
 
+<<<<<<< HEAD
 RadioMusic/RadioMusic.ino.TEENSY31.hex
 
 RadioMusic/.RadioMusic.ino.swp
 
 *.swp
+=======
+*.swp
+
+RadioMusic/RadioMusic.ino.TEENSY31.hex
+>>>>>>> crossFade
