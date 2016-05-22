@@ -21,6 +21,11 @@ A digital way to simulate radio-powered compositions by John Cage, Karlheinz Sto
 
 ####Progress  
 
+May 2016 
+- Merged Jouni's latest changes into the main branch
+- New Beta versions in the Collateral/Hex Files folder: Crossfade and a new Bank Change interface
+- If you're developing firmware yourself, make sure you read the 'Edited Teensy Files' section, because this has changed significantly 
+
 March 2016  
 - Updated firmware Beta produced by Jouni Stenroos, fixing several long-term issues including file count limit, hot swapping and resets.  
 
