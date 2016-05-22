@@ -37,7 +37,6 @@ RADIO MUSIC
  
  */
 #include <RMPlaySDRaw.h>
-#include <MovingAverage.h>
 #include <EEPROM.h>
 #include <Bounce.h>
 #include <Audio.h>
@@ -178,7 +177,6 @@ elapsedMillis prevAudioElapsed;
 #define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
 // DEBUG STUFF
-MovingAverage checkIAverage(10);
 elapsedMillis debugTimer;  // Used for measuring performance.
 elapsedMillis debugInterval; // How often debug messages are printed
 
