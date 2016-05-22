@@ -24,31 +24,39 @@
  * THE SOFTWARE.
  */
 
-#ifndef play_sd_raw_h_
-#define play_sd_raw_h_
+#ifndef RMPlaySDraw_h_
+#define RMPlaySDraw_h_
 
 #include "AudioStream.h"
 #include "SD.h"
+#define AUDIOBUFSIZE (AUDIO_BLOCK_SAMPLES * 8)
 
-class AudioPlaySdRaw : public AudioStream
+class RMPlaySDRaw : public AudioStream
 {
 public:
-	AudioPlaySdRaw(void) : AudioStream(0, NULL) { begin(); }
+	RMPlaySDRaw(void) : AudioStream(0, NULL) { begin(); }
 	void begin(void);
 	bool play(const char *filename);
 	bool playFrom(const char *filename, unsigned long start);
+	bool preparePlayFrom(const char *filename);
 	void stop(void);
+	void pause(void);
 	bool isPlaying(void) { return playing; }
 	uint32_t positionMillis(void);
 	uint32_t lengthMillis(void);
 	uint32_t fileOffset(void);
-    bool failed;
 	virtual void update(void);
+
+    	void (*hotswap_cb)();
 private:
 	File rawfile;
 	uint32_t file_size;
 	volatile uint32_t file_offset;
 	volatile bool playing;
+	unsigned char audioBuffer[AUDIOBUFSIZE]; //
+	volatile int bufAvail = 0;
+	volatile int bufPos = 0;
+	char _filePath[16];
 };
 
 #endif

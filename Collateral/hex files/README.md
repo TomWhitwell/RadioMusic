@@ -1,4 +1,9 @@
 ##Hex File Changelog  
+23-3-2016: Rev 2.0 BETA (jstenroos)
+    - Fixed hotswap
+    - Removed file number limit of ~330. Full 1200 files (16 banks of 75 files each) is now possible.
+    - Fine tuned reset. Works properly now after channel change. Also can be set to beginning of the file properly.
+    - Added optional alphabetical sort for banks.
 
 27-3-2016: RadioMusic_Beta_2.hex
 - Code refactored by Jouni Stenroos  
