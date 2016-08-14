@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/TomWhitwell/RadioMusic](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/TomWhitwell/RadioMusic?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-### A virtual radio module for Eurorack 
+### A virtual radio module for Eurorack
 ![Image from matcsat, Muffwiggler forum](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/BuildImages/rmpic.jpg)
 
 - [Full Documentation](https://github.com/TomWhitwell/RadioMusic/wiki)
@@ -17,14 +17,14 @@
 
 This is not a radio. It is a sample player that behaves like a radio.  
 
-A digital way to simulate radio-powered compositions by John Cage, Karlheinz Stockhausen and Don Buchla's voltage-controlled radio experiments. It uses a teensy3.1 to play files from a SD card to simulate a voltage controlled AM/FM/Shortwave/Time Travel radio. 
+A digital way to simulate the radio-powered compositions of John Cage and Karlheinz Stockhausen as well as Don Buchla's voltage-controlled radio experiments. It uses a [Teensy 3.1/3.2](https://www.pjrc.com/teensy/) to play files from an SD card to simulate a voltage controlled AM/FM/Shortwave/Time Travel radio. 
 
 ####Progress  
 
-May 2016 
+May 2016
 - Merged Jouni's latest changes into the main branch
 - New Beta versions in the Collateral/Hex Files folder: Crossfade and a new Bank Change interface
-- If you're developing firmware yourself, make sure you read the 'Edited Teensy Files' section, because this has changed significantly 
+- If you're developing firmware yourself, make sure you read the 'Edited Teensy Files' section, because this has changed significantly
 
 March 2016  
 - Updated firmware Beta produced by Jouni Stenroos, fixing several long-term issues including file count limit, hot swapping and resets.  
@@ -59,13 +59,13 @@ October 2014
 
 ####Features
 - 4hp x 40mm deep  
-- On-board 5v regulator, does not need a 5v rail. 
+- On-board 5v regulator, does not need a 5v rail.
 - 75ma Current Draw   
     - 60ma from 5v regulator  
     - 8ma from -12v  
 - Up to 32gb storage, 16 banks of 75 channels each  
-- Files stored as headerless .raw wav files 
-- Customise the module by editing settings.txt on the SD Card 
+- Files stored as headerless .raw wav files
+- Customise the module by editing settings.txt on the SD Card
 
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
 
