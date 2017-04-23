@@ -1,5 +1,5 @@
 /*
-RADIO MUSIC 
+ RADIO MUSIC
  https://github.com/TomWhitwell/RadioMusic
  
  Audio out: Onboard DAC, teensy3.1 pin A14/DAC
@@ -36,404 +36,355 @@ RADIO MUSIC
  - Some refactoring and organization of code.
  
  */
-#include <RMPlaySDRaw.h>
 #include <EEPROM.h>
-#include <Bounce.h>
-#include <Audio.h>
 #include <SPI.h>
 #include <SD.h>
 #include <Wire.h>
+#include "RadioMusic.h"
+#include "AudioSystemHelpers.h"
+#include "Settings.h"
+#include "LedControl.h"
+#include "FileScanner.h"
+#include "AudioEngine.h"
+#include "Interface.h"
+#include "PlayState.h"
 
-// Setting to 1 enables many debugging prints on serial console
-#define DEBUG 0
+#ifdef DEBUG
+#define D(x) x
+#else
+#define D(x)
+#endif
 
-// OPTIONS TO READ FROM THE SD CARD, WITH DEFAULT VALUES 
-boolean 	MUTE = false;        // Crossfade clicks when changing channel / position, 
-				     // at cost of speed. Fade speed is set by DECLICK 
-unsigned int 	DECLICK= 25;         // milliseconds of fade in/out on switching 
-boolean 	ShowMeter = true;    // Does the VU meter appear?  
-int 		meterHIDE = 2000;    // how long to show the meter after bank change in Milliseconds 
-boolean 	ChanPotImmediate = true;     // Settings for Pot / CV response.
-boolean 	ChanCVImmediate = true;      // TRUE means it jumps directly when you move or change.
-boolean 	StartPotImmediate = false;   // FALSE means it only has an effect when RESET is pushed 
-					     // or triggered 
-boolean 	StartCVImmediate = false; 
-int 		StartCVDivider = 2;          // Changes sensitivity of Start control. 1 = most sensitive, 
-					     // 512 = lest sensitive (i.e only two points) 
-boolean 	Looping = true;              // When a file finishes, start again from the beginning 
-boolean 	SortFiles = true;	     // By default we sort the directory contents.
+// Press reset button to reboot
+//#define RESET_TO_REBOOT
+//#define ENGINE_TEST
 
-boolean gotSort = false; 	     // true if settings.txt exists and contains Sort setting.
-				     // We don't want to turn on sorting on disks that
-				     // already have settings.txt, the user might have
-				     // done efforts to do fat sorting on it.
-File settingsFile;
+#define EEPROM_BANK_SAVE_ADDRESS 0
 
-// Audio engine definitions.
-RMPlaySDRaw           	 playRaw1;
-RMPlaySDRaw		 playRaw2;       
-AudioEffectFade          fade1;
-AudioEffectFade		 fade2;		
-AudioMixer4		 mixer;
-AudioAnalyzePeak         peak1;
-AudioOutputAnalog        dac1;
-AudioConnection          patchCord1(playRaw1, fade1);
-AudioConnection		 patchCord2(playRaw2, fade2);
-AudioConnection		 patchCord3(fade1, 0, mixer, 0);
-AudioConnection		 patchCord4(fade2, 0, mixer, 1);
-AudioConnection          patchCord5(mixer, 0, dac1, 0);
-AudioConnection          patchCord6(mixer, 0, peak1, 0);
+#define FLASHTIME 	10  	// How long do LEDs flash for?
+#define SHOWFREQ 	250 	// how many millis between serial Debug updates
 
-// Pointers to current and previous player
-RMPlaySDRaw		*pRawPlayer = &playRaw1;
-RMPlaySDRaw		*pPrevRawPlayer = &playRaw2;
-AudioEffectFade		*pFadeOut = &fade1;
-AudioEffectFade		*pFadeIn = &fade2;
+#define peakFPS 30   //  FRAMERATE FOR PEAK METER
 
-// REBOOT CODES 
-#define RESTART_ADDR       0xE000ED0C
-#define READ_RESTART()     (*(volatile uint32_t *)RESTART_ADDR)
-#define WRITE_RESTART(val) ((*(volatile uint32_t *)RESTART_ADDR) = (val))
+#define SD_CARD_CHECK_DELAY 20
 
-// SETUP VARS TO STORE DETAILS OF FILES ON THE SD CARD 
-#define MAX_FILES 75
-#define BANKS 16
-
-typedef struct FileInfo_s {
-    String name;
-    unsigned long size;
-} FileInfo_t;
-
-int 		ACTIVE_BANKS; 
-String 		FILE_TYPE = "RAW";
-FileInfo_t 	FILE_NAMES [BANKS][MAX_FILES];
-int 		FILE_COUNT[BANKS];
-String 		CURRENT_DIRECTORY = "0";
-File 		root;
-
-// SETUP VARS TO STORE CONTROLS 
-#define CHAN_POT_PIN A9 	// pin for Channel pot
-#define CHAN_CV_PIN A6 		// pin for Channel CV 
-#define TIME_POT_PIN A7 	// pin for Time pot
-#define TIME_CV_PIN A8 		// pin for Time CV
-#define RESET_BUTTON 8 		// Reset button 
-#define RESET_LED 11 		// Reset LED indicator 
-#define RESET_CV 9 		// Reset pulse input 
-
-boolean CHAN_CHANGED = true; 
-boolean RESET_CHANGED = false; 
-boolean EOF_REACHED = false;
-// A separate variable for tracking reset CV only
-volatile boolean resetCVHigh = false;
-
-Bounce 		resetSwitch = Bounce( RESET_BUTTON, 20 ); // Bounce setup for Reset
-int 		PLAY_CHANNEL; 
-int 		NEXT_CHANNEL; 
-unsigned long 	playhead;
-char* 		charFilename;
-
-// BANK SWITCHER SETUP 
-#define BANK_BUTTON 2 // Bank Button 
-#define LED0 6
-#define LED1 5
-#define LED2 4
-#define LED3 3
-Bounce bankSwitch = Bounce( BANK_BUTTON, 20 ); 
-int PLAY_BANK = 0; 
-#define BANK_SAVE 0
-
-// CHANGE HOW INTERFACE REACTS 
-int chanHyst = 5; // how many steps to move before making a change (out of 1024 steps on a reading) 
-int timHyst = 7; 
-
-int chanPotOld;
-int chanCVOld;
-int timPotOld;
-int timCVOld;
-
-#define FLASHTIME 	10  	// How long do LEDs flash for? 
-#define HOLDTIME 	1300 	// How many millis to hold a button to get bank change mode? 
-#define SHOWFREQ 	250 	// how many millis between serial Debug updates 
-#define CHECKFREQ 	5   	// how often to check the interface in Millis 
-#define SAMPLEAVERAGE   40 	// How many values are read and averaged of pot/CV inputs each interface check.
-
-// Special ops undefined at the moment. Swapping between loop divider and main program in the future.
-#define SPECOPSTIME 	5000 	// How many millis to hold a button to get specops function
 // //////////
 // TIMERS
-// ////////// 
+// //////////
 
-// elapsedMillis is a special variable in Teensy - increments every millisecond 
-elapsedMillis timChanged; 
 elapsedMillis showDisplay;
 elapsedMillis resetLedTimer = 0;
-elapsedMillis bankTimer = 0;
 elapsedMillis ledFlashTimer = 0;
-elapsedMillis checkI = 0; // check interface 
-// CONTROL THE PEAK METER DISPLAY 
-elapsedMillis meterDisplay; // Counter to hide MeterDisplay after bank change 
-elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE 
-elapsedMillis prevAudioElapsed;
-#define peakFPS 12   //  FRAMERATE FOR PEAK METER 
 
-// DEBUG STUFF
-elapsedMillis debugTimer;  // Used for measuring performance.
-elapsedMillis debugInterval; // How often debug messages are printed
+elapsedMillis meterDisplayTimer; // Counter to hide MeterDisplay after bank change
+elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE
 
-int 	prevBankTimer = 0;
+
+int prevBankTimer = 0;
 boolean flashLeds = false;
-boolean resetButton = false;
-boolean prevResetButton = false;
 boolean bankChangeMode = false;
+File settingsFile;
 
+Settings settings("SETTINGS.TXT");
+LedControl ledControl;
+FileScanner fileScanner;
+AudioEngine audioEngine;
+Interface interface;
+PlayState playState;
 
-void hotswap_callback();
-
-// File name compare routine for qsort
-int fileNameCompare(const void *a, const void *b) {
-    FileInfo_t *sa = (FileInfo_t *)a;
-    FileInfo_t *sb = (FileInfo_t *)b;
-
-    return sa->name.compareTo(sb->name);
-}
+int NO_FILES = 0;
 
 void setup() {
 
-  //PINS FOR BANK SWITCH AND LEDS 
-  pinMode(BANK_BUTTON,INPUT);
-  pinMode(RESET_BUTTON, INPUT);
-  pinMode(RESET_CV, INPUT);
-  pinMode(RESET_LED, OUTPUT);
-  pinMode(LED0,OUTPUT);
-  pinMode(LED1,OUTPUT);
-  pinMode(LED2,OUTPUT);
-  pinMode(LED3,OUTPUT);
-  ledWrite(PLAY_BANK);
+#ifdef DEBUG_STARTUP
+	while( !Serial );
+	Serial.println("Starting");
+#endif // DEBUG_STARTUP
 
-  // START SERIAL MONITOR   
-  Serial.begin(38400); 
+	ledControl.init();
+	ledControl.single(playState.bank);
 
-  // MEMORY REQUIRED FOR AUDIOCONNECTIONS   
-  AudioMemory(5);
-  // SD CARD SETTINGS FOR AUDIO SHIELD 
-  SPI.setMOSI(7);
-  SPI.setSCK(14);
+	// MEMORY REQUIRED FOR AUDIOCONNECTIONS
+	AudioMemory(20);
+	// SD CARD SETTINGS FOR AUDIO SHIELD
+	SPI.setMOSI(7);
+	SPI.setSCK(14);
 
-  // OPEN SD CARD 
-  int crashCountdown = 0; 
+	boolean hasSD = openSDCard();
+	if(!hasSD) {
+		Serial.println("Rebooting");
+		reBoot(0);
+	}
 
-  if (!(SD.begin(10))) {
-    while (!(SD.begin(10))) {
-      ledWrite(15);
-      delay(100);
-      ledWrite(0);
-      delay(100);
-      crashCountdown++;
-      if (crashCountdown > 6)     
-	reBoot(500);
-    }
-  }
+	settings.init(hasSD);
 
-  // READ SETTINGS FROM SD CARD 
+	File root = SD.open("/");
+	fileScanner.scan(&root, settings);
 
-  root = SD.open("/");  
+	getSavedBankPosition();
 
-  if (SD.exists("settings.txt")) {
-    readSDSettings();
-    // There was a settings.txt but no Sort parameter in it.
-    // Let's turn sorting off.
-    if (gotSort == false)
-      SortFiles = false;
-  }
-  else { 
-    writeSDSettings();
-  };
+	audioEngine.init(settings);
 
-  // OPEN SD CARD AND SCAN FILES INTO DIRECTORY ARRAYS 
-  scanDirectory(root, 0);
+	int numFiles = fileScanner.numFilesInBank[playState.bank];
+	D(Serial.print("File Count ");Serial.println(numFiles););
 
-  // Sort files alphabetically in each bank.
-  if (SortFiles) {
-    for (int i = 0; i < BANKS; i++) {
-      if (FILE_COUNT[i] > 0)
-	qsort(&(FILE_NAMES[i][0]), FILE_COUNT[i], sizeof(FileInfo_t), fileNameCompare);
-    }
-  }
+	if(numFiles == 0) {
+		NO_FILES = 1;
+	}
+	interface.init(fileScanner.fileInfos[playState.bank][0].size, fileScanner.numFilesInBank[playState.bank], settings, &playState);
 
-
-  // CHECK  FOR SAVED BANK POSITION 
-  int a = 0;
-  a = EEPROM.read(BANK_SAVE);
-  if (a >= 0 && a <= ACTIVE_BANKS){
-    PLAY_BANK = a;
-    CHAN_CHANGED = true;
-  }
-  else {
-    EEPROM.write(BANK_SAVE,0);
-  };
-  playRaw1.hotswap_cb = hotswap_callback;
-  playRaw2.hotswap_cb = hotswap_callback;
-  mixer.gain(0, 1.0);
-  mixer.gain(1, 1.0);
-  // Add an interrupt on the RESET_CV pin to catch rising edges
-  attachInterrupt(RESET_CV, resetcv, RISING);
-  Serial.print("Free ram: ");
-  Serial.println(FreeRam());
-
-  debugInterval = 0;
+	D(Serial.println("--READY--"););
 }
 
-// Called by interrupt on rising edge, for RESET_CV pin
-void resetcv() {
-  resetCVHigh = true;
+void getSavedBankPosition() {
+	// CHECK  FOR SAVED BANK POSITION
+	int a = 0;
+	a = EEPROM.read(EEPROM_BANK_SAVE_ADDRESS);
+	if (a >= 0 && a <= fileScanner.activeBanks) {
+		playState.bank = a;
+		playState.channelChanged = true;
+	} else {
+		EEPROM.write(EEPROM_BANK_SAVE_ADDRESS, 0);
+	};
 }
 
-// Called from play_sd_raw hotswap code.
-void hotswap_callback()
-{
-#if DEBUG
-    Serial.println("Hotswap called");
-#endif
-    // Reboot instantly to prevent any audio engine operations.
-    reBoot(0);
-}
+boolean openSDCard() {
+	int crashCountdown = 0;
+	if (!(SD.begin(SS))) {
 
-////////////////////////////////////////////////////
-///////////////MAIN LOOP//////////////////////////
-////////////////////////////////////////////////////
+		Serial.println("No SD.");
+		while (!(SD.begin(SS))) {
+			ledControl.single(15);
+			delay(SD_CARD_CHECK_DELAY);
+			ledControl.single(crashCountdown % 4);
+			delay(SD_CARD_CHECK_DELAY);
+			crashCountdown++;
+			Serial.print("Crash Countdown ");
+			Serial.println(crashCountdown);
+			if (crashCountdown > 4) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
 
 void loop() {
-  //////////////////////////////////////////
-  // IF FILE ENDS, MARK IT FOR RESTART FROM THE BEGINNING 
-  //////////////////////////////////////////
-  if (!pRawPlayer->isPlaying() && Looping){
-    EOF_REACHED = true;
-  }
 
-  // Check if previously playing rawPlayer has reached fadeOut period and can be paused.
-  // Or if MUTE is not active.
-  if ((prevAudioElapsed > DECLICK || !MUTE) && pPrevRawPlayer->isPlaying()) {
-    // Pause the previous audio device...
-    pPrevRawPlayer->pause();
-    // ...and prepare it for playing the same sound as the active player is playing.
-    // This pretty much guarantees a glitch-free reset, if such is going to happen.
-    // If the player is already prepared for this file, the prepare does nothing.
-    AudioNoInterrupts();
-    pPrevRawPlayer->preparePlayFrom(charFilename);
-    AudioInterrupts();
-  }
+	#ifdef CHECK_CPU
+	checkCPU();
+//	audioEngine.measure();
+	#endif
 
-  //////////////////////////////////////////
-  ////////REACT TO ANY CHANGES /////////////
-  //////////////////////////////////////////
+	if(NO_FILES) {
+		// TODO : Flash the lights to show there are no files
+		return;
+	}
 
-  if (CHAN_CHANGED || RESET_CHANGED || EOF_REACHED){
+	updateInterfaceAndDisplay();
 
-    charFilename = buildPath(PLAY_BANK,NEXT_CHANNEL);
-    PLAY_CHANNEL = NEXT_CHANNEL;
+	audioEngine.update();
 
-    if (!EOF_REACHED && !RESET_CHANGED && Looping) {
-	 // Carry on from previous position, unless reset pressed or time selected
-	playhead = pRawPlayer->fileOffset();
-    }
-    playhead = (playhead / 16) * 16; // scale playhead to 16 step chunks 
-#if DEBUG
-    Serial.print("Playhead: ");
-    Serial.println(playhead);
-#endif
-    // Swap players and fades.
-    if (pRawPlayer == &playRaw1) {
-	pRawPlayer = &playRaw2;
-	pPrevRawPlayer = &playRaw1;
-	pFadeOut = &fade1;
-	pFadeIn = &fade2;
-#if DEBUG
-	Serial.println("Playing through player 1");
-#endif
-    } else  {
-	pRawPlayer = &playRaw1;
-	pPrevRawPlayer = &playRaw2;
-	pFadeOut = &fade2;
-	pFadeIn = &fade1;
-#if DEBUG
-	Serial.println("Playing through player 2");
-#endif
-    }
+	if(audioEngine.error) {
+		// Too many read errors, reboot
+		Serial.println("Audio Engine errors. Reboot");
+		reBoot(0);
+	}
 
-    // We have two audio players, without this call SD-operations may hang the program.
-    AudioNoInterrupts();
-    // The file is marked for reaching end of file.
-    // Start from 0 but preserve playhead for future resets.
-    if (EOF_REACHED)
-      pRawPlayer->playFrom(charFilename, 0);   // change audio
-    else
-      pRawPlayer->playFrom(charFilename,playhead);   // change audio
-    AudioInterrupts();
+	if (playState.channelChanged) {
+		D(
+		Serial.print("RM: Going to next channel : ");
+		if(playState.channelChanged) Serial.print("RM: Channel Changed. ");
+		if(audioEngine.eof) Serial.print("End of file.");
+		Serial.println("");
+		);
 
-    if (MUTE) {
-      // Do a crossfade.
-      pFadeOut->fadeOut(DECLICK);
-      pFadeIn->fadeIn(DECLICK);
-      // And reset the fade timer to let the previous file fade out before pausing it.
-      prevAudioElapsed = 0;
-    } else {
-      // Emulate no crossfade with 1ms fadeout/in
-      pFadeOut->fadeOut(1);
-      pFadeIn->fadeIn(1);
-      prevAudioElapsed = 0;
-    }
-    ledWrite(PLAY_BANK);
+		playState.currentChannel = playState.nextChannel;
 
-    CHAN_CHANGED = false;
-    RESET_CHANGED = false; 
-    EOF_REACHED = false;
+		audioEngine.changeTo(&fileScanner.fileInfos[playState.bank][playState.nextChannel]);
 
-    resetLedTimer = 0; // turn on Reset LED 
-#if DEBUG
-    whatsPlaying();
-#endif
-  } else if (bankChangeMode && !resetButton) {
-    ledWrite(PLAY_BANK);
-  }
+		playState.channelChanged = false;
 
+		resetLedTimer = 0;
 
+	}
 
-  //////////////////////////////////////////
-  // CHECK INTERFACE  & UPDATE DISPLAYS/////  
-  //////////////////////////////////////////
-
-  if (checkI >= CHECKFREQ){
-    checkInterface(); 
-    checkI = 0;  
-  }
-
-  if (showDisplay > SHOWFREQ){
-    showDisplay = 0;
-  }
-  if (bankChangeMode)
-    digitalWrite(RESET_LED, 1); // Reset led is on continuosly when in bank change mode..
-  else
-    digitalWrite(RESET_LED, resetLedTimer < FLASHTIME); // flash reset LED 
-
-  // Flashing of top leds has priority. It's executed when reset button is held and 
-  // certain time has passed. 
-  if (flashLeds) {
-    if (ledFlashTimer < FLASHTIME * 4)
-      ledWrite(0x0F);
-    else
-      flashLeds = false;
-  // Next in priority is checking if the reset button is held.
-  // If holdtime has just exceeded, the top row of leds must be flashed.
-  // See above.
-  } else if (resetButton) { // The button is currently pressed
-    if (prevBankTimer < HOLDTIME && bankTimer >= HOLDTIME) { // We reached the hold time
-      flashLeds = true;		    
-      ledFlashTimer = 0;
-    }
-    prevBankTimer = bankTimer;
-    ledWrite(0x00);
-  // Finally if above conditions are not met, we check if peak meter should be displayed.
-  } else if (fps > 1000/peakFPS && meterDisplay > (unsigned int)meterHIDE && ShowMeter && !bankChangeMode) {
-    peakMeter();    // CALL PEAK METER   
-  }
 }
+
+void updateInterfaceAndDisplay() {
+
+	uint16_t changes = checkInterface();
+	updateDisplay(changes);
+}
+
+void updateDisplay(uint16_t changes) {
+	if (showDisplay > SHOWFREQ) {
+		showDisplay = 0;
+	}
+	if (bankChangeMode) {
+		ledControl.showReset(1);// Reset led is on continuously when in bank change mode..
+		if(!flashLeds) {
+			ledControl.multi(playState.bank);
+		}
+
+	} else {
+		ledControl.showReset(resetLedTimer < FLASHTIME); // flash reset LED
+	}
+
+	if (flashLeds) {
+		if (ledFlashTimer < FLASHTIME * 4) {
+			ledControl.multi(0x0F);
+		} else if(ledFlashTimer < FLASHTIME * 8) {
+			ledControl.multi(0);
+		} else {
+			ledFlashTimer = 0;
+		}
+	} else if (settings.showMeter && !bankChangeMode) {
+		peakMeter();
+	}
+}
+
+// INTERFACE //
+
+uint16_t checkInterface() {
+
+	uint16_t changes = interface.update();
+
+	#ifdef RESET_TO_REBOOT
+	if (changes & BUTTON_SHORT_PRESS) {
+		reBoot(0);
+	}
+	#endif
+
+	// BANK MODE HANDLING
+	if((changes & BUTTON_LONG_PRESS) && !bankChangeMode) {
+		D(Serial.println("Enter bank change mode"););
+		bankChangeMode = true;
+		flashLeds = true;
+		ledFlashTimer = 0;
+	} else if((changes & BUTTON_LONG_RELEASE) && bankChangeMode) {
+		D(Serial.println("Exit bank change mode"););
+		flashLeds = false;
+		bankChangeMode = false;
+	}
+
+	if(changes & BUTTON_PULSE) {
+		flashLeds = false;
+		if(bankChangeMode) {
+			D(Serial.println("BUTTON PULSE"););
+			nextBank();
+		} else {
+			D(Serial.println("Button Pulse but not in bank mode"););
+		}
+
+	}
+
+	boolean resetTriggered = changes & RESET_TRIGGERED;
+
+	bool skipToStartPoint = false;
+	bool speedChange = false;
+
+	if(settings.speedControl) {
+
+		if(resetTriggered && !settings.looping) {
+			skipToStartPoint = true;
+		}
+
+		// If start Pot or start CV have changed and they are immediate
+		// change speed
+		if((changes & CHANGE_START_NOW) || resetTriggered) {
+			speedChange = true;
+		}
+
+	} else {
+
+		if((changes & CHANGE_START_NOW) || resetTriggered) {
+			skipToStartPoint = true;
+		}
+	}
+
+	if((changes & CHANNEL_CHANGED) && resetTriggered) {
+		playState.channelChanged = true;
+	}
+
+	if(speedChange) doSpeedChange();
+	if(skipToStartPoint && !playState.channelChanged) {
+		if(settings.speedControl) {
+			audioEngine.skipTo(0);
+		} else {
+			audioEngine.skipTo(interface.time);
+		}
+
+	}
+
+	return changes;
+}
+
+void doSpeedChange() {
+	// SPEED CHANGE
+	// first map : -1650 to 1650
+	float speed = (float)map(interface.time, 0, 8192, -1650, 1650);
+	speed = pow(2,speed * 0.001);
+	audioEngine.setPlaybackSpeed(speed);
+}
+
+void nextBank() {
+
+	if(fileScanner.activeBanks == 1) {
+		D(Serial.println("Only 1 bank."););
+		return;
+	}
+	playState.bank++;
+	if (playState.bank > fileScanner.activeBanks) {
+		playState.bank = 0;
+	}
+	if (playState.nextChannel >= fileScanner.numFilesInBank[playState.bank])
+		playState.nextChannel = fileScanner.numFilesInBank[playState.bank] - 1;
+	interface.setChannelCount(fileScanner.numFilesInBank[playState.bank]);
+	playState.channelChanged = true;
+
+	D(
+		Serial.print("RM: Next Bank ");
+		Serial.println(playState.bank);
+	);
+
+	meterDisplayTimer = 0;
+	EEPROM.write(EEPROM_BANK_SAVE_ADDRESS, playState.bank);
+}
+
+#ifdef ENGINE_TEST
+boolean tested = false;
+int testIndex = 0;
+
+void engineTest() {
+
+	if(!tested) {
+		audioEngine.test(fileScanner.fileInfos[playState.bank][0],fileScanner.fileInfos[playState.bank][1]);
+		tested = true;
+	}
+
+	uint8_t changes = interface.update();
+
+	if(changes & BUTTON_SHORT_PRESS) {
+		testIndex += 2;
+		if(testIndex >= fileScanner.numFilesInBank[playState.bank]) {
+			Serial.println("Back to start");
+			testIndex = 0;
+		}
+		audioEngine.test(fileScanner.fileInfos[playState.bank][testIndex],fileScanner.fileInfos[playState.bank][testIndex+1]);
+	}
+
+	return;
+}
+#endif
+
+void peakMeter() {
+	if( (fps < 50) || (meterDisplayTimer < settings.meterHide) ) return;
+
+	float peakReading = audioEngine.getPeak();
+	int monoPeak = round(peakReading * 4);
+	monoPeak = round(pow(2, monoPeak));
+	ledControl.multi(monoPeak - 1);
+	fps = 0;
+}
+
