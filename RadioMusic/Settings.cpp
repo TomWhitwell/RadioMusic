@@ -71,8 +71,9 @@ void Settings::read() {
 //	looping = true;
 //	anyAudioFiles = false;
 //	hardSwap = true;
-	chanPotImmediate = false;
-	chanCVImmediate = false;
+//	chanPotImmediate = false;
+//	chanCVImmediate = false;
+//	quantizeNote = true;
 //	startCVImmediate = true;
 //	startPotImmediate = true;
 //	speedControl = false;
@@ -146,6 +147,14 @@ void Settings::applySetting(String settingName, String settingValue) {
 
 	if(settingName.equalsIgnoreCase("hardSwap")) {
 		hardSwap = toBoolean(settingValue);
+	}
+
+	if(settingName.equalsIgnoreCase("noteRange")) {
+		noteRange = settingValue.toInt();
+	}
+
+	if(settingName.equalsIgnoreCase("quantizeNote")) {
+		quantizeNote = toBoolean(settingValue);
 	}
 }
 

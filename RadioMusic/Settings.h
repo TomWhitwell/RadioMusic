@@ -12,6 +12,9 @@ public:
 	float toFloat(String settingValue);
 	boolean toBoolean(String settingValue);
 
+	uint8_t noteRange = 40;
+	boolean quantizeNote = false;
+
 	uint16_t declick = 25; // milliseconds of fade in/out on switching
 	uint16_t meterHide = 2000; // how long to show the meter after bank change in Milliseconds
 	uint16_t startCVDivider = 2; // Changes sensitivity of Start control. 1 = most sensitive 512 = least sensitive (i.e only two points)

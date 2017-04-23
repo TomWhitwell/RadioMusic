@@ -323,8 +323,15 @@ uint16_t checkInterface() {
 void doSpeedChange() {
 	// SPEED CHANGE
 	// first map : -1650 to 1650
-	float speed = (float)map(interface.time, 0, 8192, -1650, 1650);
-	speed = pow(2,speed * 0.001);
+	float speed = 1.0;
+	if(settings.quantizeNote) {
+		speed = (float)map(interface.time, 0, 8192, 0, settings.noteRange);
+		speed -= (int) settings.noteRange / 2;
+		speed = pow(2,speed / 12);
+	} else {
+		speed = (float)map(interface.time, 0, 8192, -1625,1625);
+		speed = pow(2, speed * 0.001);
+	}
 	audioEngine.setPlaybackSpeed(speed);
 }
 
