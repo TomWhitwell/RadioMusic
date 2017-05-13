@@ -71,17 +71,17 @@ void Settings::read() {
 
 //	crossfade = true;
 //	crossfadeTime = 1000;
-	looping = true;
-	anyAudioFiles = true;
+//	looping = true;
+//	anyAudioFiles = true;
 //	hardSwap = true;
 //	chanPotImmediate = false;
 //	chanCVImmediate = false;
 //	quantizeNote = true;
 //	startCVImmediate = true;
 //	startPotImmediate = true;
-	quantiseRootPot = true;
-	quantiseRootCV = true;
-	pitchMode = true;
+//	quantiseRootPot = true;
+//	quantiseRootCV = true;
+//	pitchMode = true;
 
 	if(anyAudioFiles) {
 		hardSwap = true;
