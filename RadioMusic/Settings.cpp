@@ -41,7 +41,6 @@ void Settings::read() {
 	String settingValue;
 	settingsFile = SD.open("settings.txt");
 	if (settingsFile) {
-		Serial.println("Got settings file");
 		while (settingsFile.available()) {
 			character = settingsFile.read();
 			while (character != '=') {
@@ -71,7 +70,7 @@ void Settings::read() {
 
 //	crossfade = true;
 //	crossfadeTime = 1000;
-//	looping = true;
+	looping = false;
 //	anyAudioFiles = true;
 //	hardSwap = true;
 //	chanPotImmediate = false;

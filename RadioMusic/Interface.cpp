@@ -32,7 +32,8 @@ void Interface::init(int fileSize, int channels, const Settings& settings, PlayS
 	resetButtonBounce.attach(RESET_BUTTON);
 	resetButtonBounce.interval(bounceInterval);
 
-	startCVDivider = settings.startCVDivider;
+	// make it backwards compatible with the old 10-bit cv and divider
+	startCVDivider = settings.startCVDivider * (ADC_MAX_VALUE / 1024);
 
 	pitchMode = settings.pitchMode;
 
@@ -51,6 +52,8 @@ void Interface::init(int fileSize, int channels, const Settings& settings, PlayS
     	startCVInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
         startPotInput.setAverage(true);
         startCVInput.setAverage(true);
+        startCVInput.borderThreshold = 32;
+        startPotInput.borderThreshold = 32;
     }
 
 	channelPotImmediate = settings.chanPotImmediate;
@@ -136,7 +139,7 @@ uint16_t Interface::updateStartControls() {
 
 	start = constrain(((startCVInput.currentValue * startCVDivider) + (startPotInput.currentValue * startCVDivider)),0,ADC_MAX_VALUE);
 
-//	if(changes) {
+	if(changes) {
 //		D(
 //				Serial.print("Start ");
 //				Serial.print(start);
@@ -145,9 +148,9 @@ uint16_t Interface::updateStartControls() {
 //				Serial.print("\t");
 //				Serial.println(startPotInput.currentValue);
 //		);
-//		D(startPotInput.printDebug(););
+		D(startPotInput.printDebug(););
 //		D(startCVInput.printDebug(););
-//	}
+	}
 	return changes;
 }
 

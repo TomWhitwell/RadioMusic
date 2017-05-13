@@ -38,7 +38,7 @@ class AnalogInput {
 
 		// Smooth input
 		boolean average = false;
-		uint8_t smoothSteps = 10;
+		uint8_t smoothSteps = 40;
 };
 
 #endif

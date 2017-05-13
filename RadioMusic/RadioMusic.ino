@@ -76,8 +76,8 @@ elapsedMillis showDisplay;
 elapsedMillis resetLedTimer = 0;
 elapsedMillis ledFlashTimer = 0;
 
-elapsedMillis meterDisplayTimer; // Counter to hide MeterDisplay after bank change
-elapsedMillis fps; // COUNTER FOR PEAK METER FRAMERATE
+elapsedMillis meterDisplayDelayTimer; // Counter to hide MeterDisplay after bank change
+elapsedMillis peakDisplayTimer; // COUNTER FOR PEAK METER FRAMERATE
 
 
 int prevBankTimer = 0;
@@ -324,7 +324,7 @@ uint16_t checkInterface() {
 		if(settings.pitchMode) {
 			audioEngine.skipTo(0);
 		} else {
-//			D(Serial.print("Skip to ");Serial.println(interface.start););
+			D(Serial.print("Skip to ");Serial.println(interface.start););
 			audioEngine.skipTo(interface.start);
 		}
 
@@ -362,7 +362,7 @@ void nextBank() {
 		Serial.println(playState.bank);
 	);
 
-	meterDisplayTimer = 0;
+	meterDisplayDelayTimer = 0;
 	EEPROM.write(EEPROM_BANK_SAVE_ADDRESS, playState.bank);
 }
 
@@ -393,12 +393,13 @@ void engineTest() {
 #endif
 
 void peakMeter() {
-	if( (fps < 50) || (meterDisplayTimer < settings.meterHide) ) return;
+	if( (peakDisplayTimer < 50) || (meterDisplayDelayTimer < settings.meterHide) ) return;
 
 	float peakReading = audioEngine.getPeak();
-	int monoPeak = round(peakReading * 4);
+	int monoPeak = ceil(peakReading * 4);
 	monoPeak = round(pow(2, monoPeak));
+//	D(Serial.print("Peak ");Serial.print(peakReading,4);Serial.print(" ");Serial.println(monoPeak););
 	ledControl.multi(monoPeak - 1);
-	fps = 0;
+	peakDisplayTimer = 0;
 }
 

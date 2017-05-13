@@ -2,10 +2,10 @@
 #define RadioMusic_h
 
 // Debug Flags
-//#define DEBUG
+#define DEBUG
 //#define DEBUG_STARTUP
 //#define DEBUG_SETTINGS
-//#define DEBUG_INTERFACE
+#define DEBUG_INTERFACE
 //#define DEBUG_WAV
 //#define DEBUG_ENGINE
 //#define DEBUG_FILES
