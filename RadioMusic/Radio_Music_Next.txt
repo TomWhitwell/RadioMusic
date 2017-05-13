@@ -4,9 +4,7 @@ New Stuff
 Banks / Files
 -------------
 
-At the moment its 16 banks of 64 files because of memory limitations. Optimising may increase this at some point.
-
-Bank switching is controlled by holding down the RESET button. After 1 second the top leds will flash then every 600 milliseconds it will change to the next bank with the bank number displayed as binary in the top leds.
+At the moment its 8 banks of 128 files because of memory limitations. Optimising will increase this at some point.
 
 Pitch Control
 -------------
@@ -14,8 +12,6 @@ Pitch Control
 add 'pitchMode=1' to the config.
 
 In pitchMode any retrigger (either button or RESET input) will play the file from the start.
-
-In pitch mode there are also noteRange=INT and quantizeNote=0/1 options.
 
 Wav Files 
 ---------
@@ -33,7 +29,7 @@ Tip Top Format
 If it finds 'config.txt' in the root of the card then it will scan for all
 extensionless files in the root and assume they are 24/96 tip top format files.
 
-If there are more than 64 files they will be spread across banks.
+It will only scan 128 of the files because of our bank / file limit.
 
-At the moment this mode has looping turned off and pitch mode turned on. The settings file will not affect these options.
+*** DONT TURN ON LOOPING ***
 

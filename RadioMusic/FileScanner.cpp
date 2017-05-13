@@ -31,7 +31,6 @@ void FileScanner::sortFiles() {
 
 void FileScanner::scan(File* root, Settings& settings) {
 
-	boolean sort = settings.sortFiles;
 	onlyNativeFormat = !settings.anyAudioFiles;
 
 	if (SD.exists("config.txt")) {
@@ -41,15 +40,35 @@ void FileScanner::scan(File* root, Settings& settings) {
 		// TODO : remove this when looping is fixed for 24 bit
 		settings.looping = false;
 		settings.hardSwap = true;
-		settings.speedControl = true;
+		settings.pitchMode = true;
 		D(
 			Serial.print("Finished Tip Top with "); Serial.print(activeBanks); Serial.println(" active banks"););
 	} else {
-		D(Serial.println("Scan Radio Music"); );
+		D(
+			if(onlyNativeFormat) {
+				Serial.println("Scan Radio Music. 44/16 Only.");
+			} else {
+				Serial.println("Scan Radio Music. All supported formats.");
+			}
+
+		);
 		scanDirectory(root);
 		D(Serial.println("Scan finished"); );
-		if (sort) {
+		if (settings.sortFiles) {
 			sortFiles();
+			D(showSortedFiles());
+		}
+	}
+}
+
+void FileScanner::showSortedFiles() {
+	for (int i = 0; i < BANKS; i++) {
+		Serial.print("Bank ");
+		Serial.println(i);
+		if (numFilesInBank[i] > 0) {
+			for(int j=0;j<numFilesInBank[i];j++) {
+				Serial.println(fileInfos[i][j].name);
+			}
 		}
 	}
 }

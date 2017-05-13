@@ -141,6 +141,13 @@ void getSavedBankPosition() {
 	int a = 0;
 	a = EEPROM.read(EEPROM_BANK_SAVE_ADDRESS);
 	if (a >= 0 && a <= fileScanner.activeBanks) {
+		D(
+			Serial.print("Using bank from EEPROM ");
+			Serial.print(a);
+			Serial.print(" . Active banks ");
+			Serial.println(fileScanner.activeBanks);
+
+		);
 		playState.bank = a;
 		playState.channelChanged = true;
 	} else {
@@ -195,14 +202,19 @@ void loop() {
 		D(
 		Serial.print("RM: Going to next channel : ");
 		if(playState.channelChanged) Serial.print("RM: Channel Changed. ");
-		if(audioEngine.eof) Serial.print("End of file.");
 		Serial.println("");
 		);
 
 		playState.currentChannel = playState.nextChannel;
 
-		audioEngine.changeTo(&fileScanner.fileInfos[playState.bank][playState.nextChannel]);
+		AudioFileInfo* currentFileInfo = &fileScanner.fileInfos[playState.bank][playState.nextChannel];
 
+		if(!settings.looping) {
+			// set start from interface
+			uint32_t samplePos = ((float)interface.start / 8192.0) * (currentFileInfo->size / currentFileInfo->getBytesPerSample());
+			currentFileInfo->startPlayFrom = (samplePos * currentFileInfo->getBytesPerSample()) % currentFileInfo->size;
+		}
+		audioEngine.changeTo(currentFileInfo);
 		playState.channelChanged = false;
 
 		resetLedTimer = 0;
@@ -260,8 +272,8 @@ uint16_t checkInterface() {
 	if((changes & BUTTON_LONG_PRESS) && !bankChangeMode) {
 		D(Serial.println("Enter bank change mode"););
 		bankChangeMode = true;
-		flashLeds = true;
-		ledFlashTimer = 0;
+		nextBank();
+//		ledFlashTimer = 0;
 	} else if((changes & BUTTON_LONG_RELEASE) && bankChangeMode) {
 		D(Serial.println("Exit bank change mode"););
 		flashLeds = false;
@@ -269,7 +281,7 @@ uint16_t checkInterface() {
 	}
 
 	if(changes & BUTTON_PULSE) {
-		flashLeds = false;
+//		flashLeds = false;
 		if(bankChangeMode) {
 			D(Serial.println("BUTTON PULSE"););
 			nextBank();
@@ -284,15 +296,13 @@ uint16_t checkInterface() {
 	bool skipToStartPoint = false;
 	bool speedChange = false;
 
-	if(settings.speedControl) {
+	if(settings.pitchMode) {
 
 		if(resetTriggered && !settings.looping) {
 			skipToStartPoint = true;
 		}
 
-		// If start Pot or start CV have changed and they are immediate
-		// change speed
-		if((changes & CHANGE_START_NOW) || resetTriggered) {
+		if((changes & (ROOT_NOTE_CHANGED | ROOT_POT_CHANGED | ROOT_CV_CHANGED) ) || resetTriggered) {
 			speedChange = true;
 		}
 
@@ -303,16 +313,19 @@ uint16_t checkInterface() {
 		}
 	}
 
-	if((changes & CHANNEL_CHANGED) && resetTriggered) {
-		playState.channelChanged = true;
+	if(resetTriggered) {
+		if((changes & CHANNEL_CHANGED) || playState.nextChannel != playState.currentChannel) {
+			playState.channelChanged = true;
+		}
 	}
 
 	if(speedChange) doSpeedChange();
 	if(skipToStartPoint && !playState.channelChanged) {
-		if(settings.speedControl) {
+		if(settings.pitchMode) {
 			audioEngine.skipTo(0);
 		} else {
-			audioEngine.skipTo(interface.time);
+//			D(Serial.print("Skip to ");Serial.println(interface.start););
+			audioEngine.skipTo(interface.start);
 		}
 
 	}
@@ -321,17 +334,11 @@ uint16_t checkInterface() {
 }
 
 void doSpeedChange() {
-	// SPEED CHANGE
-	// first map : -1650 to 1650
 	float speed = 1.0;
-	if(settings.quantizeNote) {
-		speed = (float)map(interface.time, 0, 8192, 0, settings.noteRange);
-		speed -= (int) settings.noteRange / 2;
-		speed = pow(2,speed / 12);
-	} else {
-		speed = (float)map(interface.time, 0, 8192, -1625,1625);
-		speed = pow(2, speed * 0.001);
-	}
+	speed = interface.rootNote - 60;
+	D(Serial.print("Root ");Serial.println(interface.rootNote););
+	speed = pow(2,speed / 12);
+	if(speed > 4) speed = 4;
 	audioEngine.setPlaybackSpeed(speed);
 }
 

@@ -12,13 +12,15 @@ public:
 	float toFloat(String settingValue);
 	boolean toBoolean(String settingValue);
 
-	uint8_t noteRange = 40;
-	boolean quantizeNote = false;
+	uint8_t lowNote = 36;
+	uint8_t noteRange = 39;
+    boolean quantiseRootCV = true;
+    boolean quantiseRootPot = true;
 
-	uint16_t declick = 25; // milliseconds of fade in/out on switching
+	uint16_t crossfadeTime = 25; // milliseconds of fade in/out on switching
 	uint16_t meterHide = 2000; // how long to show the meter after bank change in Milliseconds
 	uint16_t startCVDivider = 2; // Changes sensitivity of Start control. 1 = most sensitive 512 = least sensitive (i.e only two points)
-	boolean mute = false; // Crossfade clicks when changing channel / position at cost of speed. Fade speed is set by DECLICK
+	boolean crossfade = false; // Crossfade clicks when changing channel / position at cost of speed. Fade speed is set by DECLICK
 	boolean showMeter = true; // Does the VU meter appear?
 
 	boolean chanPotImmediate = true; // Settings for Pot / CV response.
@@ -31,13 +33,8 @@ public:
 
 	boolean sortFiles = true; // By default we sort the directory contents.
 
-	boolean gotSort = false; // true if settings.txt exists and contains Sort setting.
-    // We don't want to turn on sorting on disks that
-    // already have settings.txt, the user might have
-    // done efforts to do fat sorting on it.
-
 	// Use start pot and cv to control speed instead of start point
-	boolean speedControl = false;
+	boolean pitchMode = false;
 
 	// If this is true we'll read any .wav files and try to play them
 	// if not we'll only play 44khz, 16bit mono files

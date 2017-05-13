@@ -6,6 +6,7 @@
 #include <Bounce2.h>
 #include "PlayState.h"
 #include "Settings.h"
+#include "AnalogInput.h"
 
 #define CHAN_POT_PIN A9 	// pin for Channel pot
 #define CHAN_CV_PIN A6 		// pin for Channel CV
@@ -13,56 +14,63 @@
 #define TIME_CV_PIN A8 		// pin for Time CV
 #define RESET_BUTTON 8 		// Reset button
 #define RESET_CV 9 		// Reset pulse input
-#define BANK_BUTTON 2 // Bank Button
 
-#define TIME_POT_CHANGED 1
-#define TIME_CV_CHANGED 2
-#define CHANNEL_CHANGED 4
-#define CHANGE_START_NOW 8
-#define BUTTON_SHORT_PRESS 16
-#define BUTTON_LONG_PRESS 32
-#define BUTTON_LONG_RELEASE 64
-#define BUTTON_PULSE 128
-#define RESET_TRIGGERED 256
+#define TIME_POT_CHANGED 	1
+#define TIME_CV_CHANGED 	1 << 1
+#define CHANNEL_CHANGED 	1 << 2
+#define CHANGE_START_NOW 	1 << 3
+#define BUTTON_SHORT_PRESS 	1 << 4
+#define BUTTON_LONG_PRESS 	1 << 5
+#define BUTTON_LONG_RELEASE 1 << 6
+#define BUTTON_PULSE 		1 << 7
+#define RESET_TRIGGERED 	1 << 8
+#define ROOT_CV_CHANGED		1 << 9
+#define ROOT_POT_CHANGED	1 << 10
+#define ROOT_NOTE_CHANGED	1 << 11
 
 #define SHORT_PRESS_DURATION 10
-#define LONG_PRESS_DURATION 1000
+#define LONG_PRESS_DURATION 600
 // after LONG_PRESS_DURATION every LONG_PRESS_PULSE_DELAY milliseconds the update
 // function will set BUTTON_PULSE
 #define LONG_PRESS_PULSE_DELAY 600
 
 #define SAMPLEAVERAGE   16 	// How many values are read and averaged of pot/CV inputs each interface check.
 
-#define ADC_BITS 13
-#define ADC_MAX_VALUE (1 << ADC_BITS)
-
 class Interface {
 public:
+	boolean quantiseRootCV = true;
+	boolean quantiseRootPot = true;
 
-	int channelHysteresis = 32; // how many steps to move before making a change (out of 1024 steps on a reading)
-	int timeHysteresis = 32;
-
-	int chanPotOld = 0;
-	int chanCVOld = 0;
-	int startPotOld = 0;
-	int startCVOld = 0;
+	float rootNoteCV = 36;
+	float rootNotePot = 36;
+	float rootNote = 36;
 
 	boolean buttonHeld = false;
-	unsigned long time = 0;
+	unsigned long start = 0;
 
 	elapsedMillis buttonHoldTime;
 
 	PlayState* playState;
 
-	Interface() {
+	Interface() : channelCVInput(CHAN_CV_PIN),
+			channelPotInput(CHAN_POT_PIN),
+			startCVInput(TIME_CV_PIN),
+			startPotInput(TIME_POT_PIN)
+	{
 		playState = NULL;
 	}
 
 	void init(int fileSize, int channels, const Settings& settings, PlayState* state);
-	void setChannelCount(int count);
+	void setChannelCount(uint16_t count);
+	void setFileSize(uint32_t fileSize);
+
 	uint16_t update();
 	uint16_t updateButton();
 private:
+	AnalogInput channelCVInput;
+	AnalogInput channelPotInput;
+	AnalogInput startCVInput;
+	AnalogInput startPotInput;
 
 	Bounce resetButtonBounce;
 	elapsedMillis buttonTimer = 0;
@@ -70,13 +78,20 @@ private:
 	uint16_t changes = 0;
 
 	uint16_t startCVDivider = 1;
-	boolean chanPotImmediate = true;
-	boolean chanCVImmediate = true;
+	boolean channelPotImmediate = true;
+	boolean channelCVImmediate = true;
 	boolean startPotImmediate = true;
 	boolean startCVImmediate = true;
 
-	int currentFileSize = 0;
-	int channelCount = 0;
+	uint16_t channelCount = 0;
+	float rootNoteOld = 0;
+	float rootNotePotOld = 0;
+	float rootNoteCVOld = 0;
+
+	uint16_t updateChannelControls();
+	uint16_t updateStartControls();
+	uint16_t updateRootControls();
+	boolean pitchMode = false;
 };
 
 #endif

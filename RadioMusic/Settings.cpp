@@ -34,11 +34,14 @@ void Settings::copyDefaults() {
 
 void Settings::read() {
 
+	D(Serial.println("Reading settings.txt"););
+
 	char character;
 	String settingName;
 	String settingValue;
-	settingsFile = SD.open("settings.txt", FILE_READ);
+	settingsFile = SD.open("settings.txt");
 	if (settingsFile) {
+		Serial.println("Got settings file");
 		while (settingsFile.available()) {
 			character = settingsFile.read();
 			while (character != '=') {
@@ -66,17 +69,23 @@ void Settings::read() {
 	}
 	// Do test settings here
 
-//	mute = true;
-//	declick = 1000;
-//	looping = true;
-//	anyAudioFiles = false;
+//	crossfade = true;
+//	crossfadeTime = 1000;
+	looping = true;
+	anyAudioFiles = true;
 //	hardSwap = true;
 //	chanPotImmediate = false;
 //	chanCVImmediate = false;
 //	quantizeNote = true;
 //	startCVImmediate = true;
 //	startPotImmediate = true;
-//	speedControl = false;
+	quantiseRootPot = true;
+	quantiseRootCV = true;
+	pitchMode = true;
+
+	if(anyAudioFiles) {
+		hardSwap = true;
+	}
 }
 
 /* Apply the value to the parameter by searching for the parameter name
@@ -92,12 +101,12 @@ void Settings::applySetting(String settingName, String settingValue) {
 	Serial.println(settingValue);
 	);
 
-	if (settingName.equalsIgnoreCase("mute")) {
-		mute = toBoolean(settingValue);
+	if (settingName.equalsIgnoreCase("mute") || settingName.equalsIgnoreCase("crossfade")) {
+		crossfade = toBoolean(settingValue);
 	}
 
-	if (settingName.equalsIgnoreCase("declick")) {
-		declick = settingValue.toInt();
+	if (settingName.equalsIgnoreCase("declick") || settingName.equalsIgnoreCase("crossfadeTime")) {
+		crossfadeTime = settingValue.toInt();
 	}
 
 	if (settingName.equalsIgnoreCase("showMeter")) {
@@ -134,7 +143,6 @@ void Settings::applySetting(String settingName, String settingValue) {
 
 	if (settingName.equalsIgnoreCase("sort")) {
 		sortFiles = toBoolean(settingValue);
-		gotSort = true;
 	}
 
 	if(settingName.equalsIgnoreCase("anyAudioFiles")) {
@@ -142,7 +150,7 @@ void Settings::applySetting(String settingName, String settingValue) {
 	}
 
 	if(settingName.equalsIgnoreCase("pitchMode")) {
-		speedControl = toBoolean(settingValue);
+		pitchMode = toBoolean(settingValue);
 	}
 
 	if(settingName.equalsIgnoreCase("hardSwap")) {
@@ -153,9 +161,13 @@ void Settings::applySetting(String settingName, String settingValue) {
 		noteRange = settingValue.toInt();
 	}
 
-	if(settingName.equalsIgnoreCase("quantizeNote")) {
-		quantizeNote = toBoolean(settingValue);
+	if(settingName.equalsIgnoreCase("quantiseNoteCV") || settingName.equalsIgnoreCase("quantizeNoteCV")) {
+		quantiseRootCV = toBoolean(settingValue);
 	}
+	if(settingName.equalsIgnoreCase("quantiseNotePot") || settingName.equalsIgnoreCase("quantizeNotePot")) {
+		quantiseRootPot = toBoolean(settingValue);
+	}
+
 }
 
 // converting string to Float
@@ -184,10 +196,10 @@ void Settings::write() {
 	SD.remove("settings.txt");
 	// Create new one
 	settingsFile = SD.open("settings.txt", FILE_WRITE);
-	settingsFile.print("mute=");
-	settingsFile.println(mute);
-	settingsFile.print("declick=");
-	settingsFile.println(declick);
+	settingsFile.print("crossfade=");
+	settingsFile.println(crossfade);
+	settingsFile.print("crossfadeTime=");
+	settingsFile.println(crossfadeTime);
 	settingsFile.print("showMeter=");
 	settingsFile.println(showMeter);
 	settingsFile.print("meterHide=");
@@ -206,6 +218,8 @@ void Settings::write() {
 	settingsFile.println(looping);
 	settingsFile.print("sort=");
 	settingsFile.println(sortFiles);
+	settingsFile.print("pitchMode=");
+	settingsFile.println(pitchMode);
 	// close the file:
 	settingsFile.close();
 }

@@ -79,7 +79,7 @@ boolean AudioEngine::update() {
 
 	// Check if previously playing rawPlayer has reached fadeOut period and can be stopped.
 	// Or if MUTE is not active.
-	if ((prevAudioElapsed > settings->declick || !settings->mute) && previousPlayer->isPlaying()) {
+	if ((prevAudioElapsed > settings->crossfadeTime || !settings->crossfade) && previousPlayer->isPlaying()) {
 		D(Serial.println("AE: Pause previous player"););
 		previousPlayer->stop();
 	}
@@ -95,45 +95,29 @@ boolean AudioEngine::update() {
 
 void AudioEngine::changeTo(AudioFileInfo* fileInfo) {
 
-	currentFileInfo = fileInfo;
-
 	D(
 		Serial.print("AE: current file is now ");
-		Serial.println(currentFileInfo->name);
+		Serial.println(fileInfo->name);
 		Serial.print("AE: Current player has ");
 		Serial.print(currentPlayer->rawfile.name());
 		Serial.println();
 	);
+	uint32_t playbackPos = 0;
 
-	if (!eof && settings->looping) {
-		// Carry on from previous position, unless reset pressed or time selected
-		// Make this file play from a new offset but ensure its aligned to samples
-		// Get the current playback position of the active player
-		uint32_t playbackPos = (currentFileInfo->size * currentPlayer->offset()) / 4096;
-		if(playbackPos % currentFileInfo->getBytesPerSample() != 0) {
-			playbackPos -= playbackPos % currentFileInfo->getBytesPerSample();
-		}
-		currentFileInfo->startPlayFrom = playbackPos;
-		// Move back to nearest sample
+	if (settings->looping) {
+		playbackPos = (fileInfo->size * currentPlayer->offset()) / 4096;
 		D(
 			Serial.print("AE: No eof, No reset. Play from is ");
 			Serial.println(currentFileInfo->startPlayFrom);
 		);
+		if(playbackPos % fileInfo->getBytesPerSample() != 0) {
+			playbackPos -= playbackPos % fileInfo->getBytesPerSample();
+		}
+		D(Serial.print("AE: Playback pos ");Serial.println(playbackPos););
+		fileInfo->startPlayFrom = playbackPos;
 	}
 
-	// The file is marked for reaching end of file.
-	// Start from 0 but preserve playhead for future resets.
-	if (eof) {
-		D(
-			Serial.println("AE: got EOF");
-		);
-		currentFileInfo->startPlayFrom = 0;
-	} else {
-		D(
-			Serial.print("AE: Resuming playback from ");
-			Serial.println(currentFileInfo->startPlayFrom);
-		);
-	}
+	currentFileInfo = fileInfo;
 
 	if(settings->hardSwap) {
 		// If we allow all audio file types then no crossfades, just hard
@@ -149,18 +133,18 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo) {
 		AudioNoInterrupts();
 		currentPlayer->playFrom(currentFileInfo);   // change audio
 
-		if (settings->mute) {
+		if (settings->crossfade) {
 			// Do a crossfade.
-			D(Serial.print("Crossfade ");Serial.println(settings->declick););
-			pFadeOut->fadeOut(settings->declick);
-			pFadeIn->fadeIn(settings->declick);
+			D(Serial.print("Crossfade ");Serial.println(settings->crossfadeTime););
+			pFadeOut->fadeOut(settings->crossfadeTime);
+			pFadeIn->fadeIn(settings->crossfadeTime);
 			// And reset the fade timer to let the previous file fade out before pausing it.
 			prevAudioElapsed = 0;
 		} else {
 			D(Serial.println("1ms xfade."););
 			// Emulate no crossfade with 1ms fadeout/in
-			pFadeOut->fadeOut(1);
-			pFadeIn->fadeIn(1);
+			pFadeOut->fadeOut(2);
+			pFadeIn->fadeIn(2);
 			prevAudioElapsed = 0;
 		}
 		AudioInterrupts();
@@ -174,25 +158,26 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo) {
 		Serial.println();
 	);
 
-	eof = false;
 }
 
 void AudioEngine::setPlaybackSpeed(float speed) {
-//	Serial.print("Set Playback Speed ");
-//	Serial.println(speed,4);
+//	D(
+//		Serial.print("Set Playback Speed ");
+//		Serial.println(speed,4);
+//	);
 	currentPlayer->playbackSpeed = speed;
 	previousPlayer->playbackSpeed = speed;
 }
 
 // pos is from 0 -> 8192
 void AudioEngine::skipTo(uint32_t pos) {
-		uint32_t samplePos = ((float)pos / 8192.0) * (currentFileInfo->size / currentFileInfo->getBytesPerSample());
-//		D(
-//			Serial.print("AE: Skip To ");
-//			Serial.println(samplePos);
-//		);
-		currentFileInfo->startPlayFrom = (samplePos * currentFileInfo->getBytesPerSample()) % currentFileInfo->size;
-		currentPlayer->skipTo(currentFileInfo->startPlayFrom);
+//	D(
+//		Serial.print("AE: Skip To ");
+//		Serial.println(samplePos);
+//	);
+	uint32_t samplePos = ((float)pos / 8192.0) * (currentFileInfo->size / currentFileInfo->getBytesPerSample());
+	currentFileInfo->startPlayFrom = (samplePos * currentFileInfo->getBytesPerSample()) % currentFileInfo->size;
+	currentPlayer->skipTo(currentFileInfo->startPlayFrom);
 }
 
 void AudioEngine::measure() {

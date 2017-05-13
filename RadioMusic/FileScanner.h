@@ -7,8 +7,7 @@
 #include "Settings.h"
 
 #define BANKS 16
-#define MAX_FILES 64
-
+#define MAX_FILES 48
 
 // .raw and .wav but both lower and upper case
 #define NUM_FILE_TYPES 4
@@ -25,6 +24,8 @@ class FileScanner {
 	private:
 		void scanDirectory(File* dir);
 		void sortFiles();
+		void showSortedFiles();
+
 		void getExtensionlessFilesInRoot(File* root);
 		boolean processWavFile(File* wavFile, AudioFileInfo& fileInfo);
 		boolean processRawFile(File* wavFile, AudioFileInfo& fileInfo);

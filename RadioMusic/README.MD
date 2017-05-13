@@ -1,5 +1,6 @@
 
 Radio Music New Firmware
 
-The 'modified teensy files' are no longer required.
+Extra files are no longer needed
 
+ 
