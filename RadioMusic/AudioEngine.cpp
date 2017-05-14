@@ -171,11 +171,11 @@ void AudioEngine::setPlaybackSpeed(float speed) {
 
 // pos is from 0 -> 8192
 void AudioEngine::skipTo(uint32_t pos) {
-//	D(
-//		Serial.print("AE: Skip To ");
-//		Serial.println(samplePos);
-//	);
 	uint32_t samplePos = ((float)pos / 8192.0) * (currentFileInfo->size / currentFileInfo->getBytesPerSample());
+	D(
+		Serial.print("AE: Skip To ");
+		Serial.println(samplePos);
+	);
 	currentFileInfo->startPlayFrom = (samplePos * currentFileInfo->getBytesPerSample()) % currentFileInfo->size;
 	currentPlayer->skipTo(currentFileInfo->startPlayFrom);
 }

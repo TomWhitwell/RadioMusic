@@ -70,7 +70,7 @@ void Settings::read() {
 
 //	crossfade = true;
 //	crossfadeTime = 1000;
-	looping = false;
+//	looping = false;
 //	anyAudioFiles = true;
 //	hardSwap = true;
 //	chanPotImmediate = false;
@@ -81,6 +81,7 @@ void Settings::read() {
 //	quantiseRootPot = true;
 //	quantiseRootCV = true;
 //	pitchMode = true;
+//	startCVDivider = 1;
 
 	if(anyAudioFiles) {
 		hardSwap = true;

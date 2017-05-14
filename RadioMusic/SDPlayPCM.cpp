@@ -43,6 +43,7 @@
 
 
 void SDPlayPCM::begin(void) {
+//	AudioStartUsingSPI();
 	playing = false;
 	finished = false;
 	errors = 0;
@@ -60,6 +61,7 @@ void SDPlayPCM::loopPlayback(bool loop) {
 
 bool SDPlayPCM::changeFileTo(AudioFileInfo* info, bool closeFirst) {
 	filename = info->name;
+//	AudioStopUsingSPI();
 	__disable_irq()
 	;
 	if (closeFirst) {
@@ -80,7 +82,7 @@ bool SDPlayPCM::changeFileTo(AudioFileInfo* info, bool closeFirst) {
 	readError = false;
 	__enable_irq()
 	;
-
+//	AudioStartUsingSPI();
 	D(
 		if (dataSize % bytesPerSample != 0) {
 			debugHeader();
@@ -110,6 +112,8 @@ bool SDPlayPCM::changeFileTo(AudioFileInfo* info, bool closeFirst) {
 bool SDPlayPCM::skipTo(uint32_t dataPosition) {
 	if(!rawfile) return false;
 	uint32_t pos = dataOffset + dataPosition;
+//	if(!playing) AudioStartUsingSPI();
+	AudioStopUsingSPI();
 	__disable_irq()
 	;
 	boolean didseek = rawfile.seek(pos);
@@ -122,6 +126,7 @@ bool SDPlayPCM::skipTo(uint32_t dataPosition) {
 	finished = false;
 	__enable_irq()
 	;
+	AudioStartUsingSPI();
 	if(!didseek) {
 		D(
 			debugHeader();
@@ -173,7 +178,9 @@ bool SDPlayPCM::playFrom(AudioFileInfo* info) {
 		);
 	}
 
-	if(playing) stop();
+	//if(playing) stop();
+
+//	if(!playing) AudioStartUsingSPI();
 
 	if (!changeFileTo(info, true)) {
 		updateRequired = false;
@@ -186,17 +193,19 @@ bool SDPlayPCM::playFrom(AudioFileInfo* info) {
 		);
 	}
 
-	__disable_irq()
-	;
-	if(!rawfile.seek(pos)) {
-		debugHeader();
-		Serial.println("Seek failed");
-	}
-	bytesLeftInFile = info->size - info->startPlayFrom;
-	playing = true;
-	finished = false;
-	__enable_irq()
-	;
+	skipTo(info->startPlayFrom);
+
+//	__disable_irq()
+//	;
+//	if(!rawfile.seek(pos)) {
+//		debugHeader();
+//		Serial.println("Seek failed");
+//	}
+//	bytesLeftInFile = info->size - info->startPlayFrom;
+//	playing = true;
+//	finished = false;
+//	__enable_irq()
+//	;
 
 	D(
 		debugHeader();

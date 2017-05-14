@@ -73,7 +73,6 @@ public:
 
 private:
 	bool changeFileTo(AudioFileInfo* info, bool closeFirst);
-//	bool updateFromInfo(AudioFileInfo* info);
 
 	bool fillBuffer(int32_t requiredBytes);
 	void fastFillBuffer();
