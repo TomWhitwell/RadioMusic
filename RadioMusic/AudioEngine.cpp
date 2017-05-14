@@ -93,7 +93,7 @@ boolean AudioEngine::update() {
 	return false;
 }
 
-void AudioEngine::changeTo(AudioFileInfo* fileInfo) {
+void AudioEngine::changeTo(AudioFileInfo* fileInfo, unsigned long start) {
 
 	D(
 		Serial.print("AE: current file is now ");
@@ -102,21 +102,38 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo) {
 		Serial.print(currentPlayer->rawfile.name());
 		Serial.println();
 	);
-	uint32_t playbackPos = 0;
 
-	if (settings->looping) {
-		playbackPos = (fileInfo->size * currentPlayer->offset()) / 4096;
+	uint32_t pos = 0;
+
+	if (settings->looping && settings->radio) {
 		D(
-			Serial.print("AE: No eof, No reset. Play from is ");
-			Serial.println(currentFileInfo->startPlayFrom);
+			Serial.print("Elapsed ");
+			Serial.println(elapsed);
 		);
-		if(playbackPos % fileInfo->getBytesPerSample() != 0) {
-			playbackPos -= playbackPos % fileInfo->getBytesPerSample();
+		if(currentFileInfo != NULL) {
+			currentFileInfo->startPlayFrom += ((elapsed * currentFileInfo->getSampleRate() * 2) / 1000);
+			if(currentFileInfo->startPlayFrom % currentFileInfo->getBytesPerSample() != 0) {
+				currentFileInfo->startPlayFrom -= currentFileInfo->startPlayFrom % currentFileInfo->getBytesPerSample();
+			}
 		}
-		D(Serial.print("AE: Playback pos ");Serial.println(playbackPos););
-		fileInfo->startPlayFrom = playbackPos;
+		pos = (fileInfo->startPlayFrom + ((elapsed * fileInfo->getSampleRate()) / 1000));
+	} else {
+		// set start from arg
+		pos = (start * fileInfo->size) >> 13;
 	}
 
+	if(pos % fileInfo->getBytesPerSample() != 0) {
+		pos -= pos % fileInfo->getBytesPerSample();
+	}
+
+	fileInfo->startPlayFrom = pos % fileInfo->size;
+
+	D(
+		Serial.print("AE: start play from ");
+		Serial.println(fileInfo->startPlayFrom);
+	);
+
+	elapsed = 0;
 	currentFileInfo = fileInfo;
 
 	if(settings->hardSwap) {
@@ -178,6 +195,7 @@ void AudioEngine::skipTo(uint32_t pos) {
 	);
 	currentFileInfo->startPlayFrom = (samplePos * currentFileInfo->getBytesPerSample()) % currentFileInfo->size;
 	currentPlayer->skipTo(currentFileInfo->startPlayFrom);
+	elapsed = 0;
 }
 
 void AudioEngine::measure() {

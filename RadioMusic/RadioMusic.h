@@ -15,4 +15,8 @@
 // Regularly check CPU and Memory
 //#define CHECK_CPU
 
+// Test config modes
+//#define TEST_RADIO_MODE
+//#define TEST_DRUM_MODE
+
 #endif

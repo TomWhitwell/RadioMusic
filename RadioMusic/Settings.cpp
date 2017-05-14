@@ -83,11 +83,52 @@ void Settings::read() {
 //	pitchMode = true;
 //	startCVDivider = 1;
 
+#ifdef TEST_RADIO_MODE
+	radioMode();
+#elif TEST_DRUM_MODE
+	drumMode();
+#endif
+
 	if(anyAudioFiles) {
 		hardSwap = true;
 	}
 }
 
+void Settings::drumMode() {
+	crossfade=0;
+	crossfadeTime=100;
+	showMeter=1;
+	meterHide=2000;
+	chanPotImmediate=1;
+	chanCVImmediate=1;
+	startPotImmediate=1;
+	startCVImmediate=1;
+	startCVDivider=1;
+	looping=1;
+	sort=1;
+	pitchMode=1;
+	hardSwap = true;
+	anyAudioFiles = true;
+	radio = false;
+}
+
+void Settings::radioMode() {
+	crossfade=1;
+	crossfadeTime=100;
+	showMeter=1;
+	meterHide=2000;
+	chanPotImmediate=1;
+	chanCVImmediate=1;
+	startPotImmediate=0;
+	startCVImmediate=0;
+	startCVDivider=2;
+	looping=1;
+	sort=1;
+	pitchMode=0;
+	hardSwap = false;
+	anyAudioFiles = false;
+	radio = true;
+}
 /* Apply the value to the parameter by searching for the parameter name
  Using String.toInt(); for Integers
  toFloat(string); for Float
@@ -142,7 +183,7 @@ void Settings::applySetting(String settingName, String settingValue) {
 	}
 
 	if (settingName.equalsIgnoreCase("sort")) {
-		sortFiles = toBoolean(settingValue);
+		sort = toBoolean(settingValue);
 	}
 
 	if(settingName.equalsIgnoreCase("anyAudioFiles")) {
@@ -159,6 +200,10 @@ void Settings::applySetting(String settingName, String settingValue) {
 
 	if(settingName.equalsIgnoreCase("noteRange")) {
 		noteRange = settingValue.toInt();
+	}
+
+	if(settingName.equalsIgnoreCase("radio")) {
+		radio = toBoolean(settingValue);
 	}
 
 	if(settingName.equalsIgnoreCase("quantiseNoteCV") || settingName.equalsIgnoreCase("quantizeNoteCV")) {
@@ -217,7 +262,7 @@ void Settings::write() {
 	settingsFile.print("looping=");
 	settingsFile.println(looping);
 	settingsFile.print("sort=");
-	settingsFile.println(sortFiles);
+	settingsFile.println(sort);
 	settingsFile.print("pitchMode=");
 	settingsFile.println(pitchMode);
 	// close the file:

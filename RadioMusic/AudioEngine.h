@@ -56,7 +56,7 @@ class AudioEngine {
 		void init(Settings& settings);
 		boolean update();
 		void swap();
-		void changeTo(AudioFileInfo* audioFileInfo);
+		void changeTo(AudioFileInfo* audioFileInfo, unsigned long start);
 		void printDebug();
 		void skipTo(uint32_t time);
 		void setPlaybackSpeed(float speed);
@@ -64,6 +64,10 @@ class AudioEngine {
 		float getPeak();
 		AudioFileInfo* currentFileInfo;
 		boolean error = false;
+
+		// Time elapsed since last switch / skip
+		elapsedMillis elapsed = 0;
+
 	private:
 		uint16_t waitCount = 0;
 		boolean updateRequired = false;

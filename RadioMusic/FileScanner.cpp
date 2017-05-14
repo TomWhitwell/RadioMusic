@@ -54,7 +54,7 @@ void FileScanner::scan(File* root, Settings& settings) {
 		);
 		scanDirectory(root);
 		D(Serial.println("Scan finished"); );
-		if (settings.sortFiles) {
+		if (settings.sort) {
 			sortFiles();
 			D(showSortedFiles());
 		}

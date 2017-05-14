@@ -209,12 +209,7 @@ void loop() {
 
 		AudioFileInfo* currentFileInfo = &fileScanner.fileInfos[playState.bank][playState.nextChannel];
 
-		if(!settings.looping) {
-			// set start from interface
-			uint32_t samplePos = ((float)interface.start / 8192.0) * (currentFileInfo->size / currentFileInfo->getBytesPerSample());
-			currentFileInfo->startPlayFrom = (samplePos * currentFileInfo->getBytesPerSample()) % currentFileInfo->size;
-		}
-		audioEngine.changeTo(currentFileInfo);
+		audioEngine.changeTo(currentFileInfo, interface.start);
 		playState.channelChanged = false;
 
 		resetLedTimer = 0;

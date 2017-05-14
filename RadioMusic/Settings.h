@@ -31,7 +31,7 @@ public:
 
 	boolean looping = false; // When a file finishes, start again from the beginning
 
-	boolean sortFiles = true; // By default we sort the directory contents.
+	boolean sort = true; // By default we sort the directory contents.
 
 	// Use start pot and cv to control speed instead of start point
 	boolean pitchMode = false;
@@ -45,9 +45,17 @@ public:
 
 	// Only overrides if true. Force no crossfades.
 	boolean hardSwap = false;
+
+	// Classic Radio Music mode
+	// when true audio appears to play in the background as channels are switched.
+	// when false samples use the start time from CV / Pot EXCEPT in pitch mode where
+	// they always go back to the start.
+	boolean radio = true;
 private:
 	const char* _filename;
 	File settingsFile;
+	void radioMode();
+	void drumMode();
 	void copyDefaults();
 	void applySetting(String name, String value);
 };
