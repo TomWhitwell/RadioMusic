@@ -125,12 +125,26 @@ void setup() {
 
 	audioEngine.init(settings);
 
-	int numFiles = fileScanner.numFilesInBank[playState.bank];
+	int numFiles = 0;
+	for(int i=0;i<fileScanner.activeBanks;i++) {
+		numFiles += fileScanner.numFilesInBank[i];
+	}
 	D(Serial.print("File Count ");Serial.println(numFiles););
 
 	if(numFiles == 0) {
 		NO_FILES = 1;
+		D(Serial.println("No files"););
+	} else if(fileScanner.numFilesInBank[playState.bank] == 0) {
+		D(Serial.println("Empty bank"););
+		while(fileScanner.numFilesInBank[playState.bank] == 0) {
+			playState.bank++;
+			if(playState.bank == fileScanner.activeBanks) {
+				playState.bank = 0;
+			}
+		}
+		D(Serial.print("Set bank to ");Serial.println(playState.bank););
 	}
+
 	interface.init(fileScanner.fileInfos[playState.bank][0].size, fileScanner.numFilesInBank[playState.bank], settings, &playState);
 
 	D(Serial.println("--READY--"););

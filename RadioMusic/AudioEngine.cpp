@@ -105,18 +105,21 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo, unsigned long start) {
 
 	uint32_t pos = 0;
 
-	if (settings->looping && settings->radio) {
+	if (settings->looping && currentFileInfo != NULL) {
 		D(
 			Serial.print("Elapsed ");
 			Serial.println(elapsed);
 		);
-		if(currentFileInfo != NULL) {
+		if(settings->radio) {
 			currentFileInfo->startPlayFrom += ((elapsed * currentFileInfo->getSampleRate() * 2) / 1000);
 			if(currentFileInfo->startPlayFrom % currentFileInfo->getBytesPerSample() != 0) {
 				currentFileInfo->startPlayFrom -= currentFileInfo->startPlayFrom % currentFileInfo->getBytesPerSample();
 			}
+			pos = (fileInfo->startPlayFrom + ((elapsed * fileInfo->getSampleRate()) / 1000));
+		} else {
+			pos = currentPlayer->offset() * fileInfo->size;
 		}
-		pos = (fileInfo->startPlayFrom + ((elapsed * fileInfo->getSampleRate()) / 1000));
+
 	} else {
 		// set start from arg
 		pos = (start * fileInfo->size) >> 13;

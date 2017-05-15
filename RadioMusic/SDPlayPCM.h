@@ -40,7 +40,7 @@
 // e.g. an 836 byte buffer would have enough samples to fill 3 blocks for 48/16 -> 44/16
 // NOTE : Make sure this is a factor of 2 AND 3 otherwise 24-bit samples will be split
 // across the buffer boundary and that will make things go wrong.
-#define AUDIOBUFSIZE (AUDIO_BLOCK_SAMPLES * 24)
+#define AUDIOBUFSIZE (AUDIO_BLOCK_SAMPLES * 18)
 
 class SDPlayPCM: public AudioStream {
 public:
@@ -54,7 +54,7 @@ public:
 	void loopPlayback(bool loop);
 
 	bool skipTo(uint32_t dataOffset);
-	uint32_t offset(void);
+	float offset(void);
 
 	virtual void update(void);
 

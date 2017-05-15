@@ -293,7 +293,7 @@ void SDPlayPCM::update(void) {
 	read = 0;
 	speed = playbackSpeed * sampleRateSpeed;
 	float sp = speed * channels;
-
+	uint32_t sp2 = speed * channels * 0xFFFF;
 	bytesRequired = ceil(AUDIO_BLOCK_SAMPLES * speed) * bytesPerSample * channels;
 
 	if (bytesRequired > AUDIOBUFSIZE) {
@@ -313,6 +313,17 @@ void SDPlayPCM::update(void) {
 		} else {
 			bufferReadOk = fillBuffer(bytesRequired);
 		}
+B(
+		if (read % bytesPerSample != 0) {
+			debugHeader();
+			Serial.print("Read not aligned ");
+			Serial.print(read % bytesPerSample);
+			Serial.print("\t");
+			Serial.print(read);
+			Serial.print("\t");
+			Serial.println(bytesRequired);
+		}
+);
 
 		if (read >= 0 && read < bytesRequired) {
 			B(
@@ -375,22 +386,23 @@ void SDPlayPCM::update(void) {
 	boolean bufferWrap = ((n*sp) * bytesPerSample) + readPositionInBytes >= AUDIOBUFSIZE;
 	if (bytesPerSample == 2) {
 		// 16 bit copy
-		if(bufferWrap) {
+//		if(bufferWrap) {
 			for (i = 0; i < n; i++) {
-				lowSamplePos = (i * sp);
+				lowSamplePos = (i * sp2) >> 16;
 				l0 = readPositionInBytes + (lowSamplePos << 1);
 				if (l0 >= AUDIOBUFSIZE)
 					l0 -= AUDIOBUFSIZE;
-				memcpy(out++, &audioBuffer[l0],2);
+				*out++ = audioBuffer[l0] | audioBuffer[++l0] << 8;
+				//memcpy(out++, &audioBuffer[l0],2);
 			}
-		} else {
-			// We won't wrap the buffer edge so don't check
-			for (i = 0; i < n; i++) {
-				lowSamplePos = (i * sp);
-				l0 = readPositionInBytes + (lowSamplePos << 1);
-				memcpy(out++, &audioBuffer[l0],2);
-			}
-		}
+//		} else {
+//			// We won't wrap the buffer edge so don't check
+//			for (i = 0; i < n; i++) {
+//				lowSamplePos = (i * sp);
+//				l0 = readPositionInBytes + (lowSamplePos << 1);
+//				memcpy(out++, &audioBuffer[l0],2);
+//			}
+//		}
 	} else if (bytesPerSample == 3) {
 
 		if(bufferWrap) {
@@ -531,6 +543,7 @@ bool SDPlayPCM::fillBuffer(int32_t requiredBytes) {
 			bufferFillPosition = 0;
 
 			if (requiredBytes <= bytesLeftInFile) {
+				D(fillStyle = 1;);
 				// Not enough buffer space, but enough left in file. No seek required
 				// Fill buffer from start
 				if (requiredBytes - read > 0) {
@@ -573,11 +586,16 @@ bool SDPlayPCM::fillBuffer(int32_t requiredBytes) {
 				// get the bit thats left
 				int32_t lastBit = requiredBytes - read;
 				B(
+					fillStyle = 2;
 					seekRequired = true;
 					seek = 0;
 
 					if (lastBit <= 0) {
 						Serial.print("SDP: Last bit not +ve ");
+						Serial.println(lastBit);
+					} else {
+						debugHeader();
+						Serial.print("Last bit ");
 						Serial.println(lastBit);
 					}
 				);
@@ -594,7 +612,7 @@ bool SDPlayPCM::fillBuffer(int32_t requiredBytes) {
 
 				read += read3;
 				bytesLeftInFile = dataSize - lastBit;
-				bufferFillPosition = lastBit;
+				bufferFillPosition += lastBit;
 			}
 		} else {
 			// Buffer has enough space to read the rest of the file.
@@ -773,11 +791,18 @@ bool SDPlayPCM::fillBuffer(int32_t requiredBytes) {
 			Serial.println(fillStyle);
 		}
 
-		if(seekRequired && seek) {
-			debugHeader();
-			Serial.print("Seek required but seek is high. ");
-			Serial.print("Fill style ");
-			Serial.println(fillStyle);
+		if(seekRequired) {
+			if(seek) {
+				debugHeader();
+				Serial.print("Seek required but seek is high. ");
+				Serial.print("Fill style ");
+				Serial.println(fillStyle);
+			} else {
+				debugHeader();
+				Serial.print("Seek completed. ");
+				Serial.print("Fill style ");
+				Serial.println(fillStyle);
+			}
 		}
 
 	);
@@ -793,11 +818,21 @@ bool SDPlayPCM::fillBuffer(int32_t requiredBytes) {
 	}
 }
 
-#define B2M (uint32_t)((double)4294967296000.0 / AUDIO_SAMPLE_RATE_EXACT / 2.0) // 97352592
-
-// Progress in file scaled from 0 to 4096
-uint32_t SDPlayPCM::offset(void) {
-	return ((dataSize - bytesLeftInFile) * 4096) / dataSize;
+// Progress in file scaled from 0 to 1
+float SDPlayPCM::offset(void) {
+	// For now fudge it a bit and shift it forward in time by 2 blocks.
+	uint32_t bytes = bytesLeftInFile <= (bytesRequired * 2) ? bytesLeftInFile : bytesLeftInFile - (bytesRequired * 2);
+	float off = (float)(dataSize - bytes) / dataSize;
+	D(
+		debugHeader();
+	Serial.print("Offset. Size ");
+	Serial.print(dataSize);
+	Serial.print("\t");
+	Serial.print(bytesLeftInFile);
+	Serial.print("\t");
+	Serial.println(off,4);
+	);
+	return off;
 }
 
 // Note rawfile.available() is clamped to 16 bit signed int

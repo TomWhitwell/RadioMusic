@@ -4,7 +4,7 @@ New Stuff
 Banks / Files
 -------------
 
-At the moment its 8 banks of 128 files because of memory limitations. Optimising will increase this at some point.
+At the moment its 16 banks of 48 files because of memory limitations. Optimising will increase this at some point.
 
 Pitch Control
 -------------
@@ -31,5 +31,4 @@ extensionless files in the root and assume they are 24/96 tip top format files.
 
 It will only scan 128 of the files because of our bank / file limit.
 
-*** DONT TURN ON LOOPING ***
 
