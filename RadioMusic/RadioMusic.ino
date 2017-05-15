@@ -307,7 +307,7 @@ uint16_t checkInterface() {
 
 	if(settings.pitchMode) {
 
-		if(resetTriggered && !settings.looping) {
+		if(resetTriggered) {
 			skipToStartPoint = true;
 		}
 
