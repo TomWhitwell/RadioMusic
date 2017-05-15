@@ -85,9 +85,21 @@ void Settings::read() {
 
 #ifdef TEST_RADIO_MODE
 	radioMode();
-#elif TEST_DRUM_MODE
+#endif
+
+#ifdef TEST_DRUM_MODE
 	drumMode();
 #endif
+
+	if(!loopMode) {
+		if(pitchMode) {
+			loopMode = LOOP_MODE_START_POINT;
+		} else {
+			loopMode = LOOP_MODE_RADIO;
+		}
+	}
+
+	D(Serial.print("Loop mode ");Serial.println(loopMode););
 
 	if(anyAudioFiles) {
 		hardSwap = true;
@@ -109,7 +121,7 @@ void Settings::drumMode() {
 	pitchMode=1;
 	hardSwap = true;
 	anyAudioFiles = true;
-	radio = false;
+	loopMode = LOOP_MODE_START_POINT;
 }
 
 void Settings::radioMode() {
@@ -127,7 +139,7 @@ void Settings::radioMode() {
 	pitchMode=0;
 	hardSwap = false;
 	anyAudioFiles = false;
-	radio = true;
+	loopMode = LOOP_MODE_RADIO;
 }
 /* Apply the value to the parameter by searching for the parameter name
  Using String.toInt(); for Integers
@@ -202,8 +214,8 @@ void Settings::applySetting(String settingName, String settingValue) {
 		noteRange = settingValue.toInt();
 	}
 
-	if(settingName.equalsIgnoreCase("radio")) {
-		radio = toBoolean(settingValue);
+	if(settingName.equalsIgnoreCase("loopMode")) {
+		loopMode = settingValue.toInt();
 	}
 
 	if(settingName.equalsIgnoreCase("quantiseNoteCV") || settingName.equalsIgnoreCase("quantizeNoteCV")) {

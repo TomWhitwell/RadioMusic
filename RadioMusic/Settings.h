@@ -3,6 +3,17 @@
 
 #include <SD.h>
 
+// Classic Radio Music mode
+// when true audio appears to play in the background as channels are switched.
+// when false samples use the start time from CV / Pot EXCEPT in pitch mode where
+// they always go back to the start.
+#define LOOP_MODE_RADIO 1
+// Looper Mode
+// Try to keep playback position as samples are switched
+#define LOOP_MODE_CONTINUE 2
+// Use start point from interface
+#define LOOP_MODE_START_POINT 3
+
 class Settings {
 public:
 	Settings(const char* filename);
@@ -46,11 +57,8 @@ public:
 	// Only overrides if true. Force no crossfades.
 	boolean hardSwap = false;
 
-	// Classic Radio Music mode
-	// when true audio appears to play in the background as channels are switched.
-	// when false samples use the start time from CV / Pot EXCEPT in pitch mode where
-	// they always go back to the start.
-	boolean radio = true;
+	uint8_t loopMode = 0;
+
 private:
 	const char* _filename;
 	File settingsFile;

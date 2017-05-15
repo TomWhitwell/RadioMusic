@@ -110,14 +110,16 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo, unsigned long start) {
 			Serial.print("Elapsed ");
 			Serial.println(elapsed);
 		);
-		if(settings->radio) {
+		if(settings->loopMode == LOOP_MODE_RADIO) {
 			currentFileInfo->startPlayFrom += ((elapsed * currentFileInfo->getSampleRate() * 2) / 1000);
 			if(currentFileInfo->startPlayFrom % currentFileInfo->getBytesPerSample() != 0) {
 				currentFileInfo->startPlayFrom -= currentFileInfo->startPlayFrom % currentFileInfo->getBytesPerSample();
 			}
 			pos = (fileInfo->startPlayFrom + ((elapsed * fileInfo->getSampleRate()) / 1000));
-		} else {
+		} else if(settings->loopMode == LOOP_MODE_CONTINUE) {
 			pos = currentPlayer->offset() * fileInfo->size;
+		} else if(settings->loopMode == LOOP_MODE_START_POINT) {
+			pos = (start * fileInfo->size) >> 13;
 		}
 
 	} else {
