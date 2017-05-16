@@ -141,6 +141,11 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo, unsigned long start) {
 	elapsed = 0;
 	currentFileInfo = fileInfo;
 
+	// Re-apply speed limits
+	if(settings->pitchMode) {
+		setPlaybackSpeed(currentPlayer->playbackSpeed);
+	}
+
 	if(settings->hardSwap) {
 		// If we allow all audio file types then no crossfades, just hard
 		// cut from one to the next
@@ -183,10 +188,20 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo, unsigned long start) {
 }
 
 void AudioEngine::setPlaybackSpeed(float speed) {
-//	D(
-//		Serial.print("Set Playback Speed ");
-//		Serial.println(speed,4);
-//	);
+	// Limit speed on high bandwidth audio to not overload CPU
+	if(currentFileInfo->getBandwidth() > 144000) {
+		if(speed > 3.56) speed = 3.563595;
+	} else if(speed > 4.489) {
+		speed = 4.4898;
+	}
+	D(
+		Serial.print("AE: Set Playback Speed ");
+		Serial.println(speed,6);
+		Serial.print("AE: Bandwidth ");
+		Serial.print(currentFileInfo->getBandwidth());
+		Serial.print(" ");
+		Serial.println(currentFileInfo->getSampleRate());
+	);
 	currentPlayer->playbackSpeed = speed;
 	previousPlayer->playbackSpeed = speed;
 }

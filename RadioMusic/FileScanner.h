@@ -17,11 +17,12 @@ class FileScanner {
 		FileScanner();
 		void scan(File* root, Settings& settings);
 
-		int activeBanks = 0;
+		int lastBankIndex = 0;
 		AudioFileInfo fileInfos[BANKS][MAX_FILES];
 		int numFilesInBank[BANKS];
 
 	private:
+		uint8_t maximumFilesPerBank = MAX_FILES;
 		void scanDirectory(File* dir);
 		void sortFiles();
 		void showSortedFiles();

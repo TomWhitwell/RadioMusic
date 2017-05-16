@@ -85,6 +85,11 @@ public:
 		return BIT_DEPTHS[(format & BIT_DEPTH_MASK) >> 1] >> 3;
 	}
 
+	// Bytes per second
+	uint32_t getBandwidth() {
+		return getSampleRate() * getBytesPerSample() * getChannels();
+	}
+
 	// Packed format, Big endian.
 	// Bit 0 Mono / Stereo
 	// Bits 1 + 2 : Bit depth

@@ -33,6 +33,10 @@ void FileScanner::scan(File* root, Settings& settings) {
 
 	onlyNativeFormat = !settings.anyAudioFiles;
 
+	if(!onlyNativeFormat) {
+		maximumFilesPerBank = 32;
+	}
+
 	if (SD.exists("config.txt")) {
 		D(Serial.println("Scan TipTop"); );
 		getExtensionlessFilesInRoot(root);
@@ -42,7 +46,7 @@ void FileScanner::scan(File* root, Settings& settings) {
 		settings.hardSwap = true;
 		settings.pitchMode = true;
 		D(
-			Serial.print("Finished Tip Top with "); Serial.print(activeBanks); Serial.println(" active banks"););
+			Serial.print("Finished Tip Top with "); Serial.print(lastBankIndex); Serial.println(" active banks"););
 	} else {
 		D(
 			if(onlyNativeFormat) {
@@ -114,8 +118,8 @@ void FileScanner::getExtensionlessFilesInRoot(File* root) {
 				} else {
 					D(Serial.print("Moved to bank "); Serial.println(directoryNumber););
 				}
-				if (directoryNumber > activeBanks) {
-					activeBanks = directoryNumber;
+				if (directoryNumber > lastBankIndex) {
+					lastBankIndex = directoryNumber;
 				}
 			}
 		}
@@ -158,10 +162,10 @@ void FileScanner::scanDirectory(File* dir) {
 					int directoryNumber = currentDirectory.toInt();
 					if (directoryNumber >= BANKS) {
 						currentFile.close();
-						break;
+						return;
 					}
-					if (directoryNumber > activeBanks) {
-						activeBanks = directoryNumber;
+					if (directoryNumber > lastBankIndex) {
+						lastBankIndex = directoryNumber;
 					}
 					int numFiles = numFilesInBank[directoryNumber];
 

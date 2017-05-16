@@ -124,7 +124,7 @@ void setup() {
 	audioEngine.init(settings);
 
 	int numFiles = 0;
-	for(int i=0;i<fileScanner.activeBanks;i++) {
+	for(int i=0;i<=fileScanner.lastBankIndex;i++) {
 		numFiles += fileScanner.numFilesInBank[i];
 	}
 	D(Serial.print("File Count ");Serial.println(numFiles););
@@ -136,7 +136,7 @@ void setup() {
 		D(Serial.println("Empty bank"););
 		while(fileScanner.numFilesInBank[playState.bank] == 0) {
 			playState.bank++;
-			if(playState.bank == fileScanner.activeBanks) {
+			if(playState.bank == fileScanner.lastBankIndex) {
 				playState.bank = 0;
 			}
 		}
@@ -152,12 +152,12 @@ void getSavedBankPosition() {
 	// CHECK  FOR SAVED BANK POSITION
 	int a = 0;
 	a = EEPROM.read(EEPROM_BANK_SAVE_ADDRESS);
-	if (a >= 0 && a <= fileScanner.activeBanks) {
+	if (a >= 0 && a <= fileScanner.lastBankIndex) {
 		D(
 			Serial.print("Using bank from EEPROM ");
 			Serial.print(a);
 			Serial.print(" . Active banks ");
-			Serial.println(fileScanner.activeBanks);
+			Serial.println(fileScanner.lastBankIndex);
 
 		);
 		playState.bank = a;
@@ -345,18 +345,18 @@ void doSpeedChange() {
 	speed = interface.rootNote - 60;
 	D(Serial.print("Root ");Serial.println(interface.rootNote););
 	speed = pow(2,speed / 12);
-	if(speed > 4) speed = 4;
+
 	audioEngine.setPlaybackSpeed(speed);
 }
 
 void nextBank() {
 
-	if(fileScanner.activeBanks == 1) {
+	if(fileScanner.lastBankIndex == 1) {
 		D(Serial.println("Only 1 bank."););
 		return;
 	}
 	playState.bank++;
-	if (playState.bank > fileScanner.activeBanks) {
+	if (playState.bank > fileScanner.lastBankIndex) {
 		playState.bank = 0;
 	}
 	if (playState.nextChannel >= fileScanner.numFilesInBank[playState.bank])
