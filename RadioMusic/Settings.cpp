@@ -40,25 +40,33 @@ void Settings::read() {
 	String settingName;
 	String settingValue;
 	settingsFile = SD.open("settings.txt");
+
+	uint8_t NAME = 1;
+	uint8_t VALUE = 2;
+	uint8_t state = NAME;
+
 	if (settingsFile) {
 		while (settingsFile.available()) {
 			character = settingsFile.read();
-			while (character != '=') {
-				settingName = settingName + character;
-				character = settingsFile.read();
-			}
-			character = settingsFile.read();
-			while (character != '\n') {
-				settingValue = settingValue + character;
-				character = settingsFile.read();
-				if (character == '\n') {
-					// Apply the value to the parameter
+			if(state == NAME) {
+				if(character == '=') {
+					state = VALUE;
+				} else {
+					settingName = settingName + character;
+				}
+			} else if(state == VALUE) {
+				if(character == '\n') {
 					applySetting(settingName, settingValue);
-					// Reset Strings
 					settingName = "";
 					settingValue = "";
+					state = NAME;
+				} else {
+					settingValue = settingValue + character;
 				}
 			}
+		}
+		if(settingName.length() > 0 && settingValue.length() > 0) {
+			applySetting(settingName, settingValue);
 		}
 		// close the file:
 		settingsFile.close();
