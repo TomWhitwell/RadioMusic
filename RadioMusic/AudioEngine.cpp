@@ -18,8 +18,8 @@ void AudioEngine::init(Settings& config) {
 	playRaw1.loopPlayback(settings->looping);
 	playRaw2.loopPlayback(settings->looping);
 
-	mixer.gain(0, 0.4);
-	mixer.gain(1, 0.4);
+	mixer.gain(0, 1.0);
+	mixer.gain(1, 1.0);
 
 	error = false;
 }

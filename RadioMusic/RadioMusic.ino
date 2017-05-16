@@ -104,8 +104,6 @@ void setup() {
 	ledControl.init();
 	ledControl.single(playState.bank);
 
-	// MEMORY REQUIRED FOR AUDIOCONNECTIONS
-	AudioMemory(20);
 	// SD CARD SETTINGS FOR AUDIO SHIELD
 	SPI.setMOSI(7);
 	SPI.setSCK(14);
@@ -405,7 +403,7 @@ void peakMeter() {
 	if( (peakDisplayTimer < 50) || (meterDisplayDelayTimer < settings.meterHide) ) return;
 
 	float peakReading = audioEngine.getPeak();
-	int monoPeak = ceil(peakReading * 4);
+	int monoPeak = round(peakReading * 4);
 	monoPeak = round(pow(2, monoPeak));
 //	D(Serial.print("Peak ");Serial.print(peakReading,4);Serial.print(" ");Serial.println(monoPeak););
 	ledControl.multi(monoPeak - 1);
