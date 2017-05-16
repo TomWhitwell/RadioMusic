@@ -293,7 +293,7 @@ void SDPlayPCM::update(void) {
 	read = 0;
 	speed = playbackSpeed * sampleRateSpeed;
 	float sp = speed * channels;
-	uint32_t sp2 = speed * channels * 0xFFFF;
+//	uint32_t sp2 = speed * channels * 0xFFFF;
 	bytesRequired = ceil(AUDIO_BLOCK_SAMPLES * speed) * bytesPerSample * channels;
 
 	if (bytesRequired > AUDIOBUFSIZE) {
@@ -383,26 +383,25 @@ B(
 
 	l0 = 0;
 	lowSamplePos = 0;
+	// Check for buffer wrapping here so we don't do it 128 times in the loop.
 	boolean bufferWrap = ((n*sp) * bytesPerSample) + readPositionInBytes >= AUDIOBUFSIZE;
 	if (bytesPerSample == 2) {
 		// 16 bit copy
-//		if(bufferWrap) {
+		if(bufferWrap) {
 			for (i = 0; i < n; i++) {
-				lowSamplePos = (i * sp2) >> 16;
+				lowSamplePos = (i * sp);
 				l0 = readPositionInBytes + (lowSamplePos << 1);
-				if (l0 >= AUDIOBUFSIZE)
-					l0 -= AUDIOBUFSIZE;
-				*out++ = audioBuffer[l0] | audioBuffer[++l0] << 8;
-				//memcpy(out++, &audioBuffer[l0],2);
+				if (l0 >= AUDIOBUFSIZE) l0 -= AUDIOBUFSIZE;
+				memcpy(out++, &audioBuffer[l0],2);
 			}
-//		} else {
-//			// We won't wrap the buffer edge so don't check
-//			for (i = 0; i < n; i++) {
-//				lowSamplePos = (i * sp);
-//				l0 = readPositionInBytes + (lowSamplePos << 1);
-//				memcpy(out++, &audioBuffer[l0],2);
-//			}
-//		}
+		} else {
+			// We won't wrap the buffer edge so don't check
+			for (i = 0; i < n; i++) {
+				lowSamplePos = (i * sp);
+				l0 = readPositionInBytes + (lowSamplePos << 1);
+				memcpy(out++, &audioBuffer[l0],2);
+			}
+		}
 	} else if (bytesPerSample == 3) {
 
 		if(bufferWrap) {
@@ -410,8 +409,7 @@ B(
 			for (i = 0; i < n; i++) {
 				lowSamplePos = (i * sp);
 				l0 = readPositionInBytes + (lowSamplePos * 3);
-				if (l0 >= AUDIOBUFSIZE)
-					l0 -= AUDIOBUFSIZE;
+				if (l0 >= AUDIOBUFSIZE) l0 -= AUDIOBUFSIZE;
 				*out++ = (audioBuffer[l0] | (audioBuffer[++l0] << 8) | (audioBuffer[++l0] << 16)) >> 8;
 			}
 		} else {
