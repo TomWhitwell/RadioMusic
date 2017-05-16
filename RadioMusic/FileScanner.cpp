@@ -174,13 +174,19 @@ void FileScanner::scanDirectory(File* dir) {
 						addFile = processRawFile(&currentFile, fileInfo);
 					}
 					if (addFile) {
-						D(Serial.print("Adding file ");Serial.println(currentFilename));
+
 						fileInfo.name = currentDirectory + "/" + currentFilename;
 						numFilesInBank[directoryNumber]++;
-						if (numFilesInBank[directoryNumber] >= MAX_FILES) {
+						D(
+							Serial.print("Adding file ");
+							Serial.print(numFilesInBank[directoryNumber]);
+							Serial.print(" : ");
+							Serial.println(currentFilename);
+						);
+						if (numFilesInBank[directoryNumber] == MAX_FILES) {
 							D(Serial.println("Max Files reached"); );
 							currentFile.close();
-							break;
+							return;
 						}
 					}
 				}
