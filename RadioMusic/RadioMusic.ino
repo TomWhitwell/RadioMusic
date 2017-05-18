@@ -351,7 +351,7 @@ void doSpeedChange() {
 
 void nextBank() {
 
-	if(fileScanner.lastBankIndex == 1) {
+	if(fileScanner.lastBankIndex == 0) {
 		D(Serial.println("Only 1 bank."););
 		return;
 	}
