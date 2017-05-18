@@ -16,7 +16,7 @@ class AnalogInput {
 
 		void printDebug();
 		float getRatio();
-		float currentValue = 0.0;
+		float currentValue = -100.0;
 		int32_t inputValue = 0;
 		uint16_t borderThreshold = 16;
 	private:

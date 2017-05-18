@@ -84,9 +84,9 @@ private:
 	boolean startCVImmediate = true;
 
 	uint16_t channelCount = 0;
-	float rootNoteOld = 0;
-	float rootNotePotOld = 0;
-	float rootNoteCVOld = 0;
+	float rootNoteOld = -100;
+	float rootNotePotOld = -100;
+	float rootNoteCVOld = -100;
 
 	uint16_t updateChannelControls();
 	uint16_t updateStartControls();

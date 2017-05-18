@@ -44,7 +44,7 @@ void AnalogInput::setRange(float outLow, float outHigh, boolean quantiseOutput) 
 
 	if(range < 200 && quantise) {
 		hysteresis = true;
-		borderThreshold = inToOutRatio / 5;
+		borderThreshold = inToOutRatio / 4;
 		D(
 			Serial.print("Input hysteresis for pin ");
 			Serial.print(pin);
@@ -60,7 +60,7 @@ void AnalogInput::setRange(float outLow, float outHigh, boolean quantiseOutput) 
 	// Keep the inverse ratio so we only multiply during update
 	inverseRatio = 1.0 / inToOutRatio;
 
-	currentValue = outLow;
+//	currentValue = outLow;
 }
 
 void AnalogInput::setAverage(boolean avg) {
@@ -93,7 +93,12 @@ boolean AnalogInput::update() {
 		}
 
 	} else {
-		inputValue = constrain(analogRead(pin),0, ADC_MAX_VALUE - 1);
+		inputValue = 0;
+		for(int i=0;i<smoothSteps;i++) {
+			inputValue += analogRead(pin);
+		}
+		inputValue /= smoothSteps;
+		//inputValue = constrain(analogRead(pin),0, ADC_MAX_VALUE - 1);
 
 		if(quantise) {
 			int newValue = (int) (inputValue * inverseRatio) + outputLow;
@@ -106,6 +111,19 @@ boolean AnalogInput::update() {
 					return true;
 				}
 			}
+//			else {
+//				D(
+//						Serial.print(pin);
+//				Serial.print(" no change ");
+//				Serial.print(newValue);
+//				Serial.print(" ");
+//				Serial.print(currentValue);
+//				Serial.print(" ");
+//				Serial.print(inputValue);
+//				Serial.print(" ");
+//				Serial.println(valueAtLastChange);
+//						);
+//			}
 		} else if(abs(inputValue - oldInputValue) > borderThreshold) {
 			currentValue = (inputValue * inverseRatio) + outputLow;
 			oldInputValue = inputValue;

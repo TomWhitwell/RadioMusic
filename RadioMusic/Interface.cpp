@@ -44,8 +44,8 @@ void Interface::init(int fileSize, int channels, const Settings& settings, PlayS
         float lowNote = settings.lowNote + 0.5;
         startCVInput.setRange(lowNote, lowNote + settings.noteRange, quantiseRootCV);
         startPotInput.setRange(0.0,48, quantiseRootPot);
-        startCVInput.borderThreshold = 32;
-        startPotInput.borderThreshold = 32;
+        startCVInput.borderThreshold = 64;
+        startPotInput.borderThreshold = 64;
     } else {
     	D(Serial.print("Set Start Range ");Serial.println(ADC_MAX_VALUE / startCVDivider););
     	startPotInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
@@ -171,9 +171,15 @@ uint16_t Interface::updateRootControls() {
     float rootCV = startCVInput.currentValue;
 
     if(cvChanged) {
+    	D(
+    		Serial.println("CV Changed");
+    	);
     	if(quantiseRootCV) {
         	rootNoteCV = floor(rootCV);
         	if(rootNoteCV != rootNoteCVOld) {
+        		D(
+					Serial.print("CV ");Serial.println(startCVInput.inputValue);
+        		);
         		change |= ROOT_CV_CHANGED;
         	}
     	} else {
@@ -183,9 +189,15 @@ uint16_t Interface::updateRootControls() {
     }
 
     if(potChanged) {
+    	D(
+    		Serial.println("Pot Changed");
+    	);
     	if(quantiseRootPot) {
         	rootNotePot = floor(rootPot);
         	if(rootNotePot != rootNotePotOld) {
+        		D(
+					Serial.print("Pot ");Serial.println(startPotInput.inputValue);
+        		);
         		change |= ROOT_POT_CHANGED;
         	}
     	} else {

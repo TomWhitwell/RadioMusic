@@ -541,7 +541,7 @@ bool SDPlayPCM::fillBuffer(int32_t requiredBytes) {
 			bufferFillPosition = 0;
 
 			if (requiredBytes <= bytesLeftInFile) {
-				D(fillStyle = 1;);
+				B(fillStyle = 1;);
 				// Not enough buffer space, but enough left in file. No seek required
 				// Fill buffer from start
 				if (requiredBytes - read > 0) {
