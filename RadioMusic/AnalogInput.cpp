@@ -98,7 +98,6 @@ boolean AnalogInput::update() {
 			inputValue += analogRead(pin);
 		}
 		inputValue /= smoothSteps;
-		//inputValue = constrain(analogRead(pin),0, ADC_MAX_VALUE - 1);
 
 		if(quantise) {
 			int newValue = (int) (inputValue * inverseRatio) + outputLow;

@@ -189,7 +189,7 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo, unsigned long start) {
 
 void AudioEngine::setPlaybackSpeed(float speed) {
 	// Limit speed on high bandwidth audio to not overload CPU
-	if(currentFileInfo->getBandwidth() > 144000) {
+	if(settings->anyAudioFiles && speed > 3.56) {
 		if(speed > 3.56) speed = 3.563595;
 	} else if(speed > 4.489) {
 		speed = 4.4898;
