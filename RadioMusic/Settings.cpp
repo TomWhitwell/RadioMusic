@@ -109,7 +109,7 @@ void Settings::read() {
 
 	D(Serial.print("Loop mode ");Serial.println(loopMode););
 
-	if(anyAudioFiles) {
+	if(anyAudioFiles || pitchMode) {
 		hardSwap = true;
 	}
 }
