@@ -25,6 +25,10 @@ public:
 
 	uint8_t lowNote = 36;
 	uint8_t noteRange = 39;
+
+	// Which note number is normal playback speed.
+	uint8_t rootNote = 60;
+
     boolean quantiseRootCV = true;
     boolean quantiseRootPot = true;
 

@@ -112,7 +112,6 @@ bool SDPlayPCM::changeFileTo(AudioFileInfo* info, bool closeFirst) {
 bool SDPlayPCM::skipTo(uint32_t dataPosition) {
 	if(!rawfile) return false;
 	uint32_t pos = dataOffset + dataPosition;
-//	if(!playing) AudioStartUsingSPI();
 	AudioStopUsingSPI();
 	__disable_irq()
 	;

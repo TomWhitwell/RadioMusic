@@ -342,7 +342,7 @@ uint16_t checkInterface() {
 
 void doSpeedChange() {
 	float speed = 1.0;
-	speed = interface.rootNote - 60;
+	speed = interface.rootNote - settings.rootNote;
 	D(Serial.print("Root ");Serial.println(interface.rootNote););
 	speed = pow(2,speed / 12);
 
@@ -359,6 +359,11 @@ void nextBank() {
 	if (playState.bank > fileScanner.lastBankIndex) {
 		playState.bank = 0;
 	}
+	if(fileScanner.numFilesInBank[playState.bank] == 0) {
+		D(Serial.print("No file in bank ");Serial.println(playState.bank););
+		nextBank();
+	}
+
 	if (playState.nextChannel >= fileScanner.numFilesInBank[playState.bank])
 		playState.nextChannel = fileScanner.numFilesInBank[playState.bank] - 1;
 	interface.setChannelCount(fileScanner.numFilesInBank[playState.bank]);

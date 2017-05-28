@@ -222,6 +222,10 @@ void Settings::applySetting(String settingName, String settingValue) {
 		noteRange = settingValue.toInt();
 	}
 
+	if(settingName.equalsIgnoreCase("rootNote")) {
+		rootNote = settingValue.toInt();
+	}
+
 	if(settingName.equalsIgnoreCase("loopMode")) {
 		loopMode = settingValue.toInt();
 	}
