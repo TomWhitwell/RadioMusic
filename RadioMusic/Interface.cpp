@@ -111,7 +111,18 @@ uint16_t Interface::updateChannelControls() {
 			if((channelPotImmediate && channelPotChanged) || (channelCVImmediate && channelCVChanged)) {
 				playState->channelChanged = true;
 			}
-		};
+		} else {
+			D(
+				Serial.print("Channel change flag but channel is the same: ");
+				Serial.print(channel);
+				Serial.print(" ");
+				Serial.print(channelCVInput.currentValue);
+				Serial.print(" ");
+				Serial.print(channelPotInput.currentValue);
+				Serial.print(" ");
+				Serial.println(playState->currentChannel);
+			);
+		}
 	}
 
     return channelChanged;

@@ -104,9 +104,17 @@ boolean AnalogInput::update() {
 
 			if(newValue != currentValue) {
 				// Check for hysteresis threshold
-				if(abs(inputValue - valueAtLastChange) > borderThreshold) {
+				if(abs(inputValue - valueAtLastChange) > borderThreshold || newValue > START_VALUE) {
 					valueAtLastChange = inputValue;
 					currentValue = newValue;
+					D(
+						Serial.print("In Val ");
+						Serial.print(inputValue);
+						Serial.print(" ");
+						Serial.print(inverseRatio, 8);
+						Serial.print(" ");
+						Serial.println(newValue);
+					);
 					return true;
 				}
 			}

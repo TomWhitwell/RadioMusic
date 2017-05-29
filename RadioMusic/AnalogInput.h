@@ -6,6 +6,8 @@
 #define ADC_BITS 13
 #define ADC_MAX_VALUE (1 << ADC_BITS)
 
+#define START_VALUE -100
+
 class AnalogInput {
 	public:
 		AnalogInput(uint pinIndex);
@@ -16,7 +18,7 @@ class AnalogInput {
 
 		void printDebug();
 		float getRatio();
-		float currentValue = -100.0;
+		float currentValue = START_VALUE;
 		int32_t inputValue = 0;
 		uint16_t borderThreshold = 16;
 	private:
