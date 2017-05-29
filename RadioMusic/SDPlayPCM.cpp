@@ -291,8 +291,6 @@ void SDPlayPCM::update(void) {
 	inUpdate = true;
 	read = 0;
 	speed = playbackSpeed * sampleRateSpeed;
-	float sp = speed * channels;
-//	uint32_t sp2 = speed * channels * 0xFFFF;
 	bytesRequired = ceil(AUDIO_BLOCK_SAMPLES * speed) * bytesPerSample * channels;
 
 	if (bytesRequired > AUDIOBUFSIZE) {
@@ -382,42 +380,64 @@ B(
 
 	l0 = 0;
 	lowSamplePos = 0;
+	float sp = speed * channels;
+
 	// Check for buffer wrapping here so we don't do it 128 times in the loop.
 	boolean bufferWrap = ((n*sp) * bytesPerSample) + readPositionInBytes >= AUDIOBUFSIZE;
 	if (bytesPerSample == 2) {
 		// 16 bit copy
 		if(bufferWrap) {
 			for (i = 0; i < n; i++) {
-				lowSamplePos = (i * sp);
-				l0 = readPositionInBytes + (lowSamplePos << 1);
+				lowSamplePos = (i * speed);
+				l0 = readPositionInBytes + (lowSamplePos << channels);
 				if (l0 >= AUDIOBUFSIZE) l0 -= AUDIOBUFSIZE;
 				memcpy(out++, &audioBuffer[l0],2);
 			}
 		} else {
 			// We won't wrap the buffer edge so don't check
 			for (i = 0; i < n; i++) {
-				lowSamplePos = (i * sp);
-				l0 = readPositionInBytes + (lowSamplePos << 1);
+				lowSamplePos = (i * speed);
+				l0 = readPositionInBytes + (lowSamplePos << channels);
 				memcpy(out++, &audioBuffer[l0],2);
 			}
 		}
 	} else if (bytesPerSample == 3) {
 
-		if(bufferWrap) {
-			// 24 bit copy.
-			for (i = 0; i < n; i++) {
-				lowSamplePos = (i * sp);
-				l0 = readPositionInBytes + (lowSamplePos * 3);
-				if (l0 >= AUDIOBUFSIZE) l0 -= AUDIOBUFSIZE;
-				*out++ = (audioBuffer[l0] | (audioBuffer[++l0] << 8) | (audioBuffer[++l0] << 16)) >> 8;
+		if(channels == 1) {
+			if(bufferWrap) {
+				// 24 bit copy.
+				for (i = 0; i < n; i++) {
+					lowSamplePos = (i * speed);
+					l0 = readPositionInBytes + (lowSamplePos * 3);
+					if (l0 >= AUDIOBUFSIZE) l0 -= AUDIOBUFSIZE;
+					*out++ = (audioBuffer[l0] | (audioBuffer[++l0] << 8) | (audioBuffer[++l0] << 16)) >> 8;
+				}
+			} else {
+				// 24 bit copy.
+				for (i = 0; i < n; i++) {
+					lowSamplePos = (i * speed);
+					l0 = readPositionInBytes + (lowSamplePos * 3);
+					*out++ = (audioBuffer[l0] | (audioBuffer[++l0] << 8) | (audioBuffer[++l0] << 16)) >> 8;
+				}
 			}
 		} else {
-			// 24 bit copy.
-			for (i = 0; i < n; i++) {
-				lowSamplePos = (i * sp);
-				l0 = readPositionInBytes + (lowSamplePos * 3);
-				*out++ = (audioBuffer[l0] | (audioBuffer[++l0] << 8) | (audioBuffer[++l0] << 16)) >> 8;
+			if(bufferWrap) {
+				// 24 bit copy.
+				for (i = 0; i < n; i++) {
+					lowSamplePos = (i * speed);
+					l0 = readPositionInBytes + ((lowSamplePos * 3) << 1);
+					if (l0 >= AUDIOBUFSIZE) l0 -= AUDIOBUFSIZE;
+					*out++ = (audioBuffer[l0] | (audioBuffer[++l0] << 8) | (audioBuffer[++l0] << 16)) >> 8;
+				}
+			} else {
+				// 24 bit copy.
+				for (i = 0; i < n; i++) {
+					lowSamplePos = (i * speed);
+					l0 = readPositionInBytes + ((lowSamplePos * 3) << 1);
+					*out++ = (audioBuffer[l0] | (audioBuffer[++l0] << 8) | (audioBuffer[++l0] << 16)) >> 8;
+				}
 			}
+
 		}
 	}
 
