@@ -58,7 +58,8 @@ public:
 		return format & STEREO ? 2 : 1;
 	}
 
-	void setSampleRate(uint32_t sampleRate) {
+	// Return false is sample rate not supported
+	boolean setSampleRate(uint32_t sampleRate) {
 		if(sampleRate % 11025 == 0) {
 			uint8_t m = (sampleRate / 11025) - 1;
 
@@ -70,7 +71,10 @@ public:
 			} else {
 				format |= 4 << 3;
 			}
+		} else {
+			return false;
 		}
+		return true;
 	}
 
 	uint32_t getSampleRate() {

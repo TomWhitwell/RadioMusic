@@ -68,7 +68,9 @@ boolean WavHeaderReader::read(File* file, AudioFileInfo& info) {
 
 		D(Serial.print("Is Stereo : "); Serial.println(info.format & STEREO););
 		// SampleRate 4 bytes
-		info.setSampleRate(readLong());
+		if(!info.setSampleRate(readLong())) {
+			return false;
+		}
 
 		// ByteRate 4 bytes
 		//info.byteRate = readLong();
