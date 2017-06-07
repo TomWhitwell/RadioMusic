@@ -93,6 +93,9 @@ Interface interface;
 PlayState playState;
 
 int NO_FILES = 0;
+uint8_t noFilesLedIndex = 0;
+
+uint8_t rebootCounter = 0;
 
 void setup() {
 
@@ -132,6 +135,7 @@ void setup() {
 	if(numFiles == 0) {
 		NO_FILES = 1;
 		D(Serial.println("No files"););
+		ledFlashTimer = 0;
 	} else if(fileScanner.numFilesInBank[playState.bank] == 0) {
 		D(Serial.println("Empty bank"););
 		while(fileScanner.numFilesInBank[playState.bank] == 0) {
@@ -168,19 +172,18 @@ void getSavedBankPosition() {
 }
 
 boolean openSDCard() {
-	int crashCountdown = 0;
 	if (!(SD.begin(SS))) {
 
 		Serial.println("No SD.");
 		while (!(SD.begin(SS))) {
 			ledControl.single(15);
 			delay(SD_CARD_CHECK_DELAY);
-			ledControl.single(crashCountdown % 4);
+			ledControl.single(rebootCounter % 4);
 			delay(SD_CARD_CHECK_DELAY);
-			crashCountdown++;
+			rebootCounter++;
 			Serial.print("Crash Countdown ");
-			Serial.println(crashCountdown);
-			if (crashCountdown > 4) {
+			Serial.println(rebootCounter);
+			if (rebootCounter > 4) {
 				return false;
 			}
 		}
@@ -197,6 +200,17 @@ void loop() {
 
 	if(NO_FILES) {
 		// TODO : Flash the lights to show there are no files
+		if(ledFlashTimer > 100) {
+			ledControl.single(noFilesLedIndex);
+			noFilesLedIndex++;
+			noFilesLedIndex %= 4;
+			ledFlashTimer = 0;
+			rebootCounter ++;
+			// Wait 3 seconds and reboot
+			if(rebootCounter == 30) {
+				reBoot(0);
+			}
+		}
 		return;
 	}
 

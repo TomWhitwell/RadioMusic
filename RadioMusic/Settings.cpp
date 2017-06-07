@@ -220,10 +220,14 @@ void Settings::applySetting(String settingName, String settingValue) {
 
 	if(settingName.equalsIgnoreCase("noteRange")) {
 		noteRange = settingValue.toInt();
+		if(noteRange < 1) noteRange = 1;
+		if(noteRange > 72) noteRange = 72;
 	}
 
 	if(settingName.equalsIgnoreCase("rootNote")) {
 		rootNote = settingValue.toInt();
+		if(rootNote < lowNote) rootNote = lowNote;
+		if(rootNote > 96) rootNote = 96;
 	}
 
 	if(settingName.equalsIgnoreCase("loopMode")) {
