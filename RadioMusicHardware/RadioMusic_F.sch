@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="7.4.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -54,6 +54,7 @@
 <layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
 <layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
 <layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="90" name="Modules" color="5" fill="1" visible="no" active="no"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
 <layer number="93" name="Pins" color="2" fill="1" visible="no" active="yes"/>
@@ -157,30 +158,17 @@ Source: Panasonic</description>
 <wire x1="4.65" y1="4.85" x2="4.65" y2="2.65" width="0.2032" layer="21"/>
 <wire x1="4.65" y1="-2.15" x2="4.65" y2="-5.35" width="0.2032" layer="21"/>
 <circle x="0" y="0" radius="1.397" width="0.0508" layer="21"/>
-<pad name="1" x="-2.5" y="-7" drill="1.1" diameter="1.6764" shape="square" rot="R270"/>
-<pad name="2" x="0" y="-7" drill="1.1" diameter="1.6764" shape="octagon" rot="R270"/>
-<pad name="3" x="2.5" y="-7" drill="1.1" diameter="1.6764" shape="octagon" rot="R270"/>
-<pad name="M1" x="4.5" y="0" drill="2.1" diameter="2.8" shape="square" rot="R270"/>
-<pad name="M2" x="-4.5" y="0" drill="2.1" diameter="2.8" shape="square" rot="R270"/>
+<pad name="1" x="-2.5" y="-7" drill="1.1" shape="square" rot="R270"/>
+<pad name="2" x="0" y="-7" drill="1.1" shape="octagon" rot="R270"/>
+<pad name="3" x="2.5" y="-7" drill="1.1" shape="octagon" rot="R270"/>
+<pad name="M1" x="4.5" y="0" drill="2.1" rot="R270"/>
+<pad name="M2" x="-4.5" y="0" drill="2.1" rot="R270"/>
 <text x="-3.81" y="2.54" size="1.0668" layer="25">&gt;NAME</text>
 <text x="-3.81" y="-3.81" size="1.27" layer="27">&gt;VALUE</text>
 <rectangle x1="-2.925" y1="-7.325" x2="-2.075" y2="-6" layer="51"/>
 <rectangle x1="-0.425" y1="-7.325" x2="0.425" y2="-6" layer="51"/>
 <rectangle x1="2.075" y1="-7.325" x2="2.925" y2="-6" layer="51"/>
 <circle x="0" y="0" radius="1.016" width="0.0508" layer="21"/>
-</package>
-<package name="D6_BUTTON_RND">
-<description>Momentary Pushbutton Switch</description>
-<pad name="P$1" x="-2.5" y="2.5" drill="1" shape="square"/>
-<pad name="P$2" x="2.5" y="2.5" drill="1" shape="square"/>
-<pad name="P$3" x="2.5" y="-2.5" drill="1" shape="square"/>
-<pad name="P$4" x="-2.5" y="-2.5" drill="1" shape="square"/>
-<wire x1="-5" y1="3" x2="-5" y2="-3" width="0.127" layer="21"/>
-<wire x1="-5" y1="3" x2="-5" y2="-3" width="0.127" layer="21" curve="-298.072487"/>
-<circle x="0" y="0" radius="4.5" width="0.127" layer="51"/>
-<wire x1="-1" y1="0" x2="1" y2="0" width="0.127" layer="21"/>
-<wire x1="0" y1="1" x2="0" y2="-1" width="0.127" layer="21"/>
-<text x="-6.35" y="2.54" size="1.27" layer="25" rot="R270">&gt;NAME</text>
 </package>
 <package name="1206">
 <description>&lt;b&gt;CHICAGO MINIATURE LAMP, INC.&lt;/b&gt;&lt;p&gt;
@@ -1281,17 +1269,6 @@ Source: http://www.ledtronics.com/ds/smd-0603/Dstr0092.pdf</description>
 <pin name="E" x="0" y="7.62" visible="off" length="short" direction="pas" rot="R270"/>
 <pin name="S" x="5.08" y="0" visible="off" length="short" direction="pas" rot="R180"/>
 </symbol>
-<symbol name="SPST_SWITCH">
-<wire x1="-1.27" y1="0" x2="1.27" y2="1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="2.54" y2="0" width="0.1524" layer="94"/>
-<wire x1="-2.54" y1="0" x2="-1.6256" y2="0" width="0.1524" layer="94"/>
-<circle x="1.27" y="0" radius="0.3592" width="0.2032" layer="94"/>
-<circle x="-1.27" y="0" radius="0.3592" width="0.2032" layer="94"/>
-<text x="-5.08" y="2.54" size="1.778" layer="95">&gt;NAME</text>
-<text x="-5.08" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="P" x="-5.08" y="0" visible="off" length="short" direction="pas"/>
-<pin name="O" x="5.08" y="0" visible="off" length="short" direction="pas" rot="R180"/>
-</symbol>
 <symbol name="LED">
 <wire x1="1.27" y1="0" x2="0" y2="-2.54" width="0.254" layer="94"/>
 <wire x1="0" y1="-2.54" x2="-1.27" y2="0" width="0.254" layer="94"/>
@@ -1353,22 +1330,6 @@ Source: Panasonic</description>
 <technologies>
 <technology name="F2"/>
 <technology name="F3"/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="D6_PUSH_SWITCH" prefix="S">
-<gates>
-<gate name="G$1" symbol="SPST_SWITCH" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="D6_BUTTON_RND">
-<connects>
-<connect gate="G$1" pin="O" pad="P$1 P$2"/>
-<connect gate="G$1" pin="P" pad="P$3 P$4"/>
-</connects>
-<technologies>
-<technology name=""/>
 </technologies>
 </device>
 </devices>
@@ -1788,7 +1749,7 @@ Source: www.kingbright.com</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="VERT_SD_CARD_REV2">
+<deviceset name="VERT_SD_CARD_REV2" prefix="U">
 <gates>
 <gate name="G$1" symbol="USDCARD" x="-2.54" y="0"/>
 </gates>
@@ -1891,52 +1852,6 @@ We've spent an enormous amount of time creating and checking these footprints an
 &lt;br&gt;&lt;br&gt;
 &lt;b&gt;Licensing:&lt;/b&gt; CC v3.0 Share-Alike You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
 <packages>
-<package name="1X07_LOCK">
-<wire x1="15.875" y1="1.27" x2="16.51" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="16.51" y1="-0.635" x2="15.875" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="11.43" y1="0.635" x2="12.065" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="13.335" y1="1.27" x2="13.97" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="13.97" y1="-0.635" x2="13.335" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="12.065" y1="-1.27" x2="11.43" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="14.605" y1="1.27" x2="13.97" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="13.97" y1="-0.635" x2="14.605" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="8.255" y1="1.27" x2="8.89" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="8.89" y1="-0.635" x2="8.255" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="8.89" y1="0.635" x2="9.525" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="10.795" y1="1.27" x2="11.43" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="11.43" y1="-0.635" x2="10.795" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="9.525" y1="-1.27" x2="8.89" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="3.81" y1="0.635" x2="4.445" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="5.715" y1="1.27" x2="6.35" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="6.35" y1="-0.635" x2="5.715" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="4.445" y1="-1.27" x2="3.81" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="6.985" y1="1.27" x2="6.35" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="6.35" y1="-0.635" x2="6.985" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="1.27" y1="0.635" x2="1.905" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="3.175" y1="1.27" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
-<pad name="1" x="0" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="2" x="2.54" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="3" x="5.08" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="4" x="7.62" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="5" x="10.16" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="6" x="12.7" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="7" x="15.24" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
-<text x="-1.3462" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="-1.27" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="14.986" y1="-0.254" x2="15.494" y2="0.254" layer="51"/>
-<rectangle x1="12.446" y1="-0.254" x2="12.954" y2="0.254" layer="51"/>
-<rectangle x1="9.906" y1="-0.254" x2="10.414" y2="0.254" layer="51"/>
-<rectangle x1="7.366" y1="-0.254" x2="7.874" y2="0.254" layer="51"/>
-<rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
-<rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
-<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
-</package>
 <package name="1X11_LOCK">
 <wire x1="14.605" y1="1.27" x2="15.875" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="15.875" y1="1.27" x2="16.51" y2="0.635" width="0.2032" layer="21"/>
@@ -2680,6 +2595,22 @@ We've spent an enormous amount of time creating and checking these footprints an
 <hole x="12.7" y="0" drill="1.4732"/>
 <hole x="15.24" y="0" drill="1.4732"/>
 </package>
+<package name="1X07_LOCK">
+<pad name="1" x="0" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="2" x="2.54" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="3" x="5.08" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="4" x="7.62" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="5" x="10.16" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="6" x="12.7" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="7" x="15.24" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
+<rectangle x1="14.986" y1="-0.254" x2="15.494" y2="0.254" layer="51"/>
+<rectangle x1="12.446" y1="-0.254" x2="12.954" y2="0.254" layer="51"/>
+<rectangle x1="9.906" y1="-0.254" x2="10.414" y2="0.254" layer="51"/>
+<rectangle x1="7.366" y1="-0.254" x2="7.874" y2="0.254" layer="51"/>
+<rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
+<rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
+<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
+</package>
 </packages>
 <symbols>
 <symbol name="M07">
@@ -3013,26 +2944,34 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 &lt;/ul&gt;</description>
 <packages>
 <package name="WQP-PJ301M-12_JACK">
-<wire x1="-4.5" y1="6" x2="-1.5" y2="6" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="6" x2="1.5" y2="6" width="0.127" layer="21"/>
-<wire x1="1.5" y1="6" x2="4.5" y2="6" width="0.127" layer="21"/>
-<wire x1="-4.5" y1="6" x2="-4.5" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="-4.5" y1="-4.5" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="0.2" y1="-4.5" x2="4.5" y2="-4.5" width="0.127" layer="21"/>
-<wire x1="4.5" y1="-4.5" x2="4.5" y2="6" width="0.127" layer="21"/>
-<circle x="0" y="0" radius="3.162275" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="6" x2="-1.5" y2="4" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="4" x2="1.5" y2="4" width="0.127" layer="21"/>
-<wire x1="1.5" y1="4" x2="1.5" y2="6" width="0.127" layer="21"/>
+<wire x1="-4.5" y1="6" x2="-1.5" y2="6" width="0.127" layer="51"/>
+<wire x1="-1.5" y1="6" x2="1.5" y2="6" width="0.127" layer="51"/>
+<wire x1="1.5" y1="6" x2="4.5" y2="6" width="0.127" layer="51"/>
+<wire x1="-4.5" y1="6" x2="-4.5" y2="-4.5" width="0.127" layer="51"/>
+<wire x1="-4.5" y1="-4.5" x2="0.2" y2="-4.5" width="0.127" layer="51"/>
+<wire x1="0.2" y1="-4.5" x2="4.5" y2="-4.5" width="0.127" layer="51"/>
+<wire x1="4.5" y1="-4.5" x2="4.5" y2="6" width="0.127" layer="51"/>
+<circle x="0" y="0" radius="3.162275" width="0.127" layer="51"/>
+<wire x1="-1.5" y1="6" x2="-1.5" y2="4" width="0.127" layer="51"/>
+<wire x1="-1.5" y1="4" x2="1.5" y2="4" width="0.127" layer="51"/>
+<wire x1="1.5" y1="4" x2="1.5" y2="6" width="0.127" layer="51"/>
 <pad name="P$1_TIP" x="0" y="5" drill="1.1" thermals="no"/>
 <pad name="P$2_SWITCH" x="0" y="-3.5" drill="1.1"/>
 <pad name="P$3_SLEEVE" x="0" y="-6.5" drill="1.1"/>
 <circle x="0" y="0" radius="2.690721875" width="0.127" layer="21"/>
-<wire x1="-0.2" y1="-4.6" x2="-0.2" y2="-6.7" width="0.127" layer="21"/>
-<wire x1="-0.2" y1="-6.7" x2="0.2" y2="-6.7" width="0.127" layer="21"/>
-<wire x1="0.2" y1="-6.7" x2="0.2" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="-0.2" y1="-4.6" x2="-0.2" y2="-6.7" width="0.127" layer="51"/>
+<wire x1="-0.2" y1="-6.7" x2="0.2" y2="-6.7" width="0.127" layer="51"/>
+<wire x1="0.2" y1="-6.7" x2="0.2" y2="-4.5" width="0.127" layer="51"/>
 <rectangle x1="-2.8" y1="-2.8" x2="2.8" y2="2.8" layer="41"/>
-<text x="-4.7498" y="-4.4704" size="1.27" layer="21" rot="R90">&gt;NAME</text>
+<text x="4.5212" y="-4.7244" size="1.016" layer="21" rot="SR180">&gt;NAME</text>
+<wire x1="-4.5" y1="5.5" x2="-4.5" y2="6" width="0.127" layer="21"/>
+<wire x1="-4.5" y1="6" x2="-4" y2="6" width="0.127" layer="21"/>
+<wire x1="4" y1="6" x2="4.5" y2="6" width="0.127" layer="21"/>
+<wire x1="4.5" y1="6" x2="4.5" y2="5.5" width="0.127" layer="21"/>
+<wire x1="4.5" y1="-4" x2="4.5" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="4.5" y1="-4.5" x2="4" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="-4.5" y1="-4" x2="-4.5" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="-4.5" y1="-4.5" x2="-4" y2="-4.5" width="0.127" layer="21"/>
 </package>
 <package name="THONKICONN">
 <description>3.5mm socket for Eurorack modular synths</description>
@@ -3096,6 +3035,22 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <text x="-3.74836875" y="0.4290125" size="0.8128" layer="25" ratio="10">&gt;NAME</text>
 <text x="-3.284790625" y="-1.227290625" size="1.4224" layer="27" ratio="10">&gt;VALUE</text>
 </package>
+<package name="D6_PUSH_SWITCH_ILLUM">
+<description>Momentary Pushbutton Switch</description>
+<pad name="P$1" x="-2.5" y="2.5" drill="1"/>
+<pad name="P$2" x="2.5" y="2.5" drill="1"/>
+<pad name="P$3" x="2.5" y="-2.5" drill="1"/>
+<pad name="P$4" x="-2.5" y="-2.5" drill="1"/>
+<wire x1="-5" y1="3" x2="-5" y2="-3" width="0.6096" layer="21"/>
+<wire x1="-5" y1="3" x2="-5" y2="-3" width="0.127" layer="21" curve="-298.072487"/>
+<circle x="0" y="0" radius="4.5" width="0.127" layer="51"/>
+<wire x1="-1" y1="0" x2="1" y2="0" width="0.127" layer="21"/>
+<wire x1="0" y1="1" x2="0" y2="-1" width="0.127" layer="21"/>
+<text x="-6.985" y="2.54" size="1.27" layer="25" rot="R270">&gt;NAME</text>
+<pad name="LED-" x="-3.1" y="0" drill="1"/>
+<pad name="LED+" x="3.1" y="0" drill="1" shape="square"/>
+<text x="5.08" y="0" size="1.27" layer="21" align="center">+</text>
+</package>
 </packages>
 <symbols>
 <symbol name="THONKICONN">
@@ -3125,9 +3080,45 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
 </symbol>
+<symbol name="SPST_SWITCH">
+<wire x1="-1.27" y1="0" x2="1.27" y2="1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="2.54" y2="0" width="0.1524" layer="94"/>
+<wire x1="-2.54" y1="0" x2="-1.6256" y2="0" width="0.1524" layer="94"/>
+<circle x="1.27" y="0" radius="0.3592" width="0.2032" layer="94"/>
+<circle x="-1.27" y="0" radius="0.3592" width="0.2032" layer="94"/>
+<text x="-5.08" y="2.54" size="1.778" layer="95">&gt;NAME</text>
+<text x="-5.08" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="P" x="-5.08" y="0" visible="off" length="short" direction="pas"/>
+<pin name="O" x="5.08" y="0" visible="off" length="short" direction="pas" rot="R180"/>
+</symbol>
+<symbol name="LED">
+<wire x1="1.27" y1="0" x2="0" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="-2.54" x2="-1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-2.54" x2="0" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="-2.54" x2="-1.27" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="-1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="0" y2="-2.54" width="0.1524" layer="94"/>
+<wire x1="-2.032" y1="-0.762" x2="-3.429" y2="-2.159" width="0.1524" layer="94"/>
+<wire x1="-1.905" y1="-1.905" x2="-3.302" y2="-3.302" width="0.1524" layer="94"/>
+<text x="3.556" y="-4.572" size="1.778" layer="95" rot="R90">&gt;NAME</text>
+<text x="5.715" y="-4.572" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
+<pin name="C" x="0" y="-5.08" visible="off" length="short" direction="pas" rot="R90"/>
+<pin name="A" x="0" y="2.54" visible="off" length="short" direction="pas" rot="R270"/>
+<polygon width="0.1524" layer="94">
+<vertex x="-3.429" y="-2.159"/>
+<vertex x="-3.048" y="-1.27"/>
+<vertex x="-2.54" y="-1.778"/>
+</polygon>
+<polygon width="0.1524" layer="94">
+<vertex x="-3.302" y="-3.302"/>
+<vertex x="-2.921" y="-2.413"/>
+<vertex x="-2.413" y="-2.921"/>
+</polygon>
+</symbol>
 </symbols>
 <devicesets>
-<deviceset name="THONKICONN">
+<deviceset name="THONKICONN" prefix="U">
 <description>3.5mm socket for Eurorack modular synths</description>
 <gates>
 <gate name="G$1" symbol="THONKICONN" x="0" y="0"/>
@@ -3190,6 +3181,25 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </device>
 </devices>
 </deviceset>
+<deviceset name="D6-ILLUM">
+<gates>
+<gate name="G$1" symbol="SPST_SWITCH" x="0" y="0"/>
+<gate name="G$2" symbol="LED" x="0" y="-10.16"/>
+</gates>
+<devices>
+<device name="" package="D6_PUSH_SWITCH_ILLUM">
+<connects>
+<connect gate="G$1" pin="O" pad="P$1 P$2"/>
+<connect gate="G$1" pin="P" pad="P$3 P$4"/>
+<connect gate="G$2" pin="A" pad="LED+"/>
+<connect gate="G$2" pin="C" pad="LED-"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -3198,7 +3208,7 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <variantdefs>
 </variantdefs>
 <classes>
-<class number="0" name="default" width="0.2032" drill="0">
+<class number="0" name="default" width="0.254" drill="0">
 </class>
 <class number="1" name="power" width="0.4572" drill="0">
 </class>
@@ -3210,19 +3220,18 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="CHANNEL-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="RESET-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
 <part name="OUTPUT" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
-<part name="R9" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="47k"/>
-<part name="R10" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="22k"/>
-<part name="R17" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="220R"/>
+<part name="R9" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="56k"/>
+<part name="R10" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="27k"/>
+<part name="R17" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="470r"/>
 <part name="TIME-POT" library="TomW" deviceset="ALPHA-9MM" device="A" technology="F2" value="50k"/>
 <part name="TIME-CV" library="MusicThingModular" deviceset="THONKICONN" device="NEW" value="THONKICONNNEW"/>
-<part name="R20" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="47k"/>
-<part name="R21" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="22k"/>
+<part name="R20" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="56k"/>
+<part name="R21" library="MusicThingModular" deviceset="RESISTOR" device="VERTICAL" value="27k"/>
 <part name="D7" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="D8" library="diode" deviceset="BAT81" device="" value="BAT42"/>
 <part name="R19" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="100k"/>
-<part name="R18" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="220R"/>
-<part name="RESET" library="TomW" deviceset="D6_PUSH_SWITCH" device="" value="D6_PUSH_SWITCH"/>
-<part name="R8" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="10k"/>
+<part name="R18" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="470r"/>
+<part name="R8" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="27k"/>
 <part name="LED1" library="TomW" deviceset="LED" device="3MM"/>
 <part name="LED2" library="TomW" deviceset="LED" device="3MM"/>
 <part name="LED3" library="TomW" deviceset="LED" device="3MM"/>
@@ -3236,11 +3245,14 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <part name="R15" library="MusicThingModular" deviceset="RESISTOR" device="7MM" value="1.5k"/>
 <part name="JP2" library="SparkFun-Connectors" deviceset="M11" device="PTH" value="M11PTH"/>
 <part name="JP4" library="SparkFun-Connectors" deviceset="M07" device=""/>
+<part name="LED5_" library="MusicThingModular" deviceset="D6-ILLUM" device=""/>
 </parts>
 <sheets>
 <sheet>
 <plain>
-<text x="83.82" y="144.78" size="1.778" layer="91">ie D6R90 F1 LFS (Black, Round)</text>
+<text x="83.82" y="144.78" size="1.778" layer="91">ie D6R90 F1 LFS (Black, Round)
+Or Highly illuminated switch: 
+KS01-BL-1</text>
 <text x="152.4" y="142.24" size="1.778" layer="91">PJS008U-3000-0 microSD card holder</text>
 <text x="152.4" y="142.24" size="1.778" layer="91">PJS008U-3000-0 microSD card holder</text>
 </plain>
@@ -3260,7 +3272,6 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <instance part="D8" gate="1" x="109.22" y="33.02" rot="R90"/>
 <instance part="R19" gate="G$1" x="119.38" y="33.02" rot="R270"/>
 <instance part="R18" gate="G$1" x="96.52" y="43.18" rot="R180"/>
-<instance part="RESET" gate="G$1" x="99.06" y="137.16"/>
 <instance part="R8" gate="G$1" x="106.68" y="129.54" rot="R90"/>
 <instance part="LED1" gate="G$1" x="157.48" y="45.72" rot="R270"/>
 <instance part="LED2" gate="G$1" x="157.48" y="38.1" rot="R270"/>
@@ -3275,6 +3286,8 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <instance part="R15" gate="G$1" x="144.78" y="15.24" rot="R180"/>
 <instance part="JP2" gate="G$1" x="193.04" y="76.2"/>
 <instance part="JP4" gate="G$1" x="198.12" y="43.18"/>
+<instance part="LED5_" gate="G$1" x="99.06" y="137.16"/>
+<instance part="LED5_" gate="G$2" x="157.48" y="7.62" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -3331,6 +3344,10 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <pinref part="LED5" gate="G$1" pin="C"/>
 <pinref part="R15" gate="G$1" pin="1"/>
 <wire x1="149.86" y1="15.24" x2="152.4" y2="15.24" width="0.1524" layer="91"/>
+<pinref part="LED5_" gate="G$2" pin="C"/>
+<wire x1="152.4" y1="7.62" x2="149.86" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="7.62" x2="149.86" y2="15.24" width="0.1524" layer="91"/>
+<junction x="149.86" y="15.24"/>
 </segment>
 </net>
 <net name="AUDIO_OUT_F" class="0">
@@ -3352,20 +3369,25 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="205.74" y="78.74" size="1.016" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="RESET" gate="G$1" pin="O"/>
 <wire x1="104.14" y1="137.16" x2="106.68" y2="137.16" width="0.1524" layer="91"/>
 <pinref part="R8" gate="G$1" pin="2"/>
 <wire x1="106.68" y1="137.16" x2="116.84" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="106.68" y1="134.62" x2="106.68" y2="137.16" width="0.1524" layer="91"/>
 <junction x="106.68" y="137.16"/>
 <label x="116.84" y="137.16" size="1.016" layer="95" xref="yes"/>
+<pinref part="LED5_" gate="G$1" pin="O"/>
 </segment>
 </net>
 <net name="LED_RESET_F" class="0">
 <segment>
 <pinref part="LED5" gate="G$1" pin="A"/>
+<wire x1="167.64" y1="15.24" x2="162.56" y2="15.24" width="0.1524" layer="91"/>
+<label x="167.64" y="15.24" size="1.016" layer="95" xref="yes"/>
+<pinref part="LED5_" gate="G$2" pin="A"/>
 <wire x1="162.56" y1="15.24" x2="160.02" y2="15.24" width="0.1524" layer="91"/>
-<label x="162.56" y="15.24" size="1.016" layer="95" xref="yes"/>
+<wire x1="160.02" y1="7.62" x2="162.56" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="7.62" x2="162.56" y2="15.24" width="0.1524" layer="91"/>
+<junction x="162.56" y="15.24"/>
 </segment>
 <segment>
 <pinref part="JP2" gate="G$1" pin="10"/>
@@ -3443,9 +3465,9 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <label x="109.22" y="66.04" size="1.016" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="RESET" gate="G$1" pin="P"/>
 <wire x1="88.9" y1="137.16" x2="93.98" y2="137.16" width="0.1524" layer="91"/>
 <label x="88.9" y="137.16" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="LED5_" gate="G$1" pin="P"/>
 </segment>
 <segment>
 <pinref part="JP4" gate="G$1" pin="4"/>
@@ -3685,4 +3707,10 @@ Standard 11-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 </sheets>
 </schematic>
 </drawing>
+<compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
+</compatibility>
 </eagle>
