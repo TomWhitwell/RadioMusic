@@ -234,10 +234,10 @@ void Settings::applySetting(String settingName, String settingValue) {
 		loopMode = settingValue.toInt();
 	}
 
-	if(settingName.equalsIgnoreCase("quantiseNoteCV") || settingName.equalsIgnoreCase("quantizeNoteCV")) {
+	if(settingName.equalsIgnoreCase("quantiseNoteCV") || settingName.equalsIgnoreCase("quantizeRootCV")) {
 		quantiseRootCV = toBoolean(settingValue);
 	}
-	if(settingName.equalsIgnoreCase("quantiseNotePot") || settingName.equalsIgnoreCase("quantizeNotePot")) {
+	if(settingName.equalsIgnoreCase("quantiseNotePot") || settingName.equalsIgnoreCase("quantizeRootPot")) {
 		quantiseRootPot = toBoolean(settingValue);
 	}
 
