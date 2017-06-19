@@ -337,6 +337,8 @@ uint16_t checkInterface() {
 	if(resetTriggered) {
 		if((changes & CHANNEL_CHANGED) || playState.nextChannel != playState.currentChannel) {
 			playState.channelChanged = true;
+		} else {
+			resetLedTimer = 0;
 		}
 	}
 
