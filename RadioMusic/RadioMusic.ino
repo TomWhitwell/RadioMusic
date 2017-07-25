@@ -18,13 +18,13 @@
  MISO 12
  MOSI 7 
  SS   10 
- 
- NB: Compile using modified versions of: 
- SD.cpp (found in the main Arduino package) 
- play_sd_raw.cpp  - In Teensy Audio Library 
- play_sc_raw.h    - In Teensy Audio Library 
- 
- from:https://github.com/TomWhitwell/RadioMusic/tree/master/Collateral/Edited%20teensy%20files
+
+
+Expander pins: 
+Pot 1: A2 / 16 
+Pot 2: A3 / 17 
+CV 1: A4 / 18 
+CV2: A5 / 19 
 
  Additions and changes:
  2016 by Jouni Stenroos - jouni.stenroos@iki.fi 
