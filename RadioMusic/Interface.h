@@ -12,6 +12,18 @@
 #define CHAN_CV_PIN A6 		// pin for Channel CV
 #define TIME_POT_PIN A7 	// pin for Time pot
 #define TIME_CV_PIN A8 		// pin for Time CV
+
+// extra values for expander 
+
+#define EX1_POT_PIN A2 // Pin for Expander pot 1 
+#define EX1_CV_PIN A4  // Pin for Expander CV 1 
+#define EX2_POT_PIN A3  // Pin for Expander pot 2 
+#define EX2_CV_PIN A5  // Pin for Expander CV 2 
+
+
+
+
+
 #define RESET_BUTTON 8 		// Reset button
 #define RESET_CV 9 		// Reset pulse input
 
@@ -55,7 +67,10 @@ public:
 	Interface() : channelCVInput(CHAN_CV_PIN),
 			channelPotInput(CHAN_POT_PIN),
 			startCVInput(TIME_CV_PIN),
-			startPotInput(TIME_POT_PIN)
+			startPotInput(TIME_POT_PIN), 
+     ex1PotInput(EX1_POT_PIN) 
+     
+
 	{
 		playState = NULL;
 	}
@@ -71,6 +86,7 @@ private:
 	AnalogInput channelPotInput;
 	AnalogInput startCVInput;
 	AnalogInput startPotInput;
+  AnalogInput ex1PotInput;
 
 	Bounce resetButtonBounce;
 	elapsedMillis buttonTimer = 0;

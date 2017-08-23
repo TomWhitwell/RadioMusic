@@ -142,7 +142,7 @@ void AudioEngine::changeTo(AudioFileInfo* fileInfo, unsigned long start) {
 	currentFileInfo = fileInfo;
 
 	// Re-apply speed limits
-	if(settings->pitchMode) {
+	if(true) {
 		setPlaybackSpeed(currentPlayer->playbackSpeed);
 	}
 

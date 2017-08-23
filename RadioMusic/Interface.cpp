@@ -4,6 +4,8 @@
 #include "Bounce2.h"
 #include "RadioMusic.h"
 
+#define DEBUG_INTERFACE = true
+
 #ifdef DEBUG_INTERFACE
 #define D(x) x
 #else
@@ -37,23 +39,30 @@ void Interface::init(int fileSize, int channels, const Settings& settings, PlayS
 
 	pitchMode = settings.pitchMode;
 
-    if(pitchMode) {
+    if(settings.pitchMode) {
         quantiseRootCV = settings.quantiseRootCV;
         quantiseRootPot = settings.quantiseRootPot;
 
         float lowNote = settings.lowNote + 0.5;
         startCVInput.setRange(lowNote, lowNote + settings.noteRange, quantiseRootCV);
         startPotInput.setRange(0.0,48, quantiseRootPot);
+       ex1PotInput.setRange(0.0,48, quantiseRootPot);
         startCVInput.borderThreshold = 64;
         startPotInput.borderThreshold = 64;
+        ex1PotInput.borderThreshold = 64;
     } else {
     	D(Serial.print("Set Start Range ");Serial.println(ADC_MAX_VALUE / startCVDivider););
     	startPotInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
-    	startCVInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
+    	ex1PotInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
+      startCVInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
         startPotInput.setAverage(true);
+        ex1PotInput.setAverage(true);
+        
         startCVInput.setAverage(true);
         startCVInput.borderThreshold = 32;
         startPotInput.borderThreshold = 32;
+        ex1PotInput.borderThreshold = 32;
+
     }
 
 	channelPotImmediate = settings.chanPotImmediate;
@@ -80,7 +89,7 @@ void Interface::setChannelCount(uint16_t count) {
 uint16_t Interface::update() {
 
 	uint16_t channelChanged = updateChannelControls();
-	uint16_t startChanged = pitchMode ? updateRootControls() : updateStartControls();
+	uint16_t startChanged = 1 ? updateRootControls() : updateStartControls();
 
 	changes = channelChanged;
 	changes |= startChanged;
@@ -132,7 +141,7 @@ uint16_t Interface::updateStartControls() {
 	uint16_t changes = 0;
 
 	boolean cvChanged = startCVInput.update();
-	boolean potChanged = startPotInput.update();
+	boolean potChanged = startPotInput.update() + ex1PotInput.update();
 
 	if(potChanged) {
 		changes |= TIME_POT_CHANGED;
@@ -171,14 +180,18 @@ uint16_t Interface::updateRootControls() {
 	uint16_t change = 0;
 
 	boolean cvChanged = startCVInput.update();
-	boolean potChanged = startPotInput.update();
+	boolean potChanged = startPotInput.update() + ex1PotInput.update() ;
 
     // early out if no changes
     if(!cvChanged && !potChanged) {
     	return change;
     }
 
-    float rootPot = startPotInput.currentValue;
+    float rootPot = ex1PotInput.currentValue;
+
+      D(Serial.print("Ex1 pot ");Serial.println(ex1PotInput.currentValue););
+      D(Serial.print("startPotInput pot ");Serial.println(startPotInput.currentValue););
+    
     float rootCV = startCVInput.currentValue;
 
     if(cvChanged) {

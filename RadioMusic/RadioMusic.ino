@@ -49,6 +49,8 @@ CV2: A5 / 19
 #include "Interface.h"
 #include "PlayState.h"
 
+#define DEBUG = true
+
 #ifdef DEBUG
 #define D(x) x
 #else
@@ -317,9 +319,16 @@ uint16_t checkInterface() {
 	bool skipToStartPoint = false;
 	bool speedChange = false;
 
-	if(settings.pitchMode) {
+    if((changes & (ROOT_NOTE_CHANGED | ROOT_POT_CHANGED | ROOT_CV_CHANGED) ) || resetTriggered) {
+      speedChange = true;
+    }
 
-		if(resetTriggered) {
+
+  if(settings.pitchMode) {
+
+
+
+if(resetTriggered) {
 			skipToStartPoint = true;
 		}
 
