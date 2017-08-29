@@ -19,7 +19,7 @@ This is not a radio. It is a sample player that behaves like a radio.
 
 A digital way to simulate the radio-powered compositions of John Cage and Karlheinz Stockhausen as well as Don Buchla's voltage-controlled radio experiments. It uses a [Teensy 3.1/3.2](https://www.pjrc.com/teensy/) to play files from an SD card to simulate a voltage controlled AM/FM/Shortwave/Time Travel radio. 
 
-####Progress  
+#### Progress  
 
 May 2016
 - Merged Jouni's latest changes into the main branch
@@ -57,7 +57,7 @@ October 2014
 - Very early prototyping     
 
 
-####Features
+#### Features
 - 4hp x 40mm deep  
 - On-board 5v regulator, does not need a 5v rail.
 - 75ma Current Draw   
@@ -69,7 +69,7 @@ October 2014
 
 ![EarlyPanelDesign](https://raw.githubusercontent.com/TomWhitwell/RadioMusic/master/Collateral/img.png)
 
-####License  
+#### License  
 Radio Music is Open Hardware  
 All hardware and software design in this project is Creative Commons licensed by Tom Whitwell: [CC-BY-SA: Attribution / ShareAlike](https://creativecommons.org/licenses/by-sa/3.0/)  
 If you use any work in this project, you should credit me, and you must republish any changes you make under the same license.   
