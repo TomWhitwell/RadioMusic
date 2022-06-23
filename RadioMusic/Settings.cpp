@@ -88,7 +88,7 @@ void Settings::read() {
 //	startPotImmediate = true;
 //	quantiseRootPot = true;
 //	quantiseRootCV = true;
-//	pitchMode = true;
+//	pitchMode = PitchMode::Start;
 //	startCVDivider = 1;
 
 #ifdef TEST_RADIO_MODE
@@ -100,7 +100,7 @@ void Settings::read() {
 #endif
 
 	if(!loopMode) {
-		if(pitchMode) {
+		if(pitchMode == PitchMode::Speed) {
 			loopMode = LOOP_MODE_START_POINT;
 		} else {
 			loopMode = LOOP_MODE_RADIO;
@@ -109,7 +109,7 @@ void Settings::read() {
 
 	D(Serial.print("Loop mode ");Serial.println(loopMode););
 
-	if(anyAudioFiles || pitchMode) {
+	if(anyAudioFiles || (pitchMode == PitchMode::Speed)) {
 		hardSwap = true;
 	}
 }
@@ -126,7 +126,7 @@ void Settings::drumMode() {
 	startCVDivider=1;
 	looping=1;
 	sort=1;
-	pitchMode=1;
+	pitchMode = PitchMode::Speed;
 	hardSwap = true;
 	anyAudioFiles = true;
 	loopMode = LOOP_MODE_START_POINT;
@@ -144,7 +144,7 @@ void Settings::radioMode() {
 	startCVDivider=2;
 	looping=1;
 	sort=1;
-	pitchMode=0;
+	pitchMode = PitchMode::Start;
 	hardSwap = false;
 	anyAudioFiles = false;
 	loopMode = LOOP_MODE_RADIO;
@@ -211,7 +211,7 @@ void Settings::applySetting(String settingName, String settingValue) {
 	}
 
 	if(settingName.equalsIgnoreCase("pitchMode")) {
-		pitchMode = toBoolean(settingValue);
+		pitchMode = settingValue.toInt();
 	}
 
 	if(settingName.equalsIgnoreCase("hardSwap")) {

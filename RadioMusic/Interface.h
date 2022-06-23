@@ -91,7 +91,7 @@ private:
 	uint16_t updateChannelControls();
 	uint16_t updateStartControls();
 	uint16_t updateRootControls();
-	boolean pitchMode = false;
+	Settings::PitchMode pitchMode = Settings::PitchMode::Start;
 };
 
 #endif

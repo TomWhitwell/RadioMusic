@@ -37,24 +37,43 @@ void Interface::init(int fileSize, int channels, const Settings& settings, PlayS
 
 	pitchMode = settings.pitchMode;
 
-    if(pitchMode) {
-        quantiseRootCV = settings.quantiseRootCV;
-        quantiseRootPot = settings.quantiseRootPot;
+	switch(pitchMode) {
+		default:
+		case Settings::PitchMode::Start: {
+			D(Serial.print("Set Start Range ");Serial.println(ADC_MAX_VALUE / startCVDivider););
+			startPotInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
+			startPotInput.setAverage(true);
+			startPotInput.borderThreshold = 32;
 
-        float lowNote = settings.lowNote + 0.5;
-        startCVInput.setRange(lowNote, lowNote + settings.noteRange, quantiseRootCV);
-        startPotInput.setRange(0.0,48, quantiseRootPot);
-        startCVInput.borderThreshold = 64;
-        startPotInput.borderThreshold = 64;
-    } else {
-    	D(Serial.print("Set Start Range ");Serial.println(ADC_MAX_VALUE / startCVDivider););
-    	startPotInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
-    	startCVInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
-        startPotInput.setAverage(true);
-        startCVInput.setAverage(true);
-        startCVInput.borderThreshold = 32;
-        startPotInput.borderThreshold = 32;
-    }
+			startCVInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
+			startCVInput.setAverage(true);
+			startCVInput.borderThreshold = 32;
+			break;
+		}
+		case Settings::PitchMode::Speed: {
+			quantiseRootPot = settings.quantiseRootPot;
+			startPotInput.setRange(0.0,48, quantiseRootPot);
+			startPotInput.borderThreshold = 64;
+
+			quantiseRootCV = settings.quantiseRootCV;
+			float lowNote = settings.lowNote + 0.5;
+			startCVInput.setRange(lowNote, lowNote + settings.noteRange, quantiseRootCV);
+			startCVInput.borderThreshold = 64;
+			break;
+		}
+		case Settings::PitchMode::PotSpeedCvStart: {
+			quantiseRootPot = settings.quantiseRootPot;
+			startPotInput.setRange(0.0,48, quantiseRootPot);
+			startPotInput.borderThreshold = 64;
+
+			startCVInput.setRange(0.0, ADC_MAX_VALUE / startCVDivider, false);
+			startCVInput.setAverage(true);
+			startCVInput.borderThreshold = 32;
+
+			break;
+		}
+
+	}
 
 	channelPotImmediate = settings.chanPotImmediate;
 	channelCVImmediate = settings.chanCVImmediate;
@@ -80,10 +99,12 @@ void Interface::setChannelCount(uint16_t count) {
 uint16_t Interface::update() {
 
 	uint16_t channelChanged = updateChannelControls();
-	uint16_t startChanged = pitchMode ? updateRootControls() : updateStartControls();
+	uint16_t startChanged = updateStartControls();
+	uint16_t rootChanged = updateRootControls();
 
 	changes = channelChanged;
 	changes |= startChanged;
+	changes |= rootChanged;
 	changes |= updateButton();
 
 	if(resetCVHigh || (changes & BUTTON_SHORT_PRESS)) {
@@ -129,26 +150,44 @@ uint16_t Interface::updateChannelControls() {
 }
 
 uint16_t Interface::updateStartControls() {
+
+	if(pitchMode == Settings::PitchMode::Speed) {
+		return 0;
+	}
+
 	uint16_t changes = 0;
 
-	boolean cvChanged = startCVInput.update();
-	boolean potChanged = startPotInput.update();
-
-	if(potChanged) {
-		changes |= TIME_POT_CHANGED;
-		if(startPotImmediate) {
-			changes |= CHANGE_START_NOW;
+	if(pitchMode == Settings::PitchMode::Start) {
+		boolean potChanged = startPotInput.update();
+		if(potChanged) {
+			changes |= TIME_POT_CHANGED;
+			if(startPotImmediate) {
+				changes |= CHANGE_START_NOW;
+			}
 		}
 	}
 
-	if(cvChanged) {
-		changes |= TIME_CV_CHANGED;
-		if(startCVImmediate) {
-			changes |= CHANGE_START_NOW;
+	if((pitchMode == Settings::PitchMode::Start) || (pitchMode == Settings::PitchMode::PotSpeedCvStart)) {
+		boolean cvChanged = startCVInput.update();
+		if(cvChanged) {
+			changes |= TIME_CV_CHANGED;
+			if(startCVImmediate) {
+				changes |= CHANGE_START_NOW;
+			}
 		}
 	}
 
-	start = constrain(((startCVInput.currentValue * startCVDivider) + (startPotInput.currentValue * startCVDivider)),0,ADC_MAX_VALUE);
+	switch(pitchMode) {
+		default:
+		case Settings::PitchMode::Start: {
+			start = constrain(((startCVInput.currentValue * startCVDivider) + (startPotInput.currentValue * startCVDivider)),0,ADC_MAX_VALUE);
+			break;
+		}
+		case Settings::PitchMode::PotSpeedCvStart: {
+			start = constrain(((startCVInput.currentValue * startCVDivider)),0,ADC_MAX_VALUE);
+			break;
+		}
+	}
 
 	if(changes) {
 //		D(
@@ -168,56 +207,62 @@ uint16_t Interface::updateStartControls() {
 // return bitmap of state of changes for CV, Pot and combined Note.
 uint16_t Interface::updateRootControls() {
 
+	if (pitchMode == Settings::PitchMode::Start) {
+		return 0;
+	}
+
 	uint16_t change = 0;
 
-	boolean cvChanged = startCVInput.update();
-	boolean potChanged = startPotInput.update();
+	if(pitchMode == Settings::PitchMode::Speed) {
+		boolean cvChanged = startCVInput.update();
+		if(cvChanged) {
+			D(Serial.println("CV Changed"););
+			float rootCV = startCVInput.currentValue;
+			if(quantiseRootCV) {
+				rootNoteCV = floor(rootCV);
+				if(rootNoteCV != rootNoteCVOld) {
+					D(Serial.print("CV ");Serial.println(startCVInput.inputValue););
+					change |= ROOT_CV_CHANGED;
+				}
+			} else {
+				rootNoteCV = rootCV;
+				change |= ROOT_CV_CHANGED;
+			}
+		}
+	}
 
-    // early out if no changes
-    if(!cvChanged && !potChanged) {
-    	return change;
-    }
+	if((pitchMode == Settings::PitchMode::Speed) || (pitchMode == Settings::PitchMode::PotSpeedCvStart)) {
+		boolean potChanged = startPotInput.update();
+		if(potChanged) {
+			D(Serial.println("Pot Changed"););
+			float rootPot = startPotInput.currentValue;
+			if(quantiseRootPot) {
+				rootNotePot = floor(rootPot);
+				if(rootNotePot != rootNotePotOld) {
+					D(Serial.print("Pot ");Serial.println(startPotInput.inputValue););
+					change |= ROOT_POT_CHANGED;
+				}
+			} else {
+				rootNotePot = rootPot;
+				change |= ROOT_POT_CHANGED;
+			}
+		}
+	}
 
-    float rootPot = startPotInput.currentValue;
-    float rootCV = startCVInput.currentValue;
+	if(!change)
+		return 0;
 
-    if(cvChanged) {
-    	D(
-    		Serial.println("CV Changed");
-    	);
-    	if(quantiseRootCV) {
-        	rootNoteCV = floor(rootCV);
-        	if(rootNoteCV != rootNoteCVOld) {
-        		D(
-					Serial.print("CV ");Serial.println(startCVInput.inputValue);
-        		);
-        		change |= ROOT_CV_CHANGED;
-        	}
-    	} else {
-    		rootNoteCV = rootCV;
-    		change |= ROOT_CV_CHANGED;
-    	}
-    }
-
-    if(potChanged) {
-    	D(
-    		Serial.println("Pot Changed");
-    	);
-    	if(quantiseRootPot) {
-        	rootNotePot = floor(rootPot);
-        	if(rootNotePot != rootNotePotOld) {
-        		D(
-					Serial.print("Pot ");Serial.println(startPotInput.inputValue);
-        		);
-        		change |= ROOT_POT_CHANGED;
-        	}
-    	} else {
-    		rootNotePot = rootPot;
-    		change |= ROOT_POT_CHANGED;
-    	}
-    }
-
-	rootNote = rootNoteCV + rootNotePot;
+	switch(pitchMode) {
+    default:
+		case Settings::PitchMode::Speed: {
+			rootNote = rootNoteCV + rootNotePot;
+			break;
+		}
+		case Settings::PitchMode::PotSpeedCvStart: {
+			rootNote = 24 + rootNotePot;
+			break;
+		}
+	}
 
     // Flag note changes when the note index itself changes
     if(floor(rootNote) != rootNoteOld) {
