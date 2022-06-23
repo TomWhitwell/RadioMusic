@@ -49,7 +49,12 @@ public:
 	boolean sort = true; // By default we sort the directory contents.
 
 	// Use start pot and cv to control speed instead of start point
-	boolean pitchMode = false;
+	enum PitchMode : uint8_t {
+		Start,
+		Speed,
+		PotSpeedCvStart
+	};
+	PitchMode pitchMode = PitchMode::Start;
 
 	// If this is true we'll read any .wav files and try to play them
 	// if not we'll only play 44khz, 16bit mono files

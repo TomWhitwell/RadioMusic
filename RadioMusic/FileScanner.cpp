@@ -44,7 +44,7 @@ void FileScanner::scan(File* root, Settings& settings) {
 		// TODO : remove this when looping is fixed for 24 bit
 		settings.looping = false;
 		settings.hardSwap = true;
-		settings.pitchMode = true;
+		settings.pitchMode = Settings::PitchMode::Speed;
 		D(
 			Serial.print("Finished Tip Top with "); Serial.print(lastBankIndex); Serial.println(" active banks"););
 	} else {

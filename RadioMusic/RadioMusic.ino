@@ -317,20 +317,33 @@ uint16_t checkInterface() {
 	bool skipToStartPoint = false;
 	bool speedChange = false;
 
-	if(settings.pitchMode) {
-
-		if(resetTriggered) {
-			skipToStartPoint = true;
+	switch(settings.pitchMode) {
+		default:
+		case Settings::PitchMode::Start: {
+			if((changes & CHANGE_START_NOW) || resetTriggered) {
+				skipToStartPoint = true;
+			}
+			break;
 		}
+		case Settings::PitchMode::Speed: {
+			if(resetTriggered) {
+				skipToStartPoint = true;
+			}
 
-		if((changes & (ROOT_NOTE_CHANGED | ROOT_POT_CHANGED | ROOT_CV_CHANGED) ) || resetTriggered) {
-			speedChange = true;
+			if((changes & (ROOT_NOTE_CHANGED | ROOT_POT_CHANGED | ROOT_CV_CHANGED) ) || resetTriggered) {
+				speedChange = true;
+			}
+			break;
 		}
+		case Settings::PitchMode::PotSpeedCvStart: {
+			if((changes & CHANGE_START_NOW) || resetTriggered) {
+				skipToStartPoint = true;
+			}
 
-	} else {
-
-		if((changes & CHANGE_START_NOW) || resetTriggered) {
-			skipToStartPoint = true;
+			if((changes & (ROOT_NOTE_CHANGED | ROOT_POT_CHANGED) ) || resetTriggered) {
+				speedChange = true;
+			}
+			break;
 		}
 	}
 
@@ -344,13 +357,12 @@ uint16_t checkInterface() {
 
 	if(speedChange) doSpeedChange();
 	if(skipToStartPoint && !playState.channelChanged) {
-		if(settings.pitchMode) {
+		if(settings.pitchMode == Settings::PitchMode::Speed) {
 			audioEngine.skipTo(0);
 		} else {
 			D(Serial.print("Skip to ");Serial.println(interface.start););
 			audioEngine.skipTo(interface.start);
 		}
-
 	}
 
 	return changes;
