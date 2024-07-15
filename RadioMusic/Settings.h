@@ -61,6 +61,9 @@ public:
 	// Only overrides if true. Force no crossfades.
 	boolean hardSwap = false;
 
+	// Check bank directories for local settings.txt files
+	boolean local = false;
+
 	uint8_t loopMode = 0;
 
 private:

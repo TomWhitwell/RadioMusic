@@ -34,12 +34,15 @@ void Settings::copyDefaults() {
 
 void Settings::read() {
 
-	D(Serial.println("Reading settings.txt"););
+	D(
+		Serial.print("Reading ");
+		Serial.println(_filename);
+	);
 
 	char character;
 	String settingName;
 	String settingValue;
-	settingsFile = SD.open("settings.txt");
+	settingsFile = SD.open(_filename);
 
 	uint8_t NAME = 1;
 	uint8_t VALUE = 2;
@@ -72,7 +75,8 @@ void Settings::read() {
 		settingsFile.close();
 	} else {
 		// if the file didn't open, print an error:
-		Serial.println("error opening settings.txt");
+		Serial.print("error opening ");
+		Serial.println(_filename);
 	}
 	// Do test settings here
 
@@ -240,6 +244,9 @@ void Settings::applySetting(String settingName, String settingValue) {
 	if(settingName.equalsIgnoreCase("quantiseNotePot") || settingName.equalsIgnoreCase("quantizeRootPot")) {
 		quantiseRootPot = toBoolean(settingValue);
 	}
+	if(settingName.equalsIgnoreCase("local")) {
+		local = toBoolean(settingValue);
+	}
 
 }
 
@@ -263,12 +270,13 @@ boolean Settings::toBoolean(String settingValue) {
 }
 
 void Settings::write() {
-	Serial.println("Settings file not found, writing new settings");
+	Serial.print(_filename);
+	Serial.println(" not found, writing new settings");
 
 	// Delete the old One
-	SD.remove("settings.txt");
+	SD.remove(_filename);
 	// Create new one
-	settingsFile = SD.open("settings.txt", FILE_WRITE);
+	settingsFile = SD.open(_filename, FILE_WRITE);
 	settingsFile.print("crossfade=");
 	settingsFile.println(crossfade);
 	settingsFile.print("crossfadeTime=");
@@ -293,6 +301,8 @@ void Settings::write() {
 	settingsFile.println(sort);
 	settingsFile.print("pitchMode=");
 	settingsFile.println(pitchMode);
+	settingsFile.print("local=");
+	settingsFile.println(local);
 	// close the file:
 	settingsFile.close();
 }
