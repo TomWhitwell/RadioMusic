@@ -73,6 +73,7 @@ public:
 
 private:
 	bool changeFileTo(AudioFileInfo* info, bool closeFirst);
+	bool applySkipTo(uint32_t dataOffset);
 
 	bool fillBuffer(int32_t requiredBytes);
 	void fastFillBuffer();
@@ -95,6 +96,8 @@ private:
 	volatile int32_t bytesAvailable = 0;
 	volatile int32_t readPositionInBytes = 0;
 	volatile uint32_t bufferFillPosition = 0;
+	volatile bool skipPending = false;
+	volatile uint32_t pendingSkipPosition = 0;
 
 	String filename;
 	uint32_t dataSize = 0;

@@ -111,10 +111,20 @@ bool SDPlayPCM::changeFileTo(AudioFileInfo* info, bool closeFirst) {
 
 bool SDPlayPCM::skipTo(uint32_t dataPosition) {
 	if(!rawfile) return false;
-	uint32_t pos = dataOffset + dataPosition;
-	AudioStopUsingSPI();
 	__disable_irq()
 	;
+	pendingSkipPosition = dataPosition;
+	skipPending = true;
+	playing = true;
+	finished = false;
+	__enable_irq()
+	;
+	return true;
+}
+
+bool SDPlayPCM::applySkipTo(uint32_t dataPosition) {
+	if(!rawfile) return false;
+	uint32_t pos = dataOffset + dataPosition;
 	boolean didseek = rawfile.seek(pos);
 	bytesLeftInFile = dataSize - dataPosition;
 	readPositionInBytes = 0;
@@ -123,9 +133,6 @@ bool SDPlayPCM::skipTo(uint32_t dataPosition) {
 	readError = false;
 	playing = true;
 	finished = false;
-	__enable_irq()
-	;
-	AudioStartUsingSPI();
 	if(!didseek) {
 		D(
 			debugHeader();
@@ -138,8 +145,6 @@ bool SDPlayPCM::skipTo(uint32_t dataPosition) {
 
 bool SDPlayPCM::playFrom(AudioFileInfo* info) {
 
-	uint32_t pos = info->dataOffset + info->startPlayFrom;
-
 	D(
 		debugHeader();
 		Serial.print("Play ");
@@ -147,7 +152,7 @@ bool SDPlayPCM::playFrom(AudioFileInfo* info) {
 		Serial.print(" from ");
 		Serial.print(info->startPlayFrom);
 		Serial.print(" starting from ");
-		Serial.println(pos);
+		Serial.println(info->dataOffset + info->startPlayFrom);
 	);
 
 
@@ -268,8 +273,16 @@ void SDPlayPCM::update(void) {
 	if(errors > 100) return;
 
 	// only update if we're playing
-	if (!playing)
+	if (!playing && !skipPending)
 		return;
+
+	if(skipPending) {
+		uint32_t dataPosition = pendingSkipPosition;
+		skipPending = false;
+		if(!applySkipTo(dataPosition)) {
+			return;
+		}
+	}
 
 	if(!looping) {
 		if(finished || bytesLeftInFile == 0) {
